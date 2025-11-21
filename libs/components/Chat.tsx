@@ -7,9 +7,9 @@ import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
 import { useRouter } from 'next/router';
 import ScrollableFeed from 'react-scrollable-feed';
 import { RippleBadge } from '../../scss/MaterialTheme/styled';
-import { Member } from '../types/member/member';
 import { useReactiveVar } from '@apollo/client';
 import { socketVar, userVar } from '../../apollo/store';
+import { Member } from '../types/member/member';
 import { Messages, REACT_APP_API_URL } from '../config';
 import { sweetErrorAlert } from '../sweetAlert';
 
@@ -67,19 +67,17 @@ const Chat = () => {
 	useEffect(() => {
 		socket.onmessage = (msg) => {
 			const data = JSON.parse(msg.data);
-			console.log('WebSocket message:', data);
+			console.log('WebSocket message: ', data);
 
 			switch (data.event) {
 				case 'info':
 					const newInfo: InfoPayload = data;
 					setOnlineUsers(newInfo.totalClients);
 					break;
-
 				case 'getMessages':
 					const list: MessagePayload[] = data.list;
 					setMessagesList(list);
 					break;
-
 				case 'message':
 					const newMessage: MessagePayload = data;
 					messagesList.push(newMessage);
@@ -141,20 +139,14 @@ const Chat = () => {
 			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
 				<Box className={'chat-top'} component={'div'}>
 					<div style={{ fontFamily: 'Nunito' }}>Online Chat</div>
-					<RippleBadge
-						style={{
-							margin: '-18px 0 0 21px',
-						}}
-						badgeContent={onlineUsers}
-					/>
+					<RippleBadge style={{ margin: '-18px 0 0 21px ' }} badgeContent={onlineUsers} />
 				</Box>
 				<Box className={'chat-content'} id="chat-content" ref={chatContentRef} component={'div'}>
 					<ScrollableFeed>
-						<Stack className="chat-main">
-							<Box flexDirection="row" style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
-								<div className="welcome">Welcome to Live chat!</div>
+						<Stack className={'chat-main'}>
+							<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
+								<div className={'welcome'}>Welcome to Live chat!</div>
 							</Box>
-
 							{messagesList.map((ele: MessagePayload) => {
 								const { text, memberData } = ele;
 								const memberImage = memberData?.memberImage
@@ -170,30 +162,30 @@ const Chat = () => {
 										justifyContent={'flex-end'}
 										sx={{ m: '10px 0px' }}
 									>
-										<div className="msg-right">{text}</div>
+										<div className={'msg-right'}>{text}</div>
 									</Box>
 								) : (
 									<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
-										<Avatar alt="jonik" src={memberImage} />
-										<div className="msg-left">{text}</div>
+										<Avatar alt={'jonik'} src={memberImage} />
+										<div className={'msg-left'}>{text}</div>
 									</Box>
 								);
 							})}
 						</Stack>
 					</ScrollableFeed>
 				</Box>
-
-				<Box className="chat-bott" component={'div'}>
+				<Box className={'chat-bott'} component={'div'}>
 					<input
-						type="text"
+						ref={textInput}
+						type={'text'}
 						name={'message'}
-						className="msg-input"
+						value={messageInput}
+						className={'msg-input'}
 						placeholder={'Type message'}
 						onChange={getInputMessageHandler}
 						onKeyDown={getKeyHandler}
 					/>
-
-					<button className="send-msg-btn" onClick={onClickHandler}>
+					<button className={'send-msg-btn'} onClick={onClickHandler}>
 						<SendIcon style={{ color: '#fff' }} />
 					</button>
 				</Box>
