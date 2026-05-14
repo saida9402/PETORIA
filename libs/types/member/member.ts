@@ -1,6 +1,20 @@
 import { MemberAuthType, MemberStatus, MemberType } from '../../enums/member.enum';
-import { MeLiked, TotalCounter } from '../property/property';
-import { MeFollowed } from '../follow/follow';
+
+export interface MeLiked {
+	memberId: string;
+	likeRefId: string;
+	myFavorite: boolean;
+}
+
+export interface MeFollowed {
+	followingId: string;
+	followerId: string;
+	myFollowing: boolean;
+}
+
+export interface TotalCounter {
+	total: number;
+}
 
 export interface Member {
 	_id: string;
@@ -9,29 +23,27 @@ export interface Member {
 	memberAuthType: MemberAuthType;
 	memberPhone: string;
 	memberNick: string;
-	memberPassword?: string;
 	memberFullName?: string;
-	memberImage?: string;
+	memberImage: string;
 	memberAddress?: string;
 	memberDesc?: string;
-	memberProperties: number;
-	memberRank: number;
+	memberProducts: number;
 	memberArticles: number;
+	memberFollowers: number;
+	memberFollowings: number;
 	memberPoints: number;
 	memberLikes: number;
-	memberFollowers?: number;
-	memberFollowings?: number;
 	memberViews: number;
 	memberComments: number;
+	memberRank: number;
 	memberWarnings: number;
 	memberBlocks: number;
 	deletedAt?: Date;
 	createdAt: Date;
 	updatedAt: Date;
-	// Enable for authentications
+	accessToken?: string;
 	meLiked?: MeLiked[];
 	meFollowed?: MeFollowed[];
-	accessToken?: string;
 }
 
 export interface Members {

@@ -1,4 +1,5 @@
-export const REACT_APP_API_URL = `${process.env.REACT_APP_API_URL}`;
+// export const REACT_APP_API_URL = `${process.env.REACT_APP_API_URL}`;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
 export const availableOptions = ['propertyBarter', 'propertyRent'];
 
@@ -21,3 +22,19 @@ export const Messages = {
 };
 
 export const topPropertyRank = 3;
+
+export const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
+	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },
+	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
+	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
+	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
+	OTHER: { icon: '🐾', label: 'Other', color: 'var(--g700)' },
+};
+
+export const CAT_CFG: Record<string, { icon: string; label: string }> = {
+	FOOD: { icon: '🍖', label: 'Food' },
+	TOY: { icon: '🧸', label: 'Toy' },
+	MEDICINE: { icon: '💊', label: 'Medicine' },
+	ACCESSORY: { icon: '🦴', label: 'Accessory' },
+	OTHER: { icon: '🐾', label: 'Other' },
+};

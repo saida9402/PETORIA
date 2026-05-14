@@ -1,129 +1,107 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Stack, Box } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper';
-import TopAgentCard from './TopAgentCard';
-import { Member } from '../../types/member/member';
-import { AgentsInquiry } from '../../types/member/member.input';
-import { T } from '../../types/common';
+'use client';
 import { useQuery } from '@apollo/client';
-import { GET_AGENTS } from '../../../apollo/user/query';
+import Link from 'next/link';
 
-interface TopAgentsProps {
-	initialInput: AgentsInquiry;
-}
+import TopAgentCard from './TopAgentCard';
+import { GET_SELLERS } from '../../../apollo/user/query';
 
-const TopAgents = (props: TopAgentsProps) => {
-	const { initialInput } = props;
-	const device = useDeviceDetect();
-	const router = useRouter();
-	const [topAgents, setTopAgents] = useState<Member[]>([]);
+const MOCK_SELLERS = [
+	{
+		_id: 's1',
+		memberNick: 'PetGuruSeoul',
+		memberImage: undefined,
+		memberDesc: 'Specializing in premium dog food and supplements.',
+		memberLikes: 234,
+		memberViews: 1890,
+		memberArticles: 12,
+	},
+	{
+		_id: 's2',
+		memberNick: 'CatLoverKim',
+		memberImage: undefined,
+		memberDesc: 'Cat nutrition expert. 8 years of experience.',
+		memberLikes: 189,
+		memberViews: 1234,
+		memberArticles: 8,
+	},
+	{
+		_id: 's3',
+		memberNick: 'PawsNaturals',
+		memberImage: undefined,
+		memberDesc: 'Organic and natural pet products only.',
+		memberLikes: 156,
+		memberViews: 987,
+		memberArticles: 15,
+	},
+	{
+		_id: 's4',
+		memberNick: 'BirdWorldJeju',
+		memberImage: undefined,
+		memberDesc: "Korea's leading exotic bird supplies seller.",
+		memberLikes: 98,
+		memberViews: 756,
+		memberArticles: 6,
+	},
+	{
+		_id: 's5',
+		memberNick: 'AquaPetBusan',
+		memberImage: undefined,
+		memberDesc: 'Freshwater and marine aquarium specialists.',
+		memberLikes: 76,
+		memberViews: 543,
+		memberArticles: 4,
+	},
+	{
+		_id: 's6',
+		memberNick: 'VetTipsHana',
+		memberImage: undefined,
+		memberDesc: 'Certified vet tech. Honest reviews & advice.',
+		memberLikes: 312,
+		memberViews: 2450,
+		memberArticles: 22,
+	},
+];
 
-	/** **APOLLO REQUESTS** **/
-	const {
-		loading: getAgentsLoading,
-		data: getAgentsData,
-		error: getAgentsError,
-		refetch: getAgentsRefetch,
-	} = useQuery(GET_AGENTS, {
+export default function TopAgents() {
+	const { data, loading } = useQuery(GET_SELLERS, {
 		fetchPolicy: 'cache-and-network',
-		variables: { input: initialInput },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setTopAgents(data?.getAgents?.list);
+		variables: {
+			input: { page: 1, limit: 6, sort: 'memberLikes', search: {} },
 		},
 	});
 
-	/** HANDLERS **/
+	const sellers = (data?.getSeller?.list?.length ? data.getSeller.list : MOCK_SELLERS).slice(0, 6);
 
-	if (device === 'mobile') {
-		return (
-			<Stack className={'top-agents'}>
-				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<span>Top Agents</span>
-					</Stack>
-					<Stack className={'wrapper'}>
-						<Swiper
-							className={'top-agents-swiper'}
-							slidesPerView={'auto'}
-							centeredSlides={true}
-							spaceBetween={29}
-							modules={[Autoplay]}
-						>
-							{topAgents.map((agent: Member) => {
-								return (
-									<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-										<TopAgentCard agent={agent} key={agent?.memberNick} />
-									</SwiperSlide>
-								);
-							})}
-						</Swiper>
-					</Stack>
-				</Stack>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'top-agents'}>
-				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<Box component={'div'} className={'left'}>
-							<span>Top Agents</span>
-							<p>Our Top Agents always ready to serve you</p>
-						</Box>
-						<Box component={'div'} className={'right'}>
-							<div className={'more-box'}>
-								<span>See All Agents</span>
-								<img src="/img/icons/rightup.svg" alt="" />
-							</div>
-						</Box>
-					</Stack>
-					<Stack className={'wrapper'}>
-						<Box component={'div'} className={'switch-btn swiper-agents-prev'}>
-							<ArrowBackIosNewIcon />
-						</Box>
-						<Box component={'div'} className={'card-wrapper'}>
-							<Swiper
-								className={'top-agents-swiper'}
-								slidesPerView={'auto'}
-								spaceBetween={29}
-								modules={[Autoplay, Navigation, Pagination]}
-								navigation={{
-									nextEl: '.swiper-agents-next',
-									prevEl: '.swiper-agents-prev',
-								}}
-							>
-								{topAgents.map((agent: Member) => {
-									return (
-										<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-											<TopAgentCard agent={agent} key={agent?.memberNick} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						</Box>
-						<Box component={'div'} className={'switch-btn swiper-agents-next'}>
-							<ArrowBackIosNewIcon />
-						</Box>
-					</Stack>
-				</Stack>
-			</Stack>
-		);
-	}
-};
+	return (
+		<section className="top-agents">
+			<div className="wrap">
+				<div className="section-hd">
+					<div>
+						<p className="section-hd__eyebrow">Our experts</p>
+						<h2 className="section-hd__title">Top Sellers</h2>
+						<p className="section-hd__sub">Verified sellers trusted by the community</p>
+					</div>
+					<Link href="/agents" className="section-hd__link">
+						View all sellers →
+					</Link>
+				</div>
 
-TopAgents.defaultProps = {
-	initialInput: {
-		page: 1,
-		limit: 10,
-		sort: 'memberRank',
-		direction: 'DESC',
-		search: {},
-	},
-};
-
-export default TopAgents;
+				{loading ? (
+					<div className="top-agents__grid">
+						{Array(6)
+							.fill(0)
+							.map((_, i) => (
+								<div key={i} className="skeleton" style={{ height: 220, borderRadius: 'var(--r20)' }} />
+							))}
+					</div>
+				) : (
+					<div className="top-agents__grid">
+						{sellers.map((s: any, i: number) => (
+							<TopAgentCard key={s._id} seller={s} rank={i + 1} />
+						))}
+					</div>
+				)}
+			</div>
+		</section>
+	);
+}

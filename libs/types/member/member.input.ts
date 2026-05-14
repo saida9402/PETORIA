@@ -18,12 +18,14 @@ interface AISearch {
 	text?: string;
 }
 
-export interface AgentsInquiry {
+export interface SellersInquiry {
 	page: number;
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: AISearch;
+	search: {
+		text?: string;
+	};
 }
 
 interface MISearch {

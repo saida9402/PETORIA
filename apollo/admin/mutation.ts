@@ -10,22 +10,17 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 			_id
 			memberType
 			memberStatus
-			memberAuthType
-			memberPhone
 			memberNick
-			memberFullName
+			memberPhone
 			memberImage
 			memberAddress
 			memberDesc
-			memberProperties
-			memberRank
-			memberArticles
-			memberPoints
 			memberLikes
 			memberViews
+			memberArticles
+			memberPoints
 			memberWarnings
 			memberBlocks
-			deletedAt
 			createdAt
 			updatedAt
 			accessToken
@@ -34,61 +29,29 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        PRODUCT         *
  *************************/
 
-export const UPDATE_PROPERTY_BY_ADMIN = gql`
-	mutation UpdatePropertyByAdmin($input: PropertyUpdate!) {
-		updatePropertyByAdmin(input: $input) {
+export const UPDATE_PRODUCT_BY_ADMIN = gql`
+	mutation UpdateProductByAdmin($input: ProductUpdate!) {
+		updateProductByAdmin(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			productType
+			productStatus
+			productCategory
+			productName
+			productPrice
+			productImages
+			productDesc
+			productBrand
+			productStock
+			productSale
+			productViews
+			productLikes
+			productComments
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
-			createdAt
-			updatedAt
-		}
-	}
-`;
-
-export const REMOVE_PROPERTY_BY_ADMIN = gql`
-	mutation RemovePropertyByAdmin($input: String!) {
-		removePropertyByAdmin(propertyId: $input) {
-			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
-			soldAt
-			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
@@ -110,6 +73,7 @@ export const UPDATE_BOARD_ARTICLE_BY_ADMIN = gql`
 			articleImage
 			articleViews
 			articleLikes
+			articleComments
 			memberId
 			createdAt
 			updatedAt
@@ -128,6 +92,7 @@ export const REMOVE_BOARD_ARTICLE_BY_ADMIN = gql`
 			articleImage
 			articleViews
 			articleLikes
+			articleComments
 			memberId
 			createdAt
 			updatedAt

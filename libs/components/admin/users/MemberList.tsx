@@ -16,8 +16,9 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
 import { Member } from '../../../types/member/member';
-import { REACT_APP_API_URL } from '../../../config';
+
 import { MemberStatus, MemberType } from '../../../enums/member.enum';
+import { API_URL } from '../../../config';
 
 interface Data {
 	id: string;
@@ -158,7 +159,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 						{members.length !== 0 &&
 							members.map((member: Member, index: number) => {
 								const member_image = member.memberImage
-									? `${REACT_APP_API_URL}/${member.memberImage}`
+									? `${API_URL}/${member.memberImage}`
 									: '/img/profile/defaultUser.svg';
 								return (
 									<TableRow hover key={member?._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

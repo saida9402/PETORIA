@@ -17,15 +17,12 @@ export const SIGN_UP = gql`
 			memberImage
 			memberAddress
 			memberDesc
-			memberWarnings
-			memberBlocks
-			memberProperties
-			memberRank
-			memberArticles
 			memberPoints
 			memberLikes
 			memberViews
-			deletedAt
+			memberFollowings
+			memberFollowers
+			memberRank
 			createdAt
 			updatedAt
 			accessToken
@@ -46,14 +43,12 @@ export const LOGIN = gql`
 			memberImage
 			memberAddress
 			memberDesc
-			memberWarnings
-			memberBlocks
-			memberProperties
-			memberRank
 			memberPoints
 			memberLikes
 			memberViews
-			deletedAt
+			memberFollowings
+			memberFollowers
+			memberRank
 			createdAt
 			updatedAt
 			accessToken
@@ -67,22 +62,18 @@ export const UPDATE_MEMBER = gql`
 			_id
 			memberType
 			memberStatus
-			memberAuthType
 			memberPhone
 			memberNick
 			memberFullName
 			memberImage
 			memberAddress
 			memberDesc
-			memberProperties
-			memberRank
-			memberArticles
 			memberPoints
 			memberLikes
 			memberViews
-			memberWarnings
-			memberBlocks
-			deletedAt
+			memberFollowings
+			memberFollowers
+			memberRank
 			createdAt
 			updatedAt
 			accessToken
@@ -91,120 +82,90 @@ export const UPDATE_MEMBER = gql`
 `;
 
 export const LIKE_TARGET_MEMBER = gql`
-	mutation LikeTargetMember($input: String!) {
-		likeTargetMember(memberId: $input) {
+	mutation LikeTargetMember($memberId: String!) {
+		likeTargetMember(memberId: $memberId) {
 			_id
-			memberType
-			memberStatus
-			memberAuthType
-			memberPhone
-			memberNick
-			memberFullName
-			memberImage
-			memberAddress
-			memberDesc
-			memberWarnings
-			memberBlocks
-			memberProperties
-			memberRank
-			memberPoints
 			memberLikes
-			memberViews
-			deletedAt
-			createdAt
-			updatedAt
-			accessToken
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
+	}
+`;
+
+export const IMAGE_UPLOADER = gql`
+	mutation ImageUploader($file: Upload!, $target: String!) {
+		imageUploader(file: $file, target: $target)
+	}
+`;
+
+export const IMAGES_UPLOADER = gql`
+	mutation ImagesUploader($files: [Upload!]!, $target: String!) {
+		imagesUploader(files: $files, target: $target)
 	}
 `;
 
 /**************************
- *        PROPERTY        *
+ *        PRODUCT         *
  *************************/
 
-export const CREATE_PROPERTY = gql`
-	mutation CreateProperty($input: PropertyInput!) {
-		createProperty(input: $input) {
+export const CREATE_PRODUCT = gql`
+	mutation CreateProduct($input: ProductInput!) {
+		createProduct(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			productType
+			productStatus
+			productCategory
+			productName
+			productBrand
+			productSize
+			productPrice
+			productStock
+			productImages
+			productDesc
+			productSale
+			productSalePercent
 			memberId
-			soldAt
-			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const UPDATE_PROPERTY = gql`
-	mutation UpdateProperty($input: PropertyUpdate!) {
-		updateProperty(input: $input) {
+export const UPDATE_PRODUCT = gql`
+	mutation UpdateProduct($input: ProductUpdate!) {
+		updateProduct(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
+			productType
+			productStatus
+			productCategory
+			productName
+			productBrand
+			productSize
+			productPrice
+			productStock
+			productImages
+			productDesc
+			productSale
+			productSalePercent
 			soldAt
-			deletedAt
-			constructedAt
-			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const LIKE_TARGET_PROPERTY = gql`
-	mutation LikeTargetProperty($input: String!) {
-		likeTargetProperty(propertyId: $input) {
+export const LIKE_TARGET_PRODUCT = gql`
+	mutation LikeTargetProduct($input: String!) {
+		likeTargetProduct(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
-			soldAt
-			deletedAt
-			constructedAt
-			createdAt
-			updatedAt
+			productLikes
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -224,6 +185,7 @@ export const CREATE_BOARD_ARTICLE = gql`
 			articleImage
 			articleViews
 			articleLikes
+			articleComments
 			memberId
 			createdAt
 			updatedAt
@@ -242,6 +204,7 @@ export const UPDATE_BOARD_ARTICLE = gql`
 			articleImage
 			articleViews
 			articleLikes
+			articleComments
 			memberId
 			createdAt
 			updatedAt
@@ -250,25 +213,21 @@ export const UPDATE_BOARD_ARTICLE = gql`
 `;
 
 export const LIKE_TARGET_BOARD_ARTICLE = gql`
-	mutation LikeTargetBoardArticle($input: String!) {
-		likeTargetBoardArticle(articleId: $input) {
+	mutation LikeTargetBoardArticle($articleId: String!) {
+		likeTargetBoardArticle(articleId: $articleId) {
 			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
 			articleLikes
-			memberId
-			createdAt
-			updatedAt
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
 
 /**************************
- *         COMMENT        *
+ *        COMMENT         *
  *************************/
 
 export const CREATE_COMMENT = gql`
@@ -302,7 +261,7 @@ export const UPDATE_COMMENT = gql`
 `;
 
 /**************************
- *         FOLLOW        *
+ *         FOLLOW         *
  *************************/
 
 export const SUBSCRIBE = gql`
@@ -324,6 +283,59 @@ export const UNSUBSCRIBE = gql`
 			followingId
 			followerId
 			createdAt
+			updatedAt
+		}
+	}
+`;
+
+/**************************
+ *          ORDER         *
+ *************************/
+
+export const CREATE_ORDER = gql`
+	mutation CreateOrder($memberId: ID!, $input: OrderInput!) {
+		createOrder(memberId: $memberId, input: $input) {
+			_id
+			memberId
+			orderItems {
+				_id
+				productId
+				itemQuantity
+				itemPrice
+				itemStatus
+			}
+			orderTotal
+			orderStatus
+			paymentMethod
+			orderAddress
+			orderNote
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const UPDATE_ORDER = gql`
+	mutation UpdateOrder($input: OrderUpdateInput!) {
+		updateOrder(input: $input) {
+			_id
+			orderStatus
+			orderItems {
+				_id
+				itemStatus
+			}
+			updatedAt
+		}
+	}
+`;
+
+export const CANCEL_ORDER = gql`
+	mutation CancelOrder($input: OrderCancelInput!) {
+		cancelOrder(input: $input) {
+			_id
+			orderStatus
+			cancelReason
+			cancelledAt
 			updatedAt
 		}
 	}

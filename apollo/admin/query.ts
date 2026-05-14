@@ -11,22 +11,17 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
 				_id
 				memberType
 				memberStatus
-				memberAuthType
-				memberPhone
 				memberNick
-				memberFullName
+				memberPhone
 				memberImage
 				memberAddress
 				memberDesc
-				memberWarnings
-				memberBlocks
-				memberProperties
-				memberRank
-				memberArticles
-				memberPoints
 				memberLikes
 				memberViews
-				deletedAt
+				memberArticles
+				memberPoints
+				memberWarnings
+				memberBlocks
 				createdAt
 				updatedAt
 				accessToken
@@ -39,57 +34,39 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        PRODUCT         *
  *************************/
 
-export const GET_ALL_PROPERTIES_BY_ADMIN = gql`
-	query GetAllPropertiesByAdmin($input: AllPropertiesInquiry!) {
-		getAllPropertiesByAdmin(input: $input) {
+export const GET_ALL_PRODUCTS_BY_ADMIN = gql`
+	query GetAllProductsByAdmin($input: AllProductsInquiry!) {
+		getAllProductsByAdmin(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				productType
+				productStatus
+				productCategory
+				productName
+				productPrice
+				productImages
+				productDesc
+				productBrand
+				productStock
+				productSale
+				productViews
+				productLikes
+				productComments
 				memberId
 				soldAt
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
 				memberData {
 					_id
 					memberType
 					memberStatus
-					memberAuthType
-					memberPhone
 					memberNick
-					memberFullName
 					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
+					memberPhone
 				}
 			}
 			metaCounter {
@@ -115,6 +92,7 @@ export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
 				articleImage
 				articleViews
 				articleLikes
+				articleComments
 				memberId
 				createdAt
 				updatedAt
@@ -122,24 +100,9 @@ export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
 					_id
 					memberType
 					memberStatus
-					memberAuthType
-					memberPhone
 					memberNick
-					memberFullName
 					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
+					memberPhone
 				}
 			}
 			metaCounter {
@@ -169,28 +132,41 @@ export const GET_COMMENTS = gql`
 					_id
 					memberType
 					memberStatus
-					memberAuthType
-					memberPhone
 					memberNick
-					memberFullName
 					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
+					memberPhone
 				}
 			}
 			metaCounter {
 				total
+			}
+		}
+	}
+`;
+
+/**************************
+ *         ORDER          *
+ *************************/
+
+export const GET_ALL_ORDERS = gql`
+	query GetAllOrders {
+		getAllOrders {
+			_id
+			memberId
+			orderStatus
+			orderTotal
+			paymentMethod
+			orderAddress
+			orderNote
+			cancelReason
+			cancelledAt
+			createdAt
+			updatedAt
+			orderItems {
+				productId
+				itemQuantity
+				itemPrice
+				itemStatus
 			}
 		}
 	}
