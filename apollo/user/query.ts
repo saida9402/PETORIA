@@ -401,3 +401,85 @@ export const GET_MY_ORDERS = gql`
 		}
 	}
 `;
+
+/**************************
+ *       FAVORITES        *
+ *************************/
+
+export const GET_FAVORITES = gql`
+	query GetFavorites($input: OrdinaryInquiry!) {
+		getFavorites(input: $input) {
+			list {
+				_id
+				productType
+				productStatus
+				productCategory
+				productName
+				productBrand
+				productSize
+				productPrice
+				productStock
+				productViews
+				productLikes
+				productComments
+				productRank
+				productImages
+				productDesc
+				productSale
+				productSalePercent
+				memberId
+				createdAt
+				updatedAt
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+/**************************
+ *    RECENTLY VISITED    *
+ *************************/
+
+export const GET_VISITED = gql`
+	query GetVisited($input: OrdinaryInquiry!) {
+		getVisited(input: $input) {
+			list {
+				_id
+				productType
+				productStatus
+				productCategory
+				productName
+				productBrand
+				productSize
+				productPrice
+				productStock
+				productViews
+				productLikes
+				productComments
+				productRank
+				productImages
+				productDesc
+				productSale
+				productSalePercent
+				memberId
+				createdAt
+				updatedAt
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;

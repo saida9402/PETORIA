@@ -16,22 +16,18 @@ import Tooltip from '@mui/material/Tooltip';
 import { getJwtToken, logOut, updateUserInfo } from '../../auth';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
-import { REACT_APP_API_URL } from '../../config';
+import { API_URL } from '../../config';
 import { MemberType } from '../../enums/member.enum';
+
 const drawerWidth = 280;
 
 const withAdminLayout = (Component: ComponentType) => {
 	return (props: object) => {
 		const router = useRouter();
 		const user = useReactiveVar(userVar);
-		const [settingsState, setSettingsStateState] = useState(false);
 		const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-		const [openMenu, setOpenMenu] = useState(false);
-		const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-		const [title, setTitle] = useState('admin');
 		const [loading, setLoading] = useState(true);
 
-		/** LIFECYCLES **/
 		useEffect(() => {
 			const jwt = getJwtToken();
 			if (jwt) updateUserInfo(jwt);
@@ -44,7 +40,6 @@ const withAdminLayout = (Component: ComponentType) => {
 			}
 		}, [loading, user, router]);
 
-		/** HANDLERS **/
 		const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
 			setAnchorElUser(event.currentTarget);
 		};
@@ -61,24 +56,23 @@ const withAdminLayout = (Component: ComponentType) => {
 		if (!user || user?.memberType !== MemberType.ADMIN) return null;
 
 		return (
-			<main id="pc-wrap" className="admin">
+			<main id="pc-wrap" className="petoria-admin">
 				<Box component={'div'} sx={{ display: 'flex' }}>
 					<AppBar
 						position="fixed"
 						sx={{
 							width: `calc(100% - ${drawerWidth}px)`,
 							ml: `${drawerWidth}px`,
-							boxShadow: 'rgb(100 116 139 / 12%) 0px 1px 4px',
-							background: 'none',
+							boxShadow: '0 1px 4px rgba(45, 80, 22, 0.12)',
+							background: '#fff',
 						}}
 					>
 						<Toolbar>
 							<Tooltip title="Open settings">
 								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 									<Avatar
-										src={
-											user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'
-										}
+										src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+										sx={{ border: '2px solid #4E8A28' }}
 									/>
 								</IconButton>
 							</Tooltip>
@@ -87,27 +81,15 @@ const withAdminLayout = (Component: ComponentType) => {
 								id="menu-appbar"
 								className={'pop-menu'}
 								anchorEl={anchorElUser}
-								anchorOrigin={{
-									vertical: 'top',
-									horizontal: 'right',
-								}}
+								anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 								keepMounted
-								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'right',
-								}}
+								transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 								open={Boolean(anchorElUser)}
 								onClose={handleCloseUserMenu}
 							>
-								<Box
-									component={'div'}
-									onClick={handleCloseUserMenu}
-									sx={{
-										width: '200px',
-									}}
-								>
+								<Box component={'div'} onClick={handleCloseUserMenu} sx={{ width: '200px' }}>
 									<Stack sx={{ px: '20px', my: '12px' }}>
-										<Typography variant={'h6'} component={'h6'} sx={{ mb: '4px' }}>
+										<Typography variant={'h6'} component={'h6'} sx={{ mb: '4px', color: '#2D5016' }}>
 											{user?.memberNick}
 										</Typography>
 										<Typography variant={'subtitle1'} component={'p'} color={'#757575'}>
@@ -134,46 +116,55 @@ const withAdminLayout = (Component: ComponentType) => {
 							'& .MuiDrawer-paper': {
 								width: drawerWidth,
 								boxSizing: 'border-box',
+								background: '#2D5016',
+								color: '#E8F5D0',
 							},
 						}}
 						variant="permanent"
 						anchor="left"
-						className="aside"
+						className="petoria-aside"
 					>
-						<Toolbar sx={{ flexDirection: 'column', alignItems: 'flexStart' }}>
-							<Stack className={'logo-box'}>
-								<img src={'/img/logo/logoText.svg'} alt={'logo'} />
+						<Toolbar sx={{ flexDirection: 'column', alignItems: 'flex-start', pt: 2 }}>
+							<Stack className={'logo-box'} sx={{ mb: 2 }}>
+								{/* Replace with Petoria logo */}
+								<Typography variant="h5" sx={{ color: '#A8CC7A', fontWeight: 700, letterSpacing: 1 }}>
+									🐾 Petoria
+								</Typography>
+								<Typography variant="caption" sx={{ color: '#6DB535' }}>
+									Admin Panel
+								</Typography>
 							</Stack>
 
 							<Stack
-								className="user"
 								direction={'row'}
 								alignItems={'center'}
 								sx={{
-									bgcolor: openMenu ? 'rgba(255, 255, 255, 0.04)' : 'none',
+									background: 'rgba(255,255,255,0.08)',
 									borderRadius: '8px',
-									px: '24px',
-									py: '11px',
+									px: '16px',
+									py: '10px',
+									width: '100%',
 								}}
 							>
 								<Avatar
-									src={user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+									src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+									sx={{ border: '2px solid #6DB535' }}
 								/>
-								<Typography variant={'body2'} p={1} ml={1}>
+								<Typography variant={'body2'} sx={{ ml: 1.5, color: '#E8F5D0' }}>
 									{user?.memberNick} <br />
-									{user?.memberPhone}
+									<span style={{ color: '#A8CC7A', fontSize: 11 }}>{user?.memberPhone}</span>
 								</Typography>
 							</Stack>
 						</Toolbar>
 
-						<Divider />
+						<Divider sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
 
 						<MenuList />
 					</Drawer>
 
-					<Box component={'div'} id="bunker" sx={{ flexGrow: 1 }}>
+					<Box component={'div'} id="bunker" sx={{ flexGrow: 1, background: '#F5F9F0' }}>
 						{/*@ts-ignore*/}
-						<Component {...props} setSnackbar={setSnackbar} setTitle={setTitle} />
+						<Component {...props} />
 					</Box>
 				</Box>
 			</main>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Head from 'next/head';
-import Top from '../Top';
+
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
@@ -13,11 +13,12 @@ import { useTranslation } from 'next-i18next';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import Top from '../Top';
 
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
 		const router = useRouter();
-		const { t, i18n } = useTranslation('common');
+		const { t } = useTranslation('common');
 		const device = useDeviceDetect();
 		const [authHeader, setAuthHeader] = useState<boolean>(false);
 		const user = useReactiveVar(userVar);
@@ -28,51 +29,56 @@ const withLayoutBasic = (Component: any) => {
 				bgImage = '';
 
 			switch (router.pathname) {
-				case '/property':
-					title = 'Property Search';
-					desc = 'We are glad to see you again!';
-					bgImage = '/img/banner/properties.png';
+				case '/shop':
+					title = 'Pet Shop';
+					desc = 'Find everything your pet needs!';
+					bgImage = '/img/banner/shop.png';
 					break;
-				case '/agent':
-					title = 'Agents';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/agents.webp';
+				case '/shop/detail':
+					title = 'Product Detail';
+					desc = 'Premium quality for your pet';
+					bgImage = '/img/banner/shop.png';
 					break;
-				case '/agent/detail':
-					title = 'Agent Page';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header2.svg';
+				case '/vet':
+					title = 'Veterinarians';
+					desc = 'Trusted vets near you';
+					bgImage = '/img/banner/vets.webp';
+					break;
+				case '/vet/detail':
+					title = 'Vet Profile';
+					desc = 'Book an appointment';
+					bgImage = '/img/banner/vets.webp';
 					break;
 				case '/mypage':
-					title = 'my page';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header1.svg';
+					title = 'My Page';
+					desc = 'Manage your account';
+					bgImage = '/img/banner/mypage.svg';
 					break;
 				case '/community':
-					title = 'Community';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header2.svg';
+					title = 'Pet Community';
+					desc = 'Share your pet stories';
+					bgImage = '/img/banner/community.svg';
 					break;
 				case '/community/detail':
-					title = 'Community Detail';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header2.svg';
+					title = 'Article Detail';
+					desc = 'Pet Community';
+					bgImage = '/img/banner/community.svg';
 					break;
 				case '/cs':
-					title = 'CS';
-					desc = 'We are glad to see you again!';
-					bgImage = '/img/banner/header2.svg';
+					title = 'Customer Support';
+					desc = 'We are here to help!';
+					bgImage = '/img/banner/cs.svg';
 					break;
 				case '/account/join':
-					title = 'Login/Signup';
-					desc = 'Authentication Process';
-					bgImage = '/img/banner/header2.svg';
+					title = 'Login / Sign Up';
+					desc = 'Welcome to Petoria 🐾';
+					bgImage = '/img/banner/auth.svg';
 					setAuthHeader(true);
 					break;
 				case '/member':
-					title = 'Member Page';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header1.svg';
+					title = 'Member Profile';
+					desc = 'Pet lover community';
+					bgImage = '/img/banner/mypage.svg';
 					break;
 				default:
 					break;
@@ -81,30 +87,25 @@ const withLayoutBasic = (Component: any) => {
 			return { title, desc, bgImage };
 		}, [router.pathname]);
 
-		/** LIFECYCLES **/
 		useEffect(() => {
 			const jwt = getJwtToken();
 			if (jwt) updateUserInfo(jwt);
 		}, []);
 
-		/** HANDLERS **/
-
-		if (device == 'mobile') {
+		if (device === 'mobile') {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>Petoria 🐾</title>
+						<meta name={'title'} content={`Petoria - Your Pet's Happy Place`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
 							<Top />
 						</Stack>
-
 						<Stack id={'main'}>
 							<Component {...props} />
 						</Stack>
-
 						<Stack id={'footer'}>
 							<Footer />
 						</Stack>
@@ -115,8 +116,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>Petoria 🐾</title>
+						<meta name={'title'} content={`Petoria - Your Pet's Happy Place`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>
@@ -128,12 +129,13 @@ const withLayoutBasic = (Component: any) => {
 							style={{
 								backgroundImage: `url(${memoizedValues.bgImage})`,
 								backgroundSize: 'cover',
-								boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
+								backgroundPosition: 'center',
+								boxShadow: 'inset 10px 40px 150px 40px rgba(45, 80, 22, 0.85)',
 							}}
 						>
 							<Stack className={'container'}>
-								<strong>{t(memoizedValues.title)}</strong>
-								<span>{t(memoizedValues.desc)}</span>
+								<strong style={{ color: '#E8F5D0' }}>{t(memoizedValues.title)}</strong>
+								<span style={{ color: '#A8CC7A' }}>{t(memoizedValues.desc)}</span>
 							</Stack>
 						</Stack>
 

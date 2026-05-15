@@ -2,27 +2,31 @@ import React from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
-const Article = () => {
+const PetArticle = () => {
 	const device = useDeviceDetect();
 
 	if (device === 'mobile') {
-		return <div>PROPERTY CARD</div>;
+		return <div>PET ARTICLE CARD MOBILE</div>;
 	} else {
 		return (
 			<Stack className="card-config">
 				<Stack className="top">
-					<img src="/img/apartmentMain.png" alt="" />
+					<img src="/img/community/petMain.png" alt="" />
 					<Box component={'div'} className={'date'}>
 						<Typography>July 28</Typography>
+					</Box>
+					{/* Category tag */}
+					<Box component={'div'} className={'category-tag'}>
+						<Typography>🐾 Pet Tips</Typography>
 					</Box>
 				</Stack>
 				<Stack className="bottom">
 					<Stack className="name-address">
 						<Stack className="name">
-							<Typography>Equestrian Family Home</Typography>
+							<Typography>How to keep your dog healthy this summer</Typography>
 						</Stack>
 						<Stack className="address">
-							<Typography>Shillymdong, Kwanak-ku, Seoul </Typography>
+							<Typography>By Petoria Community · Seoul</Typography>
 						</Stack>
 					</Stack>
 				</Stack>
@@ -31,4 +35,4 @@ const Article = () => {
 	}
 };
 
-export default Article;
+export default PetArticle;

@@ -23,6 +23,7 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
+
 	const {
 		loading: boardArticlesLoading,
 		data: boardArticlesData,
@@ -54,16 +55,11 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
-			await likeTargetBoardArticle({
-				variables: {
-					input: id,
-				},
-			});
-
+			await likeTargetBoardArticle({ variables: { articleId: id } });
 			await boardArticlesRefetch({ input: searchFilter });
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR, likePropertyHandler:', err.message);
+			console.log('ERROR, likeArticleHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
@@ -75,27 +71,27 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 			<div id="member-articles-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">Articles</Typography>
+						<Typography className="main-title">Articles 📰</Typography>
 					</Stack>
 				</Stack>
+
 				<Stack className="articles-list-box">
 					{memberBoArticles?.length === 0 && (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Articles found!</p>
+							<p>No articles found!</p>
 						</div>
 					)}
-					{memberBoArticles?.map((boardArticle: BoardArticle) => {
-						return (
-							<CommunityCard
-								boardArticle={boardArticle}
-								likeArticleHandler={likeArticleHandler}
-								key={boardArticle?._id}
-								size={'small'}
-							/>
-						);
-					})}
+					{memberBoArticles?.map((boardArticle: BoardArticle) => (
+						<CommunityCard
+							boardArticle={boardArticle}
+							likeArticleHandler={likeArticleHandler}
+							key={boardArticle?._id}
+							size={'small'}
+						/>
+					))}
 				</Stack>
+
 				{memberBoArticles?.length !== 0 && (
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
@@ -108,7 +104,7 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 							/>
 						</Stack>
 						<Stack className="total-result">
-							<Typography>{total} property available</Typography>
+							<Typography>{total} article(s)</Typography>
 						</Stack>
 					</Stack>
 				)}

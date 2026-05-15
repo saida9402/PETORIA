@@ -79,7 +79,6 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const tabChangeHandler = async (event: any, newValue: string) => {
 		setValue(newValue);
-
 		setCommunityInquiry({ ...communityInquiry, page: 1, sort: 'createdAt' });
 
 		switch (newValue) {
@@ -99,7 +98,6 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 	const searchTypeHandler = async (newValue: string) => {
 		try {
 			setSearchType(newValue);
-
 			if (newValue !== 'ALL') {
 				setCommunityInquiry({
 					...communityInquiry,
@@ -122,11 +120,8 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 	const updateArticleHandler = async (updateData: BoardArticleUpdate) => {
 		try {
 			await updateBoardArticleByAdmin({
-				variables: {
-					input: updateData,
-				},
+				variables: { input: updateData },
 			});
-
 			menuIconCloseHandler();
 			await getAllBoardArticlesByAdminRefetch({ input: communityInquiry });
 		} catch (err: any) {
@@ -137,27 +132,21 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const removeArticleHandler = async (id: string) => {
 		try {
-			if (await sweetConfirmAlert('Are you sure to remove?')) {
+			if (await sweetConfirmAlert('Are you sure to remove this article?')) {
 				await removeBoardArticleByAdmin({
-					variables: {
-						input: id,
-					},
+					variables: { input: id },
 				});
 			}
-
 			await getAllBoardArticlesByAdminRefetch({ input: communityInquiry });
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
 	};
 
-	console.log('+communityInquiry', communityInquiry);
-	console.log('+articles', articles);
-
 	return (
 		<Box component={'div'} className={'content'}>
 			<Typography variant={'h2'} className={'tit'} sx={{ mb: '24px' }}>
-				Arricle List
+				Article List
 			</Typography>
 			<Box component={'div'} className={'table-wrap'}>
 				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
@@ -183,7 +172,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 									value="DELETE"
 									className={value === 'DELETE' ? 'li on' : 'li'}
 								>
-									Delete
+									Deleted
 								</ListItem>
 							</List>
 							<Divider />
@@ -201,6 +190,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 							</Stack>
 							<Divider />
 						</Box>
+
 						<CommunityArticleList
 							articles={articles}
 							anchorEl={anchorEl}

@@ -1,0 +1,184 @@
+import React, { useState } from 'react';
+import { NextPage } from 'next';
+import { Pagination, Stack, Typography } from '@mui/material';
+import useDeviceDetect from '../../hooks/useDeviceDetect';
+
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
+import { Product } from '../../types/product/product';
+import { AgentProductsInquiry } from '../../types/product/product.input';
+import { T } from '../../types/common';
+import { ProductStatus } from '../../enums/product.enum';
+import { userVar } from '../../../apollo/store';
+import { useRouter } from 'next/router';
+import { UPDATE_PRODUCT } from '../../../apollo/user/mutation';
+import { GET_SELLER_PRODUCTS } from '../../../apollo/user/query';
+import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
+import { ProductCard } from '../mypage/ProductCard';
+
+const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
+	const device = useDeviceDetect();
+	const [searchFilter, setSearchFilter] = useState<AgentProductsInquiry>(initialInput);
+	const [sellerProducts, setAgentProducts] = useState<Product[]>([]);
+	const [total, setTotal] = useState<number>(0);
+	const user = useReactiveVar(userVar);
+	const router = useRouter();
+
+	/** APOLLO REQUESTS **/
+	const [updateProduct] = useMutation(UPDATE_PRODUCT);
+
+	const {
+		loading: getSellerProductsLoading,
+		data: getSellerProductsData,
+		error: getSellerProductsError,
+		refetch: getSellerProductsRefetch,
+	} = useQuery(GET_SELLER_PRODUCTS, {
+		fetchPolicy: 'network-only',
+		variables: { input: searchFilter },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setAgentProducts(data?.getSellerProducts?.list);
+			setTotal(data?.getSellerProducts?.metaCounter[0]?.total ?? 0);
+		},
+	});
+
+	/** HANDLERS **/
+	const paginationHandler = (e: T, value: number) => {
+		setSearchFilter({ ...searchFilter, page: value });
+	};
+
+	const changeStatusHandler = (value: ProductStatus) => {
+		setSearchFilter({ ...searchFilter, search: { productStatus: value } });
+	};
+
+	const deleteProductHandler = async (id: string) => {
+		try {
+			if (await sweetConfirmAlert('Are you sure you want to delete this product?')) {
+				await updateProduct({
+					variables: {
+						input: { _id: id, productStatus: 'DELETE' },
+					},
+				});
+				await getSellerProductsRefetch({ input: searchFilter });
+			}
+		} catch (err: any) {
+			await sweetErrorHandling(err);
+		}
+	};
+
+	const updateProductHandler = async (status: string, id: string) => {
+		try {
+			if (await sweetConfirmAlert(`Change status to ${status}?`)) {
+				await updateProduct({
+					variables: {
+						input: { _id: id, productStatus: status },
+					},
+				});
+				await getSellerProductsRefetch({ input: searchFilter });
+			}
+		} catch (err: any) {
+			await sweetErrorHandling(err);
+		}
+	};
+
+	if (user?.memberType !== 'SELLER') {
+		router.back();
+	}
+
+	if (device === 'mobile') {
+		return <div>PETORIA MY PRODUCTS MOBILE</div>;
+	} else {
+		return (
+			<div id="my-products-page">
+				<Stack className="main-title-box">
+					<Stack className="right-box">
+						<Typography className="main-title">My Products</Typography>
+						<Typography className="sub-title">Manage your pet shop listings</Typography>
+					</Stack>
+				</Stack>
+
+				<Stack className="product-list-box">
+					{/* Status Tabs */}
+					<Stack className="tab-name-box">
+						<Typography
+							onClick={() => changeStatusHandler(ProductStatus.ACTIVE)}
+							className={searchFilter.search.productStatus === 'ACTIVE' ? 'active-tab-name' : 'tab-name'}
+						>
+							🟢 Active
+						</Typography>
+						<Typography
+							onClick={() => changeStatusHandler(ProductStatus.SOLD)}
+							className={searchFilter.search.productStatus === 'SOLD' ? 'active-tab-name' : 'tab-name'}
+						>
+							🟡 Sold Out
+						</Typography>
+						<Typography
+							onClick={() => changeStatusHandler(ProductStatus.DELETE)}
+							className={searchFilter.search.productStatus === 'DELETE' ? 'active-tab-name' : 'tab-name'}
+						>
+							🔴 Deleted
+						</Typography>
+					</Stack>
+
+					<Stack className="list-box">
+						{/* Table header */}
+						<Stack className="listing-title-box">
+							<Typography className="title-text">Product</Typography>
+							<Typography className="title-text">Date Added</Typography>
+							<Typography className="title-text">Status</Typography>
+							<Typography className="title-text">Views</Typography>
+							{searchFilter.search.productStatus === 'ACTIVE' && (
+								<Typography className="title-text">Actions</Typography>
+							)}
+						</Stack>
+
+						{sellerProducts?.length === 0 ? (
+							<div className={'no-data'}>
+								<img src="/img/icons/icoAlert.svg" alt="" />
+								<p>No products found!</p>
+							</div>
+						) : (
+							sellerProducts.map((product: Product) => (
+								<ProductCard
+									key={product._id}
+									product={product}
+									deleteProductHandler={deleteProductHandler}
+									updateProductHandler={updateProductHandler}
+								/>
+							))
+						)}
+
+						{sellerProducts.length !== 0 && (
+							<Stack className="pagination-config">
+								<Stack className="pagination-box">
+									<Pagination
+										count={Math.ceil(total / searchFilter.limit)}
+										page={searchFilter.page}
+										shape="circular"
+										color="primary"
+										onChange={paginationHandler}
+									/>
+								</Stack>
+								<Stack className="total-result">
+									<Typography>{total} product(s) available</Typography>
+								</Stack>
+							</Stack>
+						)}
+					</Stack>
+				</Stack>
+			</div>
+		);
+	}
+};
+
+MyProducts.defaultProps = {
+	initialInput: {
+		page: 1,
+		limit: 5,
+		sort: 'createdAt',
+		search: {
+			productStatus: 'ACTIVE',
+		},
+	},
+};
+
+export default MyProducts;

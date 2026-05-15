@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
 import { useQuery, useReactiveVar } from '@apollo/client';
 import { Following } from '../../types/follow/follow';
-import { REACT_APP_API_URL } from '../../config';
+import { API_URL } from '../../config';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { userVar } from '../../../apollo/store';
@@ -25,7 +25,6 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [total, setTotal] = useState<number>(0);
-	const category: any = router.query?.category ?? 'properties';
 	const [followInquiry, setFollowInquiry] = useState<FollowInquiry>(initialInput);
 	const [memberFollowings, setMemberFollowings] = useState<Following[]>([]);
 	const user = useReactiveVar(userVar);
@@ -65,30 +64,33 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR FOLLOWS MOBILE</div>;
+		return <div>PETORIA FOLLOWINGS MOBILE</div>;
 	} else {
 		return (
 			<div id="member-follows-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">{category === 'followers' ? 'Followers' : 'Followings'}</Typography>
+						<Typography className="main-title">Followings 🐾</Typography>
 					</Stack>
 				</Stack>
+
 				<Stack className="follows-list-box">
 					<Stack className="listing-title-box">
-						<Typography className="title-text">Name</Typography>
+						<Typography className="title-text">Member</Typography>
 						<Typography className="title-text">Details</Typography>
-						<Typography className="title-text">Subscription</Typography>
+						<Typography className="title-text">Action</Typography>
 					</Stack>
+
 					{memberFollowings?.length === 0 && (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Followings yet!</p>
+							<p>No followings yet!</p>
 						</div>
 					)}
+
 					{memberFollowings.map((follower: Following) => {
 						const imagePath: string = follower?.followingData?.memberImage
-							? `${REACT_APP_API_URL}/${follower?.followingData?.memberImage}`
+							? `${API_URL}/${follower?.followingData?.memberImage}`
 							: '/img/profile/defaultUser.svg';
 						return (
 							<Stack className="follows-card-box" key={follower._id}>
@@ -100,6 +102,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 										<Typography className="name">{follower?.followingData?.memberNick}</Typography>
 									</Stack>
 								</Stack>
+
 								<Stack className={'details-box'}>
 									<Box className={'info-box'} component={'div'}>
 										<p>Followers</p>
@@ -127,6 +130,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 										<span>({follower?.followingData?.memberLikes})</span>
 									</Box>
 								</Stack>
+
 								{user?._id !== follower?.followingId && (
 									<Stack className="action-box">
 										{follower.meFollowed && follower.meFollowed[0]?.myFollowing ? (
@@ -145,7 +149,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 										) : (
 											<Button
 												variant="contained"
-												sx={{ background: '#60eb60d4', ':hover': { background: '#60eb60d4' } }}
+												sx={{ background: '#4E8A28', ':hover': { background: '#3A6B1E' } }}
 												onClick={() =>
 													subscribeHandler(follower?.followingData?._id, getMemberFollowingsRefetch, followInquiry)
 												}
@@ -159,6 +163,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 						);
 					})}
 				</Stack>
+
 				{memberFollowings.length !== 0 && (
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
@@ -184,9 +189,7 @@ MemberFollowings.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 5,
-		search: {
-			followerId: '',
-		},
+		search: { followerId: '' },
 	},
 };
 

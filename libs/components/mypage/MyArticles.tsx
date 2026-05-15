@@ -22,7 +22,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
 
-	/** **APOLLO REQUESTS** **/
+	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
 	const {
@@ -32,9 +32,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		refetch: boardArticlesRefetch,
 	} = useQuery(GET_BOARD_ARTICLES, {
 		fetchPolicy: 'network-only',
-		variables: {
-			input: searchCommunity,
-		},
+		variables: { input: searchCommunity },
 		notifyOnNetworkStatusChange: true,
 		onCompleted(data: T) {
 			setBoardArticles(data?.getBoardArticles?.list);
@@ -53,14 +51,8 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 			if (!id) return;
 			if (!user?._id) throw new Error(Messages.error2);
 
-			await likeTargetBoardArticle({
-				variables: {
-					input: id,
-				},
-			});
-
+			await likeTargetBoardArticle({ variables: { articleId: id } });
 			await boardArticlesRefetch({ input: searchCommunity });
-
 			await sweetTopSmallSuccessAlert('Success!', 750);
 		} catch (err: any) {
 			console.log('ERROR, likeBoArticleHandler:', err.message);
@@ -69,32 +61,31 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	};
 
 	if (device === 'mobile') {
-		return <>ARTICLE PAGE MOBILE</>;
+		return <>MY ARTICLES MOBILE</>;
 	} else
 		return (
 			<div id="my-articles-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">Article</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
+						<Typography className="main-title">My Articles 📝</Typography>
+						<Typography className="sub-title">Your pet community posts</Typography>
 					</Stack>
 				</Stack>
+
 				<Stack className="article-list-box">
 					{boardArticles?.length > 0 ? (
-						boardArticles?.map((boardArticle: BoardArticle) => {
-							return (
-								<CommunityCard
-									boardArticle={boardArticle}
-									key={boardArticle?._id}
-									size={'small'}
-									likeArticleHandler={likeBoArticleHandler}
-								/>
-							);
-						})
+						boardArticles?.map((boardArticle: BoardArticle) => (
+							<CommunityCard
+								boardArticle={boardArticle}
+								key={boardArticle?._id}
+								size={'small'}
+								likeArticleHandler={likeBoArticleHandler}
+							/>
+						))
 					) : (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Articles found!</p>
+							<p>No articles yet — share your pet story! 🐾</p>
 						</div>
 					)}
 				</Stack>
@@ -111,7 +102,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 							/>
 						</Stack>
 						<Stack className="total">
-							<Typography>Total {totalCount ?? 0} article(s) available</Typography>
+							<Typography>Total {totalCount ?? 0} article(s)</Typography>
 						</Stack>
 					</Stack>
 				)}

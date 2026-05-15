@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
-import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/property/property';
+
+import { Product } from '../../types/product/product';
 import { T } from '../../types/common';
 import { useQuery } from '@apollo/client';
 import { GET_VISITED } from '../../../apollo/user/query';
+import ShopProductCard from '../common/ShopProductCard (1)';
 
-const RecentlyVisited: NextPage = () => {
+const RecentlyViewed: NextPage = () => {
 	const device = useDeviceDetect();
-	const [recentlyVisited, setRecentlyVisited] = useState<Property[]>([]);
+	const [recentlyViewed, setRecentlyViewed] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchVisited, setSearchVisited] = useState<T>({ page: 1, limit: 6 });
 
@@ -22,11 +23,9 @@ const RecentlyVisited: NextPage = () => {
 		refetch: getVisitedRefetch,
 	} = useQuery(GET_VISITED, {
 		fetchPolicy: 'network-only',
-		variables: {
-			input: searchVisited,
-		},
+		variables: { input: searchVisited },
 		onCompleted(data: T) {
-			setRecentlyVisited(data.getVisited?.list);
+			setRecentlyViewed(data.getVisited?.list);
 			setTotal(data.getVisited?.metaCounter?.[0]?.total || 0);
 		},
 	});
@@ -37,29 +36,31 @@ const RecentlyVisited: NextPage = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR MY FAVORITES MOBILE</div>;
+		return <div>PETORIA RECENTLY VIEWED MOBILE</div>;
 	} else {
 		return (
-			<div id="my-favorites-page">
+			<div id="recently-viewed-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">Recently Visited</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
+						<Typography className="main-title">Recently Viewed 👀</Typography>
+						<Typography className="sub-title">Products you've browsed recently</Typography>
 					</Stack>
 				</Stack>
+
 				<Stack className="favorites-list-box">
-					{recentlyVisited?.length ? (
-						recentlyVisited?.map((property: Property) => {
-							return <PropertyCard property={property} recentlyVisited={true} />;
-						})
+					{recentlyViewed?.length ? (
+						recentlyViewed?.map((product: Product) => (
+							<ShopProductCard key={product._id} product={product} recentlyViewed={true} />
+						))
 					) : (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Recently Visited Properties found!</p>
+							<p>No recently viewed products!</p>
 						</div>
 					)}
 				</Stack>
-				{recentlyVisited?.length ? (
+
+				{recentlyViewed?.length ? (
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
 							<Pagination
@@ -72,7 +73,7 @@ const RecentlyVisited: NextPage = () => {
 						</Stack>
 						<Stack className="total-result">
 							<Typography>
-								Total {total} recently visited propert{total > 1 ? 'ies' : 'y'}
+								{total} recently viewed product{total !== 1 ? 's' : ''}
 							</Typography>
 						</Stack>
 					</Stack>
@@ -82,4 +83,4 @@ const RecentlyVisited: NextPage = () => {
 	}
 };
 
-export default RecentlyVisited;
+export default RecentlyViewed;

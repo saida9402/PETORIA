@@ -21,28 +21,18 @@ const Join: NextPage = () => {
 	const [loginView, setLoginView] = useState<boolean>(true);
 
 	/** HANDLERS **/
-	const viewChangeHandler = (state: boolean) => {
-		setLoginView(state);
-	};
+	const viewChangeHandler = (state: boolean) => setLoginView(state);
 
 	const checkUserTypeHandler = (e: any) => {
 		const checked = e.target.checked;
-		if (checked) {
-			const value = e.target.name;
-			handleInput('type', value);
-		} else {
-			handleInput('type', 'USER');
-		}
+		handleInput('type', checked ? e.target.name : 'USER');
 	};
 
 	const handleInput = useCallback((name: any, value: any) => {
-		setInput((prev) => {
-			return { ...prev, [name]: value };
-		});
+		setInput((prev) => ({ ...prev, [name]: value }));
 	}, []);
 
 	const doLogin = useCallback(async () => {
-		console.warn(input);
 		try {
 			await logIn(input.nick, input.password);
 			await router.push(`${router.query.referrer ?? '/'}`);
@@ -52,7 +42,6 @@ const Join: NextPage = () => {
 	}, [input]);
 
 	const doSignUp = useCallback(async () => {
-		console.warn(input);
 		try {
 			await signUp(input.nick, input.password, input.phone, input.type);
 			await router.push(`${router.query.referrer ?? '/'}`);
@@ -60,8 +49,6 @@ const Join: NextPage = () => {
 			await sweetMixinErrorAlert(err.message);
 		}
 	}, [input]);
-
-	console.log('+input: ', input);
 
 	if (device === 'mobile') {
 		return <div>LOGIN MOBILE</div>;
@@ -71,15 +58,17 @@ const Join: NextPage = () => {
 				<Stack className={'container'}>
 					<Stack className={'main'}>
 						<Stack className={'left'}>
-							{/* @ts-ignore */}
+							{/* Logo */}
 							<Box className={'logo'}>
-								<img src="/img/logo/logoText.svg" alt="" />
-								<span>Nestar</span>
+								<img src="/img/logo/petoriaLogoText.svg" alt="Petoria" />
+								<span>Petoria 🐾</span>
 							</Box>
+
 							<Box className={'info'}>
-								<span>{loginView ? 'login' : 'signup'}</span>
-								<p>{loginView ? 'Login' : 'Sign'} in with this account across the following sites.</p>
+								<span>{loginView ? 'Welcome back!' : 'Join Petoria'}</span>
+								<p>{loginView ? 'Login to your pet lover account.' : 'Create your Petoria account today.'}</p>
 							</Box>
+
 							<Box className={'input-wrap'}>
 								<div className={'input-box'}>
 									<span>Nickname</span>
@@ -87,23 +76,23 @@ const Join: NextPage = () => {
 										type="text"
 										placeholder={'Enter Nickname'}
 										onChange={(e) => handleInput('nick', e.target.value)}
-										required={true}
+										required
 										onKeyDown={(event) => {
-											if (event.key == 'Enter' && loginView) doLogin();
-											if (event.key == 'Enter' && !loginView) doSignUp();
+											if (event.key === 'Enter' && loginView) doLogin();
+											if (event.key === 'Enter' && !loginView) doSignUp();
 										}}
 									/>
 								</div>
 								<div className={'input-box'}>
 									<span>Password</span>
 									<input
-										type="text"
+										type="password"
 										placeholder={'Enter Password'}
 										onChange={(e) => handleInput('password', e.target.value)}
-										required={true}
+										required
 										onKeyDown={(event) => {
-											if (event.key == 'Enter' && loginView) doLogin();
-											if (event.key == 'Enter' && !loginView) doSignUp();
+											if (event.key === 'Enter' && loginView) doLogin();
+											if (event.key === 'Enter' && !loginView) doSignUp();
 										}}
 									/>
 								</div>
@@ -112,20 +101,21 @@ const Join: NextPage = () => {
 										<span>Phone</span>
 										<input
 											type="text"
-											placeholder={'Enter Phone'}
+											placeholder={'Enter Phone Number'}
 											onChange={(e) => handleInput('phone', e.target.value)}
-											required={true}
+											required
 											onKeyDown={(event) => {
-												if (event.key == 'Enter') doSignUp();
+												if (event.key === 'Enter') doSignUp();
 											}}
 										/>
 									</div>
 								)}
 							</Box>
+
 							<Box className={'register'}>
 								{!loginView && (
 									<div className={'type-option'}>
-										<span className={'text'}>I want to be registered as:</span>
+										<span className={'text'}>I want to register as:</span>
 										<div>
 											<FormGroup>
 												<FormControlLabel
@@ -134,10 +124,10 @@ const Join: NextPage = () => {
 															size="small"
 															name={'USER'}
 															onChange={checkUserTypeHandler}
-															checked={input?.type == 'USER'}
+															checked={input?.type === 'USER'}
 														/>
 													}
-													label="User"
+													label="🐾 Pet Lover (User)"
 												/>
 											</FormGroup>
 											<FormGroup>
@@ -145,12 +135,12 @@ const Join: NextPage = () => {
 													control={
 														<Checkbox
 															size="small"
-															name={'AGENT'}
+															name={'SELLER'}
 															onChange={checkUserTypeHandler}
-															checked={input?.type == 'AGENT'}
+															checked={input?.type === 'SELLER'}
 														/>
 													}
-													label="Agent"
+													label="🛍 Pet Shop (Seller)"
 												/>
 											</FormGroup>
 										</div>
@@ -162,7 +152,7 @@ const Join: NextPage = () => {
 										<FormGroup>
 											<FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Remember me" />
 										</FormGroup>
-										<a>Lost your password?</a>
+										<a>Forgot password?</a>
 									</div>
 								)}
 
@@ -170,7 +160,7 @@ const Join: NextPage = () => {
 									<Button
 										variant="contained"
 										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
-										disabled={input.nick == '' || input.password == ''}
+										disabled={input.nick === '' || input.password === ''}
 										onClick={doLogin}
 									>
 										LOGIN
@@ -178,35 +168,30 @@ const Join: NextPage = () => {
 								) : (
 									<Button
 										variant="contained"
-										disabled={input.nick == '' || input.password == '' || input.phone == '' || input.type == ''}
+										disabled={!input.nick || !input.password || !input.phone || !input.type}
 										onClick={doSignUp}
 										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
 									>
-										SIGNUP
+										SIGN UP
 									</Button>
 								)}
 							</Box>
+
 							<Box className={'ask-info'}>
 								{loginView ? (
 									<p>
-										Not registered yet?
-										<b
-											onClick={() => {
-												viewChangeHandler(false);
-											}}
-										>
-											SIGNUP
-										</b>
+										New to Petoria?{' '}
+										<b onClick={() => viewChangeHandler(false)}>CREATE ACCOUNT</b>
 									</p>
 								) : (
 									<p>
-										Have account?
-										<b onClick={() => viewChangeHandler(true)}> LOGIN</b>
+										Already have an account?{' '}
+										<b onClick={() => viewChangeHandler(true)}>LOGIN</b>
 									</p>
 								)}
 							</Box>
 						</Stack>
-						<Stack className={'right'}></Stack>
+						<Stack className={'right'} />
 					</Stack>
 				</Stack>
 			</Stack>

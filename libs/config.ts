@@ -21,7 +21,7 @@ export const Messages = {
 	error5: 'Only images with jpeg, jpg, png format allowed!',
 };
 
-export const topPropertyRank = 3;
+export const topProductRank = 3;
 
 export const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
 	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },

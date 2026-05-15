@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Comment } from '../../types/comment/comment';
-import { REACT_APP_API_URL } from '../../config';
+import { API_URL } from '../../config';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
@@ -17,9 +17,8 @@ const Review = (props: ReviewProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
-	const [value, setValue] = React.useState<number | null>(2);
 	const imagePath: string = comment?.memberData?.memberImage
-		? `${REACT_APP_API_URL}/${comment?.memberData?.memberImage}`
+		? `${API_URL}/${comment?.memberData?.memberImage}`
 		: '/img/profile/defaultUser.svg';
 
 	/** HANDLERS **/
@@ -27,8 +26,9 @@ const Review = (props: ReviewProps) => {
 		if (id === user?._id) router.push('/mypage');
 		else router.push(`/member?memberId=${id}`);
 	};
+
 	if (device === 'mobile') {
-		return <div>REVIEW</div>;
+		return <div>REVIEW MOBILE</div>;
 	} else {
 		return (
 			<Stack className={'review-config'}>
@@ -36,7 +36,10 @@ const Review = (props: ReviewProps) => {
 					<Stack className={'img-name-box'}>
 						<img src={imagePath} alt="" className={'img-box'} />
 						<Stack>
-							<Typography className={'name'} onClick={() => goMemberPage(comment?.memberData?._id as string)}>
+							<Typography
+								className={'name'}
+								onClick={() => goMemberPage(comment?.memberData?._id as string)}
+							>
 								{comment.memberData?.memberNick}
 							</Typography>
 							<Typography className={'date'}>

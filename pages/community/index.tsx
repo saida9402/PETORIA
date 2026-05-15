@@ -33,7 +33,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const [totalCount, setTotalCount] = useState<number>(0);
 	if (articleCategory) initialInput.search.articleCategory = articleCategory;
 
-	/** ** APOLLO REQUESTS ** **/
+	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
 	const {
@@ -43,9 +43,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		refetch: boardArticlesRefetch,
 	} = useQuery(GET_BOARD_ARTICLES, {
 		fetchPolicy: 'cache-and-network',
-		variables: {
-			input: searchCommunity,
-		},
+		variables: { input: searchCommunity },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			setBoardArticles(data?.getBoardArticles?.list);
@@ -55,30 +53,19 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (!query?.articleCategory)
-			router.push(
-				{
-					pathname: router.pathname,
-					query: { articleCategory: 'FREE' },
-				},
-				router.pathname,
-				{ shallow: true },
-			);
+		if (!query?.articleCategory) {
+			router.push({ pathname: router.pathname, query: { articleCategory: 'FREE' } }, router.pathname, {
+				shallow: true,
+			});
+		}
 	}, []);
 
 	/** HANDLERS **/
 	const tabChangeHandler = async (e: T, value: string) => {
-		console.log(value);
-
 		setSearchCommunity({ ...searchCommunity, page: 1, search: { articleCategory: value as BoardArticleCategory } });
-		await router.push(
-			{
-				pathname: '/community',
-				query: { articleCategory: value },
-			},
-			router.pathname,
-			{ shallow: true },
-		);
+		await router.push({ pathname: '/community', query: { articleCategory: value } }, router.pathname, {
+			shallow: true,
+		});
 	};
 
 	const paginationHandler = (e: T, value: number) => {
@@ -91,16 +78,11 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
-			await likeTargetBoardArticle({
-				variables: {
-					input: id,
-				},
-			});
-
+			await likeTargetBoardArticle({ variables: { articleId: id } });
 			await boardArticlesRefetch({ input: searchCommunity });
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR, likePropertyHandler:', err.message);
+			console.log('ERROR, likeArticleHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
@@ -115,146 +97,78 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 						<Stack className="main-box">
 							<Stack className="left-config">
 								<Stack className={'image-info'}>
-									<img src={'/img/logo/logoText.svg'} />
+									<img src={'/img/logo/petoriaLogoText.svg'} alt="Petoria" />
 									<Stack className={'community-name'}>
-										<Typography className={'name'}>Nestar Community</Typography>
+										<Typography className={'name'}>🐾 Petoria Community</Typography>
 									</Stack>
 								</Stack>
 
 								<TabList
 									orientation="vertical"
-									aria-label="lab API tabs example"
-									TabIndicatorProps={{
-										style: { display: 'none' },
-									}}
+									aria-label="community tabs"
+									TabIndicatorProps={{ style: { display: 'none' } }}
 									onChange={tabChangeHandler}
 								>
 									<Tab
 										value={'FREE'}
-										label={'Free Board'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'FREE' ? 'active' : ''}`}
+										label={'🐾 Free Board'}
+										className={`tab-button ${searchCommunity.search.articleCategory === 'FREE' ? 'active' : ''}`}
 									/>
 									<Tab
 										value={'RECOMMEND'}
-										label={'Recommendation'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'RECOMMEND' ? 'active' : ''}`}
+										label={'⭐ Recommendations'}
+										className={`tab-button ${searchCommunity.search.articleCategory === 'RECOMMEND' ? 'active' : ''}`}
 									/>
 									<Tab
 										value={'NEWS'}
-										label={'News'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'NEWS' ? 'active' : ''}`}
+										label={'📰 Pet News'}
+										className={`tab-button ${searchCommunity.search.articleCategory === 'NEWS' ? 'active' : ''}`}
 									/>
 									<Tab
 										value={'HUMOR'}
-										label={'Humor'}
-										className={`tab-button ${searchCommunity.search.articleCategory == 'HUMOR' ? 'active' : ''}`}
+										label={'😄 Humor'}
+										className={`tab-button ${searchCommunity.search.articleCategory === 'HUMOR' ? 'active' : ''}`}
 									/>
 								</TabList>
 							</Stack>
+
 							<Stack className="right-config">
 								<Stack className="panel-config">
 									<Stack className="title-box">
 										<Stack className="left">
 											<Typography className="title">{searchCommunity.search.articleCategory} BOARD</Typography>
 											<Typography className="sub-title">
-												Express your opinions freely here without content restrictions
+												Share your pet stories, tips, and experiences with the Petoria community!
 											</Typography>
 										</Stack>
 										<Button
-											onClick={() =>
-												router.push({
-													pathname: '/mypage',
-													query: {
-														category: 'writeArticle',
-													},
-												})
-											}
+											onClick={() => router.push({ pathname: '/mypage', query: { category: 'writeArticle' } })}
 											className="right"
 										>
-											Write
+											✍️ Write
 										</Button>
 									</Stack>
 
-									<TabPanel value="FREE">
-										<Stack className="list-box">
-											{totalCount ? (
-												boardArticles?.map((boardArticle: BoardArticle) => {
-													return (
+									{['FREE', 'RECOMMEND', 'NEWS', 'HUMOR'].map((cat) => (
+										<TabPanel key={cat} value={cat}>
+											<Stack className="list-box">
+												{totalCount ? (
+													boardArticles?.map((boardArticle: BoardArticle) => (
 														<CommunityCard
 															boardArticle={boardArticle}
 															key={boardArticle?._id}
 															likeArticleHandler={likeArticleHandler}
 														/>
-													);
-												})
-											) : (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											)}
-										</Stack>
-									</TabPanel>
-									<TabPanel value="RECOMMEND">
-										<Stack className="list-box">
-											{totalCount ? (
-												boardArticles?.map((boardArticle: BoardArticle) => {
-													return (
-														<CommunityCard
-															boardArticle={boardArticle}
-															key={boardArticle?._id}
-															likeArticleHandler={likeArticleHandler}
-														/>
-													);
-												})
-											) : (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											)}
-										</Stack>
-									</TabPanel>
-									<TabPanel value="NEWS">
-										<Stack className="list-box">
-											{totalCount ? (
-												boardArticles?.map((boardArticle: BoardArticle) => {
-													return (
-														<CommunityCard
-															boardArticle={boardArticle}
-															key={boardArticle?._id}
-															likeArticleHandler={likeArticleHandler}
-														/>
-													);
-												})
-											) : (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											)}
-										</Stack>
-									</TabPanel>
-									<TabPanel value="HUMOR">
-										<Stack className="list-box">
-											{totalCount ? (
-												boardArticles?.map((boardArticle: BoardArticle) => {
-													return (
-														<CommunityCard
-															boardArticle={boardArticle}
-															key={boardArticle?._id}
-															likeArticleHandler={likeArticleHandler}
-														/>
-													);
-												})
-											) : (
-												<Stack className={'no-data'}>
-													<img src="/img/icons/icoAlert.svg" alt="" />
-													<p>No Article found!</p>
-												</Stack>
-											)}
-										</Stack>
-									</TabPanel>
+													))
+												) : (
+													<Stack className={'no-data'}>
+														<img src="/img/icons/icoAlert.svg" alt="" />
+														<p>No articles found!</p>
+													</Stack>
+												)}
+											</Stack>
+										</TabPanel>
+									))}
 								</Stack>
 							</Stack>
 						</Stack>
@@ -290,9 +204,7 @@ Community.defaultProps = {
 		limit: 6,
 		sort: 'createdAt',
 		direction: 'ASC',
-		search: {
-			articleCategory: 'FREE',
-		},
+		search: { articleCategory: 'FREE' },
 	},
 };
 

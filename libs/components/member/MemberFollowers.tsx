@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
 import { useQuery, useReactiveVar } from '@apollo/client';
 import { Follower } from '../../types/follow/follow';
-import { REACT_APP_API_URL } from '../../config';
+import { API_URL } from '../../config';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { userVar } from '../../../apollo/store';
@@ -25,7 +25,6 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [total, setTotal] = useState<number>(0);
-	const category: any = router.query?.category ?? 'properties';
 	const [followInquiry, setFollowInquiry] = useState<FollowInquiry>(initialInput);
 	const [memberFollowers, setMemberFollowers] = useState<Follower[]>([]);
 	const user = useReactiveVar(userVar);
@@ -65,30 +64,33 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR FOLLOWS MOBILE</div>;
+		return <div>PETORIA FOLLOWERS MOBILE</div>;
 	} else {
 		return (
 			<div id="member-follows-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">{category === 'followers' ? 'Followers' : 'Followings'}</Typography>
+						<Typography className="main-title">Followers 🐾</Typography>
 					</Stack>
 				</Stack>
+
 				<Stack className="follows-list-box">
 					<Stack className="listing-title-box">
-						<Typography className="title-text">Name</Typography>
+						<Typography className="title-text">Member</Typography>
 						<Typography className="title-text">Details</Typography>
-						<Typography className="title-text">Subscription</Typography>
+						<Typography className="title-text">Action</Typography>
 					</Stack>
+
 					{memberFollowers?.length === 0 && (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Followers yet!</p>
+							<p>No followers yet!</p>
 						</div>
 					)}
+
 					{memberFollowers.map((follower: Follower) => {
 						const imagePath: string = follower?.followerData?.memberImage
-							? `${REACT_APP_API_URL}/${follower?.followerData?.memberImage}`
+							? `${API_URL}/${follower?.followerData?.memberImage}`
 							: '/img/profile/defaultUser.svg';
 						return (
 							<Stack className="follows-card-box" key={follower._id}>
@@ -100,6 +102,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 										<Typography className="name">{follower?.followerData?.memberNick}</Typography>
 									</Stack>
 								</Stack>
+
 								<Stack className={'details-box'}>
 									<Box className={'info-box'} component={'div'}>
 										<p>Followers</p>
@@ -127,6 +130,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 										<span>({follower?.followerData?.memberLikes})</span>
 									</Box>
 								</Stack>
+
 								{user?._id !== follower?.followerId && (
 									<Stack className="action-box">
 										{follower.meFollowed && follower.meFollowed[0]?.myFollowing ? (
@@ -134,7 +138,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 												<Typography>Following</Typography>
 												<Button
 													variant="outlined"
-													sx={{ background: '#ed5858', ':hover': { background: '#ee7171' } }}
+													sx={{ background: '#f78181', ':hover': { background: '#f06363' } }}
 													onClick={() =>
 														unsubscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)
 													}
@@ -145,7 +149,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 										) : (
 											<Button
 												variant="contained"
-												sx={{ background: '#60eb60d4', ':hover': { background: '#60eb60d4' } }}
+												sx={{ background: '#4E8A28', ':hover': { background: '#3A6B1E' } }}
 												onClick={() =>
 													subscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)
 												}
@@ -159,6 +163,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 						);
 					})}
 				</Stack>
+
 				{memberFollowers.length !== 0 && (
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
@@ -184,9 +189,7 @@ MemberFollowers.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 5,
-		search: {
-			followingId: '',
-		},
+		search: { followingId: '' },
 	},
 };
 

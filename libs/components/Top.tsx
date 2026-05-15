@@ -13,10 +13,11 @@ import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
-import { REACT_APP_API_URL } from '../config';
+import { API_URL } from '../config';
 
 const Top = () => {
 	const device = useDeviceDetect();
@@ -28,7 +29,6 @@ const Top = () => {
 	const drop = Boolean(anchorEl2);
 	const [colorChange, setColorChange] = useState(false);
 	const [anchorEl, setAnchorEl] = React.useState<any | HTMLElement>(null);
-	let open = Boolean(anchorEl);
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(null);
 	const logoutOpen = Boolean(logoutAnchor);
@@ -45,10 +45,11 @@ const Top = () => {
 
 	useEffect(() => {
 		switch (router.pathname) {
-			case '/property/detail':
+			case '/shop/detail':
 				setBgColor(true);
 				break;
 			default:
+				setBgColor(false);
 				break;
 		}
 	}, [router]);
@@ -59,13 +60,8 @@ const Top = () => {
 	}, []);
 
 	/** HANDLERS **/
-	const langClick = (e: any) => {
-		setAnchorEl2(e.currentTarget);
-	};
-
-	const langClose = () => {
-		setAnchorEl2(null);
-	};
+	const langClick = (e: any) => setAnchorEl2(e.currentTarget);
+	const langClose = () => setAnchorEl2(null);
 
 	const langChoice = useCallback(
 		async (e: any) => {
@@ -78,36 +74,15 @@ const Top = () => {
 	);
 
 	const changeNavbarColor = () => {
-		if (window.scrollY >= 50) {
-			setColorChange(true);
-		} else {
-			setColorChange(false);
-		}
-	};
-
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
-
-	const handleHover = (event: any) => {
-		if (anchorEl !== event.currentTarget) {
-			setAnchorEl(event.currentTarget);
-		} else {
-			setAnchorEl(null);
-		}
+		if (window.scrollY >= 50) setColorChange(true);
+		else setColorChange(false);
 	};
 
 	const StyledMenu = styled((props: MenuProps) => (
 		<Menu
 			elevation={0}
-			anchorOrigin={{
-				vertical: 'bottom',
-				horizontal: 'right',
-			}}
-			transformOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
+			anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 			{...props}
 		/>
 	))(({ theme }) => ({
@@ -118,10 +93,8 @@ const Top = () => {
 			minWidth: 160,
 			color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
 			boxShadow:
-				'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-			'& .MuiMenu-list': {
-				padding: '4px 0',
-			},
+				'rgb(255,255,255) 0px 0px 0px 0px, rgba(0,0,0,0.05) 0px 0px 0px 1px, rgba(0,0,0,0.1) 0px 10px 15px -3px, rgba(0,0,0,0.05) 0px 4px 6px -2px',
+			'& .MuiMenu-list': { padding: '4px 0' },
 			'& .MuiMenuItem-root': {
 				'& .MuiSvgIcon-root': {
 					fontSize: 18,
@@ -139,24 +112,14 @@ const Top = () => {
 		window.addEventListener('scroll', changeNavbarColor);
 	}
 
-	if (device == 'mobile') {
+	if (device === 'mobile') {
 		return (
 			<Stack className={'top'}>
-				<Link href={'/'}>
-					<div>{t('Home')}</div>
-				</Link>
-				<Link href={'/property'}>
-					<div>{t('Properties')}</div>
-				</Link>
-				<Link href={'/agent'}>
-					<div> {t('Agents')} </div>
-				</Link>
-				<Link href={'/community?articleCategory=FREE'}>
-					<div> {t('Community')} </div>
-				</Link>
-				<Link href={'/cs'}>
-					<div> {t('CS')} </div>
-				</Link>
+				<Link href={'/'}><div>🏠 {t('Home')}</div></Link>
+				<Link href={'/shop'}><div>🛍 {t('Shop')}</div></Link>
+				<Link href={'/vet'}><div>🩺 {t('Vets')}</div></Link>
+				<Link href={'/community?articleCategory=FREE'}><div>🐾 {t('Community')}</div></Link>
+				<Link href={'/cs'}><div>💬 {t('CS')}</div></Link>
 			</Stack>
 		);
 	} else {
@@ -164,41 +127,42 @@ const Top = () => {
 			<Stack className={'navbar'}>
 				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}>
 					<Stack className={'container'}>
+						{/* Logo */}
 						<Box component={'div'} className={'logo-box'}>
 							<Link href={'/'}>
-								<img src="/img/logo/logoWhite.svg" alt="" />
+								<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" />
 							</Link>
 						</Box>
+
+						{/* Nav links */}
 						<Box component={'div'} className={'router-box'}>
-							<Link href={'/'}>
-								<div>{t('Home')}</div>
-							</Link>
-							<Link href={'/property'}>
-								<div>{t('Properties')}</div>
-							</Link>
-							<Link href={'/agent'}>
-								<div> {t('Agents')} </div>
-							</Link>
-							<Link href={'/community?articleCategory=FREE'}>
-								<div> {t('Community')} </div>
-							</Link>
+							<Link href={'/'}><div>{t('Home')}</div></Link>
+							<Link href={'/shop'}><div>{t('Shop')}</div></Link>
+							<Link href={'/vet'}><div>{t('Vets')}</div></Link>
+							<Link href={'/community?articleCategory=FREE'}><div>{t('Community')}</div></Link>
 							{user?._id && (
-								<Link href={'/mypage'}>
-									<div> {t('My Page')} </div>
-								</Link>
+								<Link href={'/mypage'}><div>{t('My Page')}</div></Link>
 							)}
-							<Link href={'/cs'}>
-								<div> {t('CS')} </div>
-							</Link>
+							<Link href={'/cs'}><div>{t('CS')}</div></Link>
 						</Box>
+
+						{/* User box */}
 						<Box component={'div'} className={'user-box'}>
+							{/* Cart icon */}
+							<Link href={'/cart'}>
+								<div className={'cart-icon-box'}>
+									<ShoppingCartOutlinedIcon />
+								</div>
+							</Link>
+
 							{user?._id ? (
 								<>
-									<div className={'login-user'} onClick={(event: any) => setLogoutAnchor(event.currentTarget)}>
+									<div
+										className={'login-user'}
+										onClick={(event: any) => setLogoutAnchor(event.currentTarget)}
+									>
 										<img
-											src={
-												user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'
-											}
+											src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
 											alt=""
 										/>
 									</div>
@@ -207,13 +171,14 @@ const Top = () => {
 										id="basic-menu"
 										anchorEl={logoutAnchor}
 										open={logoutOpen}
-										onClose={() => {
-											setLogoutAnchor(null);
-										}}
+										onClose={() => setLogoutAnchor(null)}
 										sx={{ mt: '5px' }}
 									>
+										<MenuItem onClick={() => router.push('/mypage')}>
+											🐾 My Page
+										</MenuItem>
 										<MenuItem onClick={() => logOut()}>
-											<Logout fontSize="small" style={{ color: 'blue', marginRight: '10px' }} />
+											<Logout fontSize="small" style={{ color: '#4E8A28', marginRight: '10px' }} />
 											Logout
 										</MenuItem>
 									</Menu>
@@ -222,13 +187,12 @@ const Top = () => {
 								<Link href={'/account/join'}>
 									<div className={'join-box'}>
 										<AccountCircleOutlinedIcon />
-										<span>
-											{t('Login')} / {t('Register')}
-										</span>
+										<span>{t('Login')} / {t('Register')}</span>
 									</div>
 								</Link>
 							)}
 
+							{/* Language + Notifications */}
 							<div className={'lan-box'}>
 								{user?._id && <NotificationsOutlinedIcon className={'notification-icon'} />}
 								<Button
@@ -239,42 +203,24 @@ const Top = () => {
 								>
 									<Box component={'div'} className={'flag'}>
 										{lang !== null ? (
-											<img src={`/img/flag/lang${lang}.png`} alt={'usaFlag'} />
+											<img src={`/img/flag/lang${lang}.png`} alt={'flag'} />
 										) : (
-											<img src={`/img/flag/langen.png`} alt={'usaFlag'} />
+											<img src={`/img/flag/langen.png`} alt={'flag'} />
 										)}
 									</Box>
 								</Button>
 
 								<StyledMenu anchorEl={anchorEl2} open={drop} onClose={langClose} sx={{ position: 'absolute' }}>
 									<MenuItem disableRipple onClick={langChoice} id="en">
-										<img
-											className="img-flag"
-											src={'/img/flag/langen.png'}
-											onClick={langChoice}
-											id="en"
-											alt={'usaFlag'}
-										/>
+										<img className="img-flag" src={'/img/flag/langen.png'} onClick={langChoice} id="en" alt={'en'} />
 										{t('English')}
 									</MenuItem>
 									<MenuItem disableRipple onClick={langChoice} id="kr">
-										<img
-											className="img-flag"
-											src={'/img/flag/langkr.png'}
-											onClick={langChoice}
-											id="uz"
-											alt={'koreanFlag'}
-										/>
+										<img className="img-flag" src={'/img/flag/langkr.png'} onClick={langChoice} id="kr" alt={'kr'} />
 										{t('Korean')}
 									</MenuItem>
 									<MenuItem disableRipple onClick={langChoice} id="ru">
-										<img
-											className="img-flag"
-											src={'/img/flag/langru.png'}
-											onClick={langChoice}
-											id="ru"
-											alt={'russiaFlag'}
-										/>
+										<img className="img-flag" src={'/img/flag/langru.png'} onClick={langChoice} id="ru" alt={'ru'} />
 										{t('Russian')}
 									</MenuItem>
 								</StyledMenu>

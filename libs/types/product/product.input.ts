@@ -45,3 +45,17 @@ export interface AgentProductsInquiry {
 		productStatus?: ProductStatus;
 	};
 }
+
+export interface AllProductsInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
+	search: {
+		productStatus?: ProductStatus;
+		productType?: ProductType;
+		typeList?: ProductType[];
+		memberId?: string;
+		text?: string;
+	};
+}

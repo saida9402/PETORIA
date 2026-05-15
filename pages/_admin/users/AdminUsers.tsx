@@ -32,7 +32,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchText, setSearchText] = useState('');
 	const [searchType, setSearchType] = useState('ALL');
 
-	/* APOLLO REQUESTS */
+	/** APOLLO REQUESTS **/
 	const [updateMemberByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
 
 	const {
@@ -50,12 +50,12 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 		},
 	});
 
-	/* LIFECYCLES */
+	/** LIFECYCLES **/
 	useEffect(() => {
 		getAllMembersRefetch({ input: membersInquiry }).then();
 	}, [membersInquiry]);
 
-	/* HANDLERS */
+	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
 		membersInquiry.page = newPage + 1;
 		await getAllMembersRefetch({ input: membersInquiry });
@@ -82,7 +82,6 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const tabChangeHandler = async (event: any, newValue: string) => {
 		setValue(newValue);
 		setSearchText('');
-
 		setMembersInquiry({ ...membersInquiry, page: 1, sort: 'createdAt' });
 
 		switch (newValue) {
@@ -105,11 +104,8 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const updateMemberHandler = async (updateData: MemberUpdate) => {
 		try {
 			await updateMemberByAdmin({
-				variables: {
-					input: updateData,
-				},
+				variables: { input: updateData },
 			});
-
 			menuIconCloseHandler();
 			await getAllMembersRefetch({ input: membersInquiry });
 		} catch (err: any) {
@@ -129,10 +125,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 		try {
 			setMembersInquiry({
 				...membersInquiry,
-				search: {
-					...membersInquiry.search,
-					text: searchText,
-				},
+				search: { ...membersInquiry.search, text: searchText },
 			});
 		} catch (err: any) {
 			console.log('searchTextHandler: ', err.message);
@@ -142,16 +135,12 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const searchTypeHandler = async (newValue: string) => {
 		try {
 			setSearchType(newValue);
-
 			if (newValue !== 'ALL') {
 				setMembersInquiry({
 					...membersInquiry,
 					page: 1,
 					sort: 'createdAt',
-					search: {
-						...membersInquiry.search,
-						memberType: newValue as MemberType,
-					},
+					search: { ...membersInquiry.search, memberType: newValue as MemberType },
 				});
 			} else {
 				delete membersInquiry?.search?.memberType;
@@ -208,9 +197,9 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									onChange={(e: any) => textHandler(e.target.value)}
 									sx={{ width: '100%' }}
 									className={'search'}
-									placeholder="Search user name"
+									placeholder="Search member name"
 									onKeyDown={(event) => {
-										if (event.key == 'Enter') searchTextHandler();
+										if (event.key === 'Enter') searchTextHandler();
 									}}
 									endAdornment={
 										<>
@@ -221,16 +210,13 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 														setSearchText('');
 														setMembersInquiry({
 															...membersInquiry,
-															search: {
-																...membersInquiry.search,
-																text: '',
-															},
+															search: { ...membersInquiry.search, text: '' },
 														});
 														await getAllMembersRefetch({ input: membersInquiry });
 													}}
 												/>
 											)}
-											<InputAdornment position="end" onClick={() => searchTextHandler()}>
+											<InputAdornment position="end" onClick={searchTextHandler}>
 												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
 											</InputAdornment>
 										</>
@@ -243,8 +229,8 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									<MenuItem value={'USER'} onClick={() => searchTypeHandler('USER')}>
 										User
 									</MenuItem>
-									<MenuItem value={'AGENT'} onClick={() => searchTypeHandler('AGENT')}>
-										Agent
+									<MenuItem value={'SELLER'} onClick={() => searchTypeHandler('SELLER')}>
+										Seller
 									</MenuItem>
 									<MenuItem value={'ADMIN'} onClick={() => searchTypeHandler('ADMIN')}>
 										Admin
@@ -253,6 +239,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 							</Stack>
 							<Divider />
 						</Box>
+
 						<MemberPanelList
 							members={members}
 							anchorEl={anchorEl}
