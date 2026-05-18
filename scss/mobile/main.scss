@@ -1,6 +1,91 @@
 @import '/scss/variables.scss';
 
 #mobile-wrap {
+  .top.mobile-top {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 60px;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background: rgba(20, 40, 10, 0.95);
+    backdrop-filter: blur(10px);
+
+    .mobile-logo {
+      width: 110px;
+      height: auto;
+    }
+
+    .mobile-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .cart-badge {
+        .MuiBadge-badge {
+          background: #4E8A28;
+          color: #fff;
+          font-size: 9px;
+          min-width: 14px;
+          height: 14px;
+        }
+      }
+    }
+  }
+
+  .mobile-drawer {
+    width: 280px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0e1a08;
+
+    .drawer-header {
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      background: #2D5016;
+
+      img {
+        width: 110px;
+        height: auto;
+      }
+
+      button { color: #A8CC7A; }
+    }
+
+    .MuiList-root {
+      flex: 1;
+      padding-top: 8px;
+
+      .MuiListItemButton-root {
+        color: #d4e8c0;
+        font-family: $font;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+
+        &:hover {
+          background: rgba(78, 138, 40, 0.15);
+          color: #A8CC7A;
+        }
+      }
+    }
+
+    .drawer-auth {
+      padding: 20px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+  }
+
   .top {
     height: 100px;
     display: flex;
@@ -746,111 +831,55 @@
   }
 
   #footer {
-    position: relative;
-    padding: 60px 0px 18px 0px;
     width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: row;
-    background: #181a20;
+    background: #0e1a08;
+
     .footer-container {
-      padding: 0 10px;
-      margin: 0 auto;
-      width: 1300px;
-      height: auto;
-      .main {
+      display: flex;
+      flex-direction: column;
+
+      .footer-brand {
+        padding: 36px 20px 24px;
         display: flex;
         flex-direction: column;
-        .left {
-          height: 360px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          .footer-box {
-            display: flex;
-            flex-direction: column;
-            .logo {
-              width: 128px;
-              height: 52px;
-              cursor: pointer;
-            }
-            span {
-              color: #bebdbd;
-              font-family: $font;
-              font-size: 14px;
-              font-style: normal;
-              font-weight: 400;
-              text-transform: capitalize;
-            }
-            p {
-              color: #fff;
-              font-family: $font;
-              font-size: 15px;
-              font-style: normal;
-              font-weight: 600;
-              line-height: normal;
-              text-transform: capitalize;
-            }
-            .media-box {
-              margin-top: 12px;
-              color: #929495;
-              svg {
-                font-size: 32px;
-                margin-right: 22px;
-                cursor: pointer;
-              }
-            }
-          }
+        align-items: center;
+        gap: 12px;
+        text-align: center;
+
+        .footer-logo {
+          width: 110px;
+          height: auto;
         }
-        .right {
+
+        .footer-tagline {
+          color: #A8CC7A;
+          font-family: $font;
+          font-size: 13px;
+        }
+
+        .social-icons {
           display: flex;
-          flex-direction: column;
-          .bottom {
-            margin-top: 60px;
+          flex-direction: row;
+          gap: 16px;
+          margin-top: 4px;
+
+          .social-icon {
+            color: #5a7a42;
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            div {
-              display: flex;
-              flex-direction: column;
-              strong {
-                margin-bottom: 3px;
-                color: #fff;
-                font-family: $font;
-                font-size: 15px;
-                font-style: normal;
-                font-weight: 600;
-                line-height: normal;
-                text-transform: capitalize;
-              }
-              span {
-                margin-top: 25px;
-                color: #bebdbd;
-                font-family: $font;
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                cursor: pointer;
-              }
-            }
+            svg { font-size: 22px; }
           }
         }
       }
-      .second {
-        margin-top: 60px;
-        height: 45px;
-        border-top: 1px solid #212329;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-end;
+
+      .footer-bottom {
+        padding: 16px 20px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        text-align: center;
+
         span {
-          color: #bebdbd;
+          color: #4a6b38;
           font-family: $font;
-          font-size: 14px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: normal;
+          font-size: 12px;
         }
       }
     }

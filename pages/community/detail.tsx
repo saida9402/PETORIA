@@ -39,7 +39,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
+const CommunityDetail: NextPage = ({ initialInput }: T) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
@@ -57,9 +57,8 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		...initialInput,
 	});
 	const [memberImage, setMemberImage] = useState<string>('/img/community/articleImg.png');
-	const [anchorEl, setAnchorEl] = useState<any | null>(null);
+	const [anchorEl] = useState<any | null>(null);
 	const open = Boolean(anchorEl);
-	const id = open ? 'simple-popover' : undefined;
 	const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
 	const [updatedComment, setUpdatedComment] = useState<string>('');
 	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
@@ -72,9 +71,6 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const [updateComment] = useMutation(UPDATE_COMMENT);
 
 	const {
-		loading: boardArticleLoading,
-		data: boardArticleData,
-		error: getBoardArticleError,
 		refetch: boardArticleRefetch,
 	} = useQuery(GET_BOARD_ARTICLE, {
 		fetchPolicy: 'network-only',
@@ -91,9 +87,6 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	});
 
 	const {
-		loading: getCommentsLoading,
-		data: getCommentsData,
-		error: getCommentsError,
 		refetch: getCommentsRefetch,
 	} = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
@@ -113,7 +106,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	}, [articleId]);
 
 	/** HANDLERS **/
-	const tabChangeHandler = (event: React.SyntheticEvent, value: string) => {
+	const tabChangeHandler = (_event: React.SyntheticEvent, value: string) => {
 		router.replace(
 			{
 				pathname: '/community',
@@ -242,7 +235,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		setUpdatedComment(value);
 	};
 
-	const paginationHandler = (e: T, value: number) => {
+	const paginationHandler = (_e: T, value: number) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
@@ -255,7 +248,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 					<Stack className="main-box">
 						<Stack className="left-config">
 							<Stack className={'image-info'}>
-								<img src={'/img/logo/logoText.svg'} />
+								<img src={'/img/logo/petoriaLogoDark.svg'} alt="Petoria" style={{ width: 120, height: 'auto' }} />
 								<Stack className={'community-name'}>
 									<Typography className={'name'}>Community Board Article</Typography>
 								</Stack>
@@ -401,7 +394,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 										<Typography className="comments-title">Comments</Typography>
 									</Stack>
 								)}
-								{comments?.map((commentData, index) => {
+								{comments?.map((commentData) => {
 									return (
 										<Stack className="comments-box" key={commentData?._id}>
 											<Stack className="main-comment">
@@ -431,7 +424,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																<DeleteForeverIcon sx={{ color: '#757575', cursor: 'pointer' }} />
 															</IconButton>
 															<IconButton
-																onClick={(e: any) => {
+																onClick={() => {
 																	setUpdatedComment(commentData?.commentContent);
 																	setUpdatedCommentWordsCnt(commentData?.commentContent?.length);
 																	setUpdatedCommentId(commentData?._id);

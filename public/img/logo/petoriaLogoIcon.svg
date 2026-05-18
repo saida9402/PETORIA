@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main pad -->
+  <ellipse cx="32" cy="42" rx="14" ry="17" fill="#4E8A28"/>
+  <!-- Toe pads -->
+  <ellipse cx="16" cy="28" rx="8" ry="10" fill="#4E8A28"/>
+  <ellipse cx="26" cy="16" rx="8" ry="10" fill="#4E8A28"/>
+  <ellipse cx="38" cy="16" rx="8" ry="10" fill="#4E8A28"/>
+  <ellipse cx="48" cy="28" rx="8" ry="10" fill="#4E8A28"/>
+  <!-- Inner highlight -->
+  <ellipse cx="32" cy="44" rx="7" ry="6" fill="rgba(244,250,240,0.55)"/>
+</svg>

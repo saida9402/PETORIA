@@ -5,7 +5,7 @@ export default function Document() {
 		<Html lang="en">
 			<Head>
 				<meta name="robots" content="index,follow" />
-				<link rel="icon" type="image/png" href="/img/logo/favicon.svg" />
+				<link rel="icon" type="image/svg+xml" href="/img/logo/petoriaLogoIcon.svg" />
 
 				{/* SEO */}
 				<meta name="keyword" content={'petoria, petoriashop, pet shop, pet products, dog, cat, bird, fish'} />
