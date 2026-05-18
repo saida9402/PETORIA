@@ -1,95 +1,127 @@
 'use client';
-import { useState } from 'react';
 import Link from 'next/link';
-import ProductCard from './ProductCard';
+import ProductCard from '../common/ProductCard';
+import { Product } from '../../types/product/product';
+import { ProductStatus, ProductType, ProductCategory } from '../../enums/product.enum';
 
-const ITEMS = [
+const ITEMS: Product[] = [
 	{
-		id: 'n1',
-		name: 'Acana Grasslands Cat',
-		brand: 'Acana',
-		price: 58,
-		icon: '🌿',
-		badge: 'New',
-		badgeClass: 'badge--new',
-		likes: 23,
-		views: 145,
+		_id: 'n1',
+		productName: 'Acana Grasslands Cat',
+		productBrand: 'Acana',
+		productPrice: 58,
+		productImages: [],
+		productLikes: 23,
+		productViews: 145,
+		productStatus: ProductStatus.ACTIVE,
+		productType: ProductType.CAT,
+		productCategory: ProductCategory.FOOD,
+		productStock: 10,
+		productRank: 0,
+		productComments: 0,
+		productSale: false,
+		memberId: '',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
-		id: 'n2',
-		name: 'Purina Pro Senior Dog',
-		brand: 'Purina',
-		price: 45,
-		icon: '🦴',
-		badge: 'New',
-		badgeClass: 'badge--new',
-		likes: 18,
-		views: 98,
+		_id: 'n2',
+		productName: 'Purina Pro Senior Dog',
+		productBrand: 'Purina',
+		productPrice: 45,
+		productImages: [],
+		productLikes: 18,
+		productViews: 98,
+		productStatus: ProductStatus.ACTIVE,
+		productType: ProductType.DOG,
+		productCategory: ProductCategory.FOOD,
+		productStock: 8,
+		productRank: 0,
+		productComments: 0,
+		productSale: false,
+		memberId: '',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
-		id: 'n3',
-		name: 'Kong Wobbler Treat',
-		brand: 'Kong',
-		price: 19,
-		icon: '🎾',
-		badge: 'New',
-		badgeClass: 'badge--new',
-		likes: 31,
-		views: 201,
+		_id: 'n3',
+		productName: 'Kong Wobbler Treat',
+		productBrand: 'Kong',
+		productPrice: 19,
+		productImages: [],
+		productLikes: 31,
+		productViews: 201,
+		productStatus: ProductStatus.ACTIVE,
+		productType: ProductType.DOG,
+		productCategory: ProductCategory.TOY,
+		productStock: 15,
+		productRank: 5,
+		productComments: 0,
+		productSale: false,
+		memberId: '',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
-		id: 'n4',
-		name: 'Furminator Long Hair',
-		brand: 'Furminator',
-		price: 35,
-		icon: '✂️',
-		badge: 'New',
-		badgeClass: 'badge--new',
-		likes: 12,
-		views: 87,
+		_id: 'n4',
+		productName: 'Furminator Long Hair',
+		productBrand: 'Furminator',
+		productPrice: 35,
+		productImages: [],
+		productLikes: 12,
+		productViews: 87,
+		productStatus: ProductStatus.ACTIVE,
+		productType: ProductType.CAT,
+		productCategory: ProductCategory.ACCESSORY,
+		productStock: 5,
+		productRank: 0,
+		productComments: 0,
+		productSale: false,
+		memberId: '',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
-		id: 'n5',
-		name: 'Pedigree Dentastix',
-		brand: 'Pedigree',
-		price: 14,
-		icon: '🦷',
-		badge: 'New',
-		badgeClass: 'badge--new',
-		likes: 28,
-		views: 167,
+		_id: 'n5',
+		productName: 'Pedigree Dentastix',
+		productBrand: 'Pedigree',
+		productPrice: 14,
+		productImages: [],
+		productLikes: 28,
+		productViews: 167,
+		productStatus: ProductStatus.ACTIVE,
+		productType: ProductType.DOG,
+		productCategory: ProductCategory.MEDICINE,
+		productStock: 20,
+		productRank: 0,
+		productComments: 0,
+		productSale: false,
+		memberId: '',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
-		id: 'n6',
-		name: 'Zymox Pet Spray',
-		brand: 'Zymox',
-		price: 22,
-		icon: '💧',
-		badge: 'New',
-		badgeClass: 'badge--new',
-		likes: 9,
-		views: 54,
+		_id: 'n6',
+		productName: 'Zymox Pet Spray',
+		productBrand: 'Zymox',
+		productPrice: 22,
+		productImages: [],
+		productLikes: 9,
+		productViews: 54,
+		productStatus: ProductStatus.ACTIVE,
+		productType: ProductType.DOG,
+		productCategory: ProductCategory.MEDICINE,
+		productStock: 12,
+		productRank: 0,
+		productComments: 0,
+		productSale: false,
+		memberId: '',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 ];
 
 export default function NewArrivals() {
-	const [added, setAdded] = useState<Set<string>>(new Set());
-	const addCart = (id: string) => {
-		setAdded((p) => {
-			const n = new Set(p);
-			n.add(id);
-			return n;
-		});
-		setTimeout(
-			() =>
-				setAdded((p) => {
-					const n = new Set(p);
-					n.delete(id);
-					return n;
-				}),
-			1200,
-		);
-	};
 	return (
 		<section
 			className="new-arrivals"
@@ -111,8 +143,8 @@ export default function NewArrivals() {
 				</div>
 				<div className="new-arrivals__carousel">
 					{ITEMS.map((p) => (
-						<div key={p.id} className="new-arrivals__item">
-							<ProductCard product={p} added={added.has(p.id)} onAdd={() => addCart(p.id)} />
+						<div key={p._id} className="new-arrivals__item">
+							<ProductCard product={p} />
 						</div>
 					))}
 				</div>

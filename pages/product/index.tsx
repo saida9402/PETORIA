@@ -1,10 +1,10 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
-import ProductCard from '../../libs/components/product/ProductCard';
+
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import ShopFilter from '../../libs/components/common/ShopFilter';
+
 import { useRouter } from 'next/router';
 import { ProductsInquiry } from '../../libs/types/product/product.input';
 import { Product } from '../../libs/types/product/product';
@@ -17,6 +17,8 @@ import { GET_PRODUCTS } from '../../apollo/user/query';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { Messages } from '../../libs/config';
+import ShopFilter from '../../libs/components/product/ShopFilter';
+import ProductCard from '../../libs/components/common/ProductCard';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -66,11 +68,9 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 	/** HANDLERS **/
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
 		searchFilter.page = value;
-		await router.push(
-			`/shop?input=${JSON.stringify(searchFilter)}`,
-			`/shop?input=${JSON.stringify(searchFilter)}`,
-			{ scroll: false },
-		);
+		await router.push(`/shop?input=${JSON.stringify(searchFilter)}`, `/shop?input=${JSON.stringify(searchFilter)}`, {
+			scroll: false,
+		});
 		setCurrentPage(value);
 	};
 
@@ -135,16 +135,36 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 								{filterSortName}
 							</Button>
 							<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-								<MenuItem onClick={sortingHandler} id={'newest'} disableRipple sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+								<MenuItem
+									onClick={sortingHandler}
+									id={'newest'}
+									disableRipple
+									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
+								>
 									Newest
 								</MenuItem>
-								<MenuItem onClick={sortingHandler} id={'lowest'} disableRipple sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+								<MenuItem
+									onClick={sortingHandler}
+									id={'lowest'}
+									disableRipple
+									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
+								>
 									Lowest Price
 								</MenuItem>
-								<MenuItem onClick={sortingHandler} id={'highest'} disableRipple sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+								<MenuItem
+									onClick={sortingHandler}
+									id={'highest'}
+									disableRipple
+									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
+								>
 									Highest Price
 								</MenuItem>
-								<MenuItem onClick={sortingHandler} id={'popular'} disableRipple sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+								<MenuItem
+									onClick={sortingHandler}
+									id={'popular'}
+									disableRipple
+									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
+								>
 									Most Popular
 								</MenuItem>
 							</Menu>
@@ -154,11 +174,7 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 					<Stack className={'shop-page'}>
 						{/* Filter sidebar */}
 						<Stack className={'filter-config'}>
-							<ShopFilter
-								searchFilter={searchFilter}
-								setSearchFilter={setSearchFilter}
-								initialInput={initialInput}
-							/>
+							<ShopFilter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
 						</Stack>
 
 						{/* Product grid */}
@@ -171,11 +187,7 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 									</div>
 								) : (
 									products.map((product: Product) => (
-										<ProductCard
-											product={product}
-											likeProductHandler={likeProductHandler}
-											key={product?._id}
-										/>
+										<ProductCard product={product} likeProductHandler={likeProductHandler} key={product?._id} />
 									))
 								)}
 							</Stack>

@@ -10,7 +10,7 @@ import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { GET_FAVORITES } from '../../../apollo/user/query';
 import { sweetMixinErrorAlert } from '../../sweetAlert';
 import { Messages } from '../../config';
-import ShopProductCard from '../common/ShopProductCard (1)';
+import ShopProductCard from '../common/ShopProductCard';
 
 const MyFavorites: NextPage = () => {
 	const device = useDeviceDetect();

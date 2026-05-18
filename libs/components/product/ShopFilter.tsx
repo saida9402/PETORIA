@@ -205,7 +205,8 @@ const ShopFilter = (props: ShopFilterProps) => {
 			{/* Price Range */}
 			<Stack className="filter-section">
 				<Typography className="filter-title">💰 Price Range</Typography>
-				<Box sx={{ px: 1 }}>
+				{/* @ts-ignore */}
+			<Box sx={{ px: 1 }}>
 					<Slider
 						value={priceRange}
 						onChange={priceHandler}

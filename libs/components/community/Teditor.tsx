@@ -3,7 +3,7 @@ import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextFiel
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
 import { getJwtToken } from '../../auth';
-import { REACT_APP_API_URL } from '../../config';
+
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { T } from '../../types/common';
@@ -12,6 +12,7 @@ import { useMutation } from '@apollo/client';
 import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
+import { API_URL } from '../../config';
 
 const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
@@ -66,7 +67,7 @@ const TuiEditor = () => {
 			console.log('=responseImage: ', responseImage);
 			memoizedValues.articleImage = responseImage;
 
-			return `${REACT_APP_API_URL}/${responseImage}`;
+			return `${API_URL}/${responseImage}`;
 		} catch (err) {
 			console.log('Error, uploadImage:', err);
 		}

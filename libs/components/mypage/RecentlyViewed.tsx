@@ -7,7 +7,7 @@ import { Product } from '../../types/product/product';
 import { T } from '../../types/common';
 import { useQuery } from '@apollo/client';
 import { GET_VISITED } from '../../../apollo/user/query';
-import ShopProductCard from '../common/ShopProductCard (1)';
+import ShopProductCard from '../common/ShopProductCard';
 
 const RecentlyViewed: NextPage = () => {
 	const device = useDeviceDetect();

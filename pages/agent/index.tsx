@@ -1,20 +1,21 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
-import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
+
 import { Stack, Box, Button, Pagination } from '@mui/material';
 import { Menu, MenuItem } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import AgentCard from '../../libs/components/common/AgentCard';
+import SellerCard from '../../libs/components/common/SellerCard';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { Messages } from '../../libs/config';
 import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
-import { GET_AGENTS } from '../../apollo/user/query';
+import { GET_SELLERS } from '../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { T } from '../../libs/types/common';
+import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -22,7 +23,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const AgentList: NextPage = ({ initialInput, ...props }: any) => {
+const SellerList: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
@@ -32,7 +33,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchFilter, setSearchFilter] = useState<any>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
-	const [agents, setAgents] = useState<Member[]>([]);
+	const [sellers, setSellers] = useState<Member[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [searchText, setSearchText] = useState<string>('');
@@ -41,17 +42,17 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
 	const {
-		loading: getAgentsLoading,
-		data: getAgentsData,
-		error: getAgentsError,
-		refetch: getAgentsRefetch,
-	} = useQuery(GET_AGENTS, {
+		loading: getSellersLoading,
+		data: getSellersData,
+		error: getSellersError,
+		refetch: getSellersRefetch,
+	} = useQuery(GET_SELLERS, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setAgents(data?.getAgents?.list);
-			setTotal(data?.getAgents?.metaCounter[0]?.total);
+			setSellers(data?.getSellers?.list);
+			setTotal(data?.getSellers?.metaCounter[0]?.total);
 		},
 	});
 
@@ -113,22 +114,17 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
-			await likeTargetMember({
-				variables: {
-					input: id,
-				},
-			});
-
-			await getAgentsRefetch({ input: searchFilter });
+			await likeTargetMember({ variables: { input: id } });
+			await getSellersRefetch({ input: searchFilter });
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR, likePropertyHandler:', err.message);
+			console.log('ERROR, likeMemberHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
 
 	if (device === 'mobile') {
-		return <h1>AGENTS PAGE MOBILE</h1>;
+		return <h1>SELLERS PAGE MOBILE</h1>;
 	} else {
 		return (
 			<Stack className={'agent-list-page'}>
@@ -137,11 +133,11 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 						<Box component={'div'} className={'left'}>
 							<input
 								type="text"
-								placeholder={'Search for an agent'}
+								placeholder={'Search for a seller'}
 								value={searchText}
 								onChange={(e: any) => setSearchText(e.target.value)}
 								onKeyDown={(event: any) => {
-									if (event.key == 'Enter') {
+									if (event.key === 'Enter') {
 										setSearchFilter({
 											...searchFilter,
 											search: { ...searchFilter.search, text: searchText },
@@ -174,20 +170,20 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 						</Box>
 					</Stack>
 					<Stack className={'card-wrap'}>
-						{agents?.length === 0 ? (
+						{sellers?.length === 0 ? (
 							<div className={'no-data'}>
 								<img src="/img/icons/icoAlert.svg" alt="" />
-								<p>No Agents found!</p>
+								<p>No Sellers found!</p>
 							</div>
 						) : (
-							agents.map((agent: Member) => {
-								return <AgentCard agent={agent} key={agent._id} likeMemberHandler={likeMemberHandler} />;
+							sellers.map((seller: Member) => {
+								return <SellerCard seller={seller} key={seller._id} likeMemberHandler={likeMemberHandler} />;
 							})
 						)}
 					</Stack>
 					<Stack className={'pagination'}>
 						<Stack className="pagination-box">
-							{agents.length !== 0 && Math.ceil(total / searchFilter.limit) > 1 && (
+							{sellers.length !== 0 && Math.ceil(total / searchFilter.limit) > 1 && (
 								<Stack className="pagination-box">
 									<Pagination
 										page={currentPage}
@@ -199,10 +195,9 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 								</Stack>
 							)}
 						</Stack>
-
-						{agents.length !== 0 && (
+						{sellers.length !== 0 && (
 							<span>
-								Total {total} agent{total > 1 ? 's' : ''} available
+								Total {total} seller{total > 1 ? 's' : ''} available
 							</span>
 						)}
 					</Stack>
@@ -212,7 +207,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	}
 };
 
-AgentList.defaultProps = {
+SellerList.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 10,
@@ -222,4 +217,4 @@ AgentList.defaultProps = {
 	},
 };
 
-export default withLayoutBasic(AgentList);
+export default withLayoutBasic(SellerList);

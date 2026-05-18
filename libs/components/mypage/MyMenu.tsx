@@ -7,7 +7,7 @@ import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import PortraitIcon from '@mui/icons-material/Portrait';
 import IconButton from '@mui/material/IconButton';
-import { REACT_APP_API_URL } from '../../config';
+import { API_URL } from '../../config';
 import { logOut } from '../../auth';
 import { sweetConfirmAlert, sweetMixinErrorAlert } from '../../sweetAlert';
 
@@ -35,11 +35,7 @@ const MyMenu = () => {
 				<Stack className={'profile'}>
 					<Box component={'div'} className={'profile-img'}>
 						<img
-							src={
-								user?.memberImage
-									? `${REACT_APP_API_URL}/${user?.memberImage}`
-									: '/img/profile/defaultUser.svg'
-							}
+							src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
 							alt={'profile'}
 						/>
 					</Box>
@@ -61,10 +57,7 @@ const MyMenu = () => {
 
 				<Stack className={'sections'}>
 					{/* SELLER menu items */}
-					<Stack
-						className={'section'}
-						style={{ height: user.memberType === 'SELLER' ? '228px' : '153px' }}
-					>
+					<Stack className={'section'} style={{ height: user.memberType === 'SELLER' ? '228px' : '153px' }}>
 						<Typography className="title" variant={'h5'}>
 							🛍 MY SHOP
 						</Typography>
@@ -164,8 +157,10 @@ const MyMenu = () => {
 										<svg
 											className={'com-icon'}
 											fill={category === 'followers' ? 'white' : '#2D5016'}
-											height="16px" width="16px"
-											viewBox="0 0 328 328" xmlns="http://www.w3.org/2000/svg"
+											height="16px"
+											width="16px"
+											viewBox="0 0 328 328"
+											xmlns="http://www.w3.org/2000/svg"
 										>
 											<g>
 												<path d="M52.25,64.001c0,34.601,28.149,62.749,62.75,62.749c34.602,0,62.751-28.148,62.751-62.749S149.602,1.25,115,1.25C80.399,1.25,52.25,29.4,52.25,64.001z" />
@@ -186,8 +181,10 @@ const MyMenu = () => {
 										<svg
 											className={'com-icon'}
 											fill={category === 'followings' ? 'white' : '#2D5016'}
-											height="16px" width="16px"
-											viewBox="0 0 328 328" xmlns="http://www.w3.org/2000/svg"
+											height="16px"
+											width="16px"
+											viewBox="0 0 328 328"
+											xmlns="http://www.w3.org/2000/svg"
 										>
 											<g>
 												<path d="M177.75,64.001C177.75,29.4,149.601,1.25,115,1.25c-34.602,0-62.75,28.15-62.75,62.751S80.398,126.75,115,126.75C149.601,126.75,177.75,98.602,177.75,64.001z" />

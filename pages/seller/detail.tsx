@@ -21,7 +21,7 @@ import { GET_COMMENTS } from '../../apollo/user/query';
 import { GET_MEMBER, GET_PRODUCTS } from '../../apollo/user/query';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import ReviewCard from '../../libs/components/agent/ReviewCard';
-import ProductCard from '../../libs/components/homepage/ProductCard';
+import ProductCard from '../../libs/components/common/ProductCard';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {

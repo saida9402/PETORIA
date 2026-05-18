@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
-import { Messages, REACT_APP_API_URL } from '../../config';
+import { API_URL, Messages } from '../../config';
 import { getJwtToken, updateStorage, updateUserInfo } from '../../auth';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
@@ -61,7 +61,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			updateData.memberImage = responseImage;
 			setUpdateData({ ...updateData });
 
-			return `${REACT_APP_API_URL}/${responseImage}`;
+			return `${API_URL}/${responseImage}`;
 		} catch (err) {
 			console.log('Error, uploadImage:', err);
 		}
@@ -87,12 +87,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	}, [updateData]);
 
 	const doDisabledCheck = () => {
-		return (
-			!updateData.memberNick ||
-			!updateData.memberPhone ||
-			!updateData.memberAddress ||
-			!updateData.memberImage
-		);
+		return !updateData.memberNick || !updateData.memberPhone || !updateData.memberAddress || !updateData.memberImage;
 	};
 
 	if (device === 'mobile') {
@@ -115,11 +110,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 					<Stack className="image-big-box">
 						<Stack className="image-box">
 							<img
-								src={
-									updateData?.memberImage
-										? `${REACT_APP_API_URL}/${updateData?.memberImage}`
-										: `/img/profile/defaultUser.svg`
-								}
+								src={updateData?.memberImage ? `${API_URL}/${updateData?.memberImage}` : `/img/profile/defaultUser.svg`}
 								alt="profile"
 							/>
 						</Stack>
@@ -147,9 +138,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 							type="text"
 							placeholder="Your username"
 							value={updateData.memberNick}
-							onChange={({ target: { value } }) =>
-								setUpdateData({ ...updateData, memberNick: value })
-							}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberNick: value })}
 						/>
 					</Stack>
 
@@ -159,9 +148,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 							type="text"
 							placeholder="Your phone number"
 							value={updateData.memberPhone}
-							onChange={({ target: { value } }) =>
-								setUpdateData({ ...updateData, memberPhone: value })
-							}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
 						/>
 					</Stack>
 				</Stack>
@@ -172,9 +159,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						type="text"
 						placeholder="Your delivery address"
 						value={updateData.memberAddress}
-						onChange={({ target: { value } }) =>
-							setUpdateData({ ...updateData, memberAddress: value })
-						}
+						onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
 					/>
 				</Stack>
 
@@ -185,19 +170,13 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						rows={3}
 						placeholder="Tell us about yourself and your pets..."
 						value={updateData.memberDesc ?? ''}
-						onChange={({ target: { value } }) =>
-							setUpdateData({ ...updateData, memberDesc: value })
-						}
+						onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberDesc: value })}
 						style={{ resize: 'vertical' }}
 					/>
 				</Stack>
 
 				<Stack className="about-me-box">
-					<Button
-						className="update-button"
-						onClick={updateProfileHandler}
-						disabled={doDisabledCheck()}
-					>
+					<Button className="update-button" onClick={updateProfileHandler} disabled={doDisabledCheck()}>
 						<Typography>Save Profile</Typography>
 						<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
 							<g clipPath="url(#clip0)">

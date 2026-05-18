@@ -63,32 +63,20 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 			{/* ── Image area ── */}
 			<Stack className="shop-product-card__img-wrap">
 				{/* Badges */}
-				{product.productSale && (
-					<span className="shop-product-card__badge shop-product-card__badge--sale">
-						Sale
-					</span>
-				)}
-				{discountPercent && (
-					<span className="shop-product-card__discount-badge">-{discountPercent}%</span>
-				)}
+				{product.productSale && <span className="shop-product-card__badge shop-product-card__badge--sale">Sale</span>}
+				{discountPercent && <span className="shop-product-card__discount-badge">-{discountPercent}%</span>}
 
 				{/* Product image */}
 				<img
 					src={
-						product.productImages?.[0]
-							? `${API_URL}/${product.productImages[0]}`
-							: '/img/product/defaultProduct.svg'
+						product.productImages?.[0] ? `${API_URL}/${product.productImages[0]}` : '/img/product/defaultProduct.svg'
 					}
 					alt={product.productName}
 					className="shop-product-card__img"
 				/>
 
 				{/* Like button */}
-				<button
-					className="shop-product-card__fav"
-					onClick={handleLike}
-					aria-label="Like product"
-				>
+				<button className="shop-product-card__fav" onClick={handleLike} aria-label="Like product">
 					{product.meLiked && product.meLiked[0]?.myFavorite ? (
 						<FavoriteIcon sx={{ color: '#e53935', fontSize: 18 }} />
 					) : (
@@ -98,11 +86,7 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 
 				{/* Cart overlay */}
 				<div className={`shop-product-card__cart-overlay${cartAdded ? ' visible' : ''}`}>
-					<button
-						className="shop-product-card__cart-btn"
-						onClick={handleAddToCart}
-						aria-label="Add to cart"
-					>
+					<button className="shop-product-card__cart-btn" onClick={handleAddToCart} aria-label="Add to cart">
 						<ShoppingCartIcon sx={{ fontSize: 16 }} />
 						<span>{cartAdded ? 'Added!' : 'Add to Cart'}</span>
 					</button>
@@ -112,14 +96,10 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 			{/* ── Body ── */}
 			<Stack className="shop-product-card__body">
 				{/* Brand */}
-				<Typography className="shop-product-card__brand">
-					{product.productBrand}
-				</Typography>
+				<Typography className="shop-product-card__brand">{product.productBrand}</Typography>
 
 				{/* Name */}
-				<Typography className="shop-product-card__name">
-					{product.productName}
-				</Typography>
+				<Typography className="shop-product-card__name">{product.productName}</Typography>
 
 				{/* Product type tag */}
 				{product.productType && (
@@ -127,8 +107,7 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 						{product.productType === ProductType.DOG && '🐶'}
 						{product.productType === ProductType.CAT && '🐱'}
 						{product.productType === ProductType.BIRD && '🐦'}
-						{product.productType === ProductType.FISH && '🐠'}
-						{' '}{product.productType}
+						{product.productType === ProductType.FISH && '🐠'} {product.productType}
 					</span>
 				)}
 
@@ -138,39 +117,31 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 				<Stack className="shop-product-card__footer" direction="row" alignItems="center" justifyContent="space-between">
 					{/* Price */}
 					<Stack className="shop-product-card__price-box">
-						<Typography className="shop-product-card__price">
-							${product.productPrice.toLocaleString()}
-						</Typography>
+						<Typography className="shop-product-card__price">${product.productPrice.toLocaleString()}</Typography>
 						{product.productSale && product.productSalePercent && (
-							<Typography className="shop-product-card__original-price">
-								-{product.productSalePercent}% off
-							</Typography>
+							<Typography className="shop-product-card__original-price">-{product.productSalePercent}% off</Typography>
 						)}
 					</Stack>
 
 					{/* Stats */}
 					<Stack direction="row" gap={1} className="shop-product-card__stats">
-						<Box className="shop-product-card__stat">
+						<div className="shop-product-card__stat">
 							<FavoriteBorderIcon sx={{ fontSize: 13 }} />
 							<span>{formatNum(product.productLikes ?? 0)}</span>
-						</Box>
-						<Box className="shop-product-card__stat">
+						</div>
+						<div className="shop-product-card__stat">
 							<RemoveRedEyeIcon sx={{ fontSize: 13 }} />
 							<span>{formatNum(product.productViews ?? 0)}</span>
-						</Box>
+						</div>
 					</Stack>
 				</Stack>
 
 				{/* Stock warning */}
 				{product.productStock !== undefined && product.productStock <= 5 && product.productStock > 0 && (
-					<Typography className="shop-product-card__stock-warn">
-						⚠️ Only {product.productStock} left!
-					</Typography>
+					<Typography className="shop-product-card__stock-warn">⚠️ Only {product.productStock} left!</Typography>
 				)}
 				{product.productStock === 0 && (
-					<Typography className="shop-product-card__out-of-stock">
-						Out of Stock
-					</Typography>
+					<Typography className="shop-product-card__out-of-stock">Out of Stock</Typography>
 				)}
 			</Stack>
 		</Stack>

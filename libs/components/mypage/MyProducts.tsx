@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { ProductCard } from './ProductCard';
+import ProductCard from '../common/ProductCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Product } from '../../types/product/product';
 import { AgentProductsInquiry } from '../../types/product/product.input';
@@ -140,6 +140,7 @@ const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 								<ProductCard
 									key={product._id}
 									product={product}
+									variant="mypage"
 									deleteProductHandler={deleteProductHandler}
 									updateProductHandler={updateProductHandler}
 								/>

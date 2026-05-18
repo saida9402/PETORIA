@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { UPDATE_PRODUCT } from '../../../apollo/user/mutation';
 import { GET_SELLER_PRODUCTS } from '../../../apollo/user/query';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
-import { ProductCard } from '../mypage/ProductCard';
+import ProductCard from '../common/ProductCard';
 
 const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
@@ -141,6 +141,7 @@ const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 								<ProductCard
 									key={product._id}
 									product={product}
+									variant="mypage"
 									deleteProductHandler={deleteProductHandler}
 									updateProductHandler={updateProductHandler}
 								/>
