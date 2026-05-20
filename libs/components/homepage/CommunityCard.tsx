@@ -1,6 +1,5 @@
-'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';

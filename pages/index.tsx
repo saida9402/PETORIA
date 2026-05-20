@@ -1,16 +1,19 @@
 import { NextPage } from 'next';
-import useDeviceDetect from '../libs/hooks/useDeviceDetect';
-
-import CommunityBoards from '../libs/components/homepage/CommunityBoards';
-import PopularProducts from '../libs/components/homepage/PopularProducts';
-import TopAgents from '../libs/components/homepage/TopAgents';
-import Events from '../libs/components/homepage/Events';
-import TrendProducts from '../libs/components/homepage/TrendProducts';
-import TopProducts from '../libs/components/homepage/TopProducts';
-import { Stack } from '@mui/material';
-import Advertisement from '../libs/components/homepage/Advertisement';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
+import useDeviceDetect from '../libs/hooks/useDeviceDetect';
 import withLayoutHome from '../libs/components/layout/LayoutHome';
+
+import BrandsStrip from '../libs/components/homepage/BrandsStrip';
+import CategoryGrid from '../libs/components/homepage/CategoryGrid';
+import PopularProducts from '../libs/components/homepage/PopularProducts';
+import PromoBanner from '../libs/components/homepage/PromoBanner';
+import TrendProducts from '../libs/components/homepage/TrendProducts';
+import Advertisement from '../libs/components/homepage/Advertisement';
+import TopProducts from '../libs/components/homepage/TopProducts';
+import VideoBanner from '../libs/components/homepage/VideoBanner';
+import Events from '../libs/components/homepage/Events';
+import CommunityBoards from '../libs/components/homepage/CommunityBoards';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -23,27 +26,33 @@ const Home: NextPage = () => {
 
 	if (device === 'mobile') {
 		return (
-			<Stack className={'home-page'}>
-				<TrendProducts />
+			<div className="home-page">
+				<BrandsStrip />
+				<CategoryGrid />
 				<PopularProducts />
+				<TrendProducts />
 				<Advertisement />
 				<TopProducts />
-				<TopAgents />
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'home-page'}>
-				<TrendProducts />
-				<PopularProducts />
-				<Advertisement />
-				<TopProducts />
-				<TopAgents />
 				<Events />
 				<CommunityBoards />
-			</Stack>
+			</div>
 		);
 	}
+
+	return (
+		<div className="home-page">
+			<BrandsStrip />
+			<CategoryGrid />
+			<PopularProducts />
+			<PromoBanner />
+			<TrendProducts />
+			<Advertisement />
+			<TopProducts />
+			<VideoBanner />
+			<Events />
+			<CommunityBoards />
+		</div>
+	);
 };
 
 export default withLayoutHome(Home);

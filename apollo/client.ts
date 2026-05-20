@@ -38,16 +38,8 @@ class LoggingWebSocket {
 		// this.socket = new WebSocket(url);
 		socketVar(this.socket);
 
-		this.socket.onopen = () => {
-			console.log('WebSocket connection!');
-		};
-
-		this.socket.onmessage = (msg) => {
-			console.log('WebSocket message:', msg.data);
-		};
-
-		this.socket.onerror = (error) => {
-			console.log('WebSocket error:', error);
+		this.socket.onerror = () => {
+			// WebSocket unavailable in dev without backend
 		};
 	}
 
@@ -64,12 +56,8 @@ function createIsomorphicLink() {
 	if (typeof window !== 'undefined') {
 		const authLink = new ApolloLink((operation, forward) => {
 			operation.setContext(({ headers = {} }) => ({
-				headers: {
-					...headers,
-					...getHeaders(),
-				},
+				headers: { ...headers, ...getHeaders() },
 			}));
-			console.warn('requesting.. ', operation);
 			return forward(operation);
 		});
 

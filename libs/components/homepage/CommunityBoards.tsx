@@ -1,4 +1,3 @@
-'use client';
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';

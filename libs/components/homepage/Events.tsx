@@ -1,4 +1,3 @@
-'use client';
 import Link from 'next/link';
 
 const EVENTS = [
@@ -58,7 +57,7 @@ export default function Events() {
             <h2 className="section-hd__title">Upcoming Events</h2>
             <p className="section-hd__sub">Pet expos, free vet sessions and community meetups</p>
           </div>
-          <Link href="/events" className="section-hd__link">View calendar →</Link>
+          <Link href="/cs" className="section-hd__link">View all →</Link>
         </div>
 
         <div className="events__grid">
@@ -80,7 +79,7 @@ export default function Events() {
 
               {/* Footer */}
               <div className="event-card__footer">
-                <Link href={`/events/${ev.id}`} className="btn btn--outline btn--sm">
+                <Link href="/cs" className="btn btn--outline btn--sm">
                   Learn more →
                 </Link>
               </div>
