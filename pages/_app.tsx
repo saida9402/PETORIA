@@ -1,19 +1,29 @@
 import type { AppProps } from 'next/app';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { light } from '../scss/MaterialTheme';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
+import { themeVar } from '../libs/store/themeStore';
 import '../scss/app.scss';
 import '../scss/pc/main.scss';
 import '../scss/mobile/main.scss';
 
 const App = ({ Component, pageProps }: AppProps) => {
 	// @ts-ignore
-	const [theme, setTheme] = useState(createTheme(light));
+	const [theme] = useState(createTheme(light));
 	const client = useApollo(pageProps.initialApolloState);
+	const currentTheme = useReactiveVar(themeVar);
+
+	useEffect(() => {
+		if (currentTheme === 'dark') {
+			document.documentElement.setAttribute('data-dark', '');
+		} else {
+			document.documentElement.removeAttribute('data-dark');
+		}
+	}, [currentTheme]);
 
 	return (
 		<ApolloProvider client={client}>

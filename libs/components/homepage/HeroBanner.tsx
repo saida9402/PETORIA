@@ -1,50 +1,97 @@
-'use client';
-import { useRef } from 'react';
+import React from 'react';
 import Link from 'next/link';
 
-export default function HeroBanner() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const muteRef  = useRef<HTMLButtonElement>(null);
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !videoRef.current.muted;
-    if (muteRef.current) muteRef.current.textContent = videoRef.current.muted ? '🔇' : '🔊';
-  };
-  return (
-    <section className="hero">
-      <div className="hero__bg-shapes" />
-      <div className="wrap">
-        <div className="hero__inner">
-          <div className="hero__content">
-            <div className="hero__eyebrow">🌱 Korea's #1 Pet Shop</div>
-            <h1 className="hero__title">Natural care for<br/><span>your best friend</span> 🌿</h1>
-            <p className="hero__sub">Premium pet products — sustainably sourced, delivered fresh to your door. Trusted by 12,000+ pet owners across Korea.</p>
-            <div className="hero__ctas">
-              <Link href="/shop" className="btn btn--primary btn--lg">Shop now →</Link>
-              <Link href="/map"  className="btn btn--white btn--lg">📍 Find stores</Link>
-            </div>
-            <div className="hero__trust">
-              {[['12K+','Happy pets'],['8,400','Products'],['98%','Satisfaction'],['24/7','Vet support']].map(([n,l],i,arr) => (
-                <>
-                  <div key={l} className="hero__trust-item">
-                    <span className="hero__trust-item-num">{n}</span>
-                    <span className="hero__trust-item-label">{l}</span>
-                  </div>
-                  {i<arr.length-1 && <div className="hero__trust-div" />}
-                </>
-              ))}
-            </div>
-          </div>
-          <div className="hero__video-wrap">
-            <video ref={videoRef} autoPlay muted loop playsInline
-              poster="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=900&q=80">
-              <source src="/videos/petoria-eco.mp4" type="video/mp4" />
-            </video>
-            <button ref={muteRef} className="hero__mute" onClick={toggleMute}>🔇</button>
-          </div>
-        </div>
-      </div>
-      <div className="hero__leaf">🌿</div>
-    </section>
-  );
-}
+const STATS = [
+	{ icon: '🐶', text: '12k+ Products' },
+	{ icon: '🚚', text: 'Free Delivery' },
+	{ icon: '⭐', text: '4.9 Rating' },
+];
+
+const FLOAT_CARDS = [
+	{ pos: 'tl', icon: '🍖', title: 'Dog Food', sub: 'Premium Quality' },
+	{ pos: 'tr', icon: '✅', title: 'Vet Approved', sub: 'Certified' },
+	{ pos: 'bl', icon: '🐱', title: 'Cat Toy', sub: 'New Arrival' },
+	{ pos: 'br', icon: '🚚', title: 'Free Ship', sub: 'Over $30' },
+];
+
+const HeroBanner = () => {
+	return (
+		<section className="hero">
+			{/* Radial glow overlays */}
+			<div className="hero__glow-1" aria-hidden="true" />
+			<div className="hero__glow-2" aria-hidden="true" />
+
+			{/* Subtle floating paw prints */}
+			<div className="hero__paws" aria-hidden="true">
+				{[1, 2, 3, 4, 5].map((n) => (
+					<span key={n} className={`hero__paw hero__paw--${n}`}>🐾</span>
+				))}
+			</div>
+
+			<div className="hero__inner">
+				{/* ── LEFT: copy ── */}
+				<div className="hero__left">
+					<div className="hero__badge">
+						<span className="hero__badge-dot" />
+						PETORIA PREMIUM CARE
+					</div>
+
+					<h1 className="hero__title">
+						Healthy Pets,<br />
+						<span>Happy Life.</span>
+					</h1>
+
+					<p className="hero__sub">
+						Premium food, toys, medicine and accessories<br />
+						for your lovely pets.
+					</p>
+
+					<div className="hero__actions">
+						<Link href="/shop">
+							<button className="hero__btn hero__btn--primary">Shop Now →</button>
+						</Link>
+						<Link href="/about">
+							<button className="hero__btn hero__btn--outline">Explore Brands</button>
+						</Link>
+					</div>
+
+					<div className="hero__stats">
+						{STATS.map(({ icon, text }, i) => (
+							<React.Fragment key={text}>
+								<div className="hero__stat">
+									<span className="hero__stat-icon">{icon}</span>
+									<span className="hero__stat-text">{text}</span>
+								</div>
+								{i < STATS.length - 1 && <div className="hero__stat-sep" />}
+							</React.Fragment>
+						))}
+					</div>
+				</div>
+
+				{/* ── RIGHT: visual ── */}
+				<div className="hero__right">
+					<div className="hero__visual">
+						<div className="hero__ring hero__ring--1" />
+						<div className="hero__ring hero__ring--2" />
+
+						<div className="hero__pet">
+							<div className="hero__pet-emoji">🐕</div>
+						</div>
+
+						{FLOAT_CARDS.map(({ pos, icon, title, sub }) => (
+							<div key={pos} className={`hero__card hero__card--${pos}`}>
+								<span className="hero__card-ico">{icon}</span>
+								<div className="hero__card-body">
+									<strong>{title}</strong>
+									<span>{sub}</span>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		</section>
+	);
+};
+
+export default HeroBanner;

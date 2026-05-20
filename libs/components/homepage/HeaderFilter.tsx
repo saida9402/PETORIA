@@ -1,119 +1,97 @@
-'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { ProductType, ProductCategory } from '../../enums/product.enum';
 
-const TYPES      = ['DOG', 'CAT', 'BIRD', 'FISH'];
-const CATEGORIES = ['FOOD', 'MEDICINE', 'ACCESSORY', 'TOY'];
-const TYPE_ICON:  Record<string,string> = { DOG:'🐶', CAT:'🐱', BIRD:'🐦', FISH:'🐠' };
-const CAT_ICON:   Record<string,string> = { FOOD:'🦴', MEDICINE:'💊', ACCESSORY:'🎀', TOY:'🎾' };
+const TYPE_ICON: Record<string, string> = { DOG: '🐶', CAT: '🐱', BIRD: '🐦', FISH: '🐠' };
+const CAT_ICON: Record<string, string> = { FOOD: '🍖', MEDICINE: '💊', ACCESSORY: '🎀', TOY: '🎾' };
+
+const TYPES = Object.values(ProductType);
+const CATEGORIES = Object.values(ProductCategory);
 
 export default function HeaderFilter() {
-  const router   = useRouter();
-  const [keyword,  setKeyword]  = useState('');
-  const [type,     setType]     = useState('');
-  const [category, setCategory] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+	const router = useRouter();
+	const [keyword, setKeyword] = useState('');
+	const [type, setType] = useState('');
+	const [category, setCategory] = useState('');
 
-  const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (keyword)  params.set('text',     keyword);
-    if (type)     params.set('type',     type);
-    if (category) params.set('cat',      category);
-    if (minPrice) params.set('minPrice', minPrice);
-    if (maxPrice) params.set('maxPrice', maxPrice);
-    router.push(`/shop?${params.toString()}`);
-  };
+	const handleSearch = () => {
+		const params = new URLSearchParams();
+		if (keyword) params.set('text', keyword);
+		if (type) params.set('type', type);
+		if (category) params.set('cat', category);
+		router.push(`/shop?${params.toString()}`);
+	};
 
-  const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSearch();
-  };
+	const handleKey = (e: React.KeyboardEvent) => {
+		if (e.key === 'Enter') handleSearch();
+	};
 
-  const clear = () => {
-    setKeyword(''); setType(''); setCategory(''); setMinPrice(''); setMaxPrice('');
-  };
+	const clear = () => {
+		setKeyword('');
+		setType('');
+		setCategory('');
+	};
 
-  return (
-    <div className="header-filter">
-      {/* Search bar */}
-      <div className="header-filter__search">
-        <span className="header-filter__search-icon">🔍</span>
-        <input
-          className="header-filter__search-inp"
-          placeholder="Search products, brands…"
-          value={keyword}
-          onChange={e => setKeyword(e.target.value)}
-          onKeyDown={handleKey}
-        />
-        {keyword && (
-          <button className="header-filter__clear-btn" onClick={() => setKeyword('')}>✕</button>
-        )}
-      </div>
+	const hasFilter = keyword || type || category;
 
-      {/* Filters row */}
-      <div className="header-filter__row">
-        {/* Pet type */}
-        <div className="header-filter__group">
-          <label className="header-filter__label">Pet type</label>
-          <div className="header-filter__chips">
-            {TYPES.map(t => (
-              <button
-                key={t}
-                onClick={() => setType(prev => prev === t ? '' : t)}
-                className={`header-filter__chip${type === t ? ' header-filter__chip--on' : ''}`}
-              >
-                {TYPE_ICON[t]} {t[0]+t.slice(1).toLowerCase()}
-              </button>
-            ))}
-          </div>
-        </div>
+	return (
+		<div className="filter-card">
+			{/* Search row */}
+			<div className="filter-card__search">
+				<span className="filter-card__search-ico">🔍</span>
+				<input
+					className="filter-card__search-input"
+					placeholder="Search products, brands..."
+					value={keyword}
+					onChange={(e) => setKeyword(e.target.value)}
+					onKeyDown={handleKey}
+				/>
+				{hasFilter && (
+					<button className="filter-card__clear" onClick={clear} aria-label="Clear filters">
+						✕
+					</button>
+				)}
+				<button className="filter-card__search-btn" onClick={handleSearch}>
+					Search
+				</button>
+			</div>
 
-        {/* Category */}
-        <div className="header-filter__group">
-          <label className="header-filter__label">Category</label>
-          <div className="header-filter__chips">
-            {CATEGORIES.map(c => (
-              <button
-                key={c}
-                onClick={() => setCategory(prev => prev === c ? '' : c)}
-                className={`header-filter__chip${category === c ? ' header-filter__chip--on' : ''}`}
-              >
-                {CAT_ICON[c]} {c[0]+c.slice(1).toLowerCase()}
-              </button>
-            ))}
-          </div>
-        </div>
+			{/* Filter chips row */}
+			<div className="filter-card__row">
+				{/* Pet Type */}
+				<div className="filter-card__group">
+					<span className="filter-card__label">Pet Type</span>
+					<div className="filter-card__chips">
+						{TYPES.map((t) => (
+							<button
+								key={t}
+								className={`fchip${type === t ? ' fchip--on' : ''}`}
+								onClick={() => setType((prev) => (prev === t ? '' : t))}
+							>
+								{TYPE_ICON[t]} {t[0] + t.slice(1).toLowerCase()}
+							</button>
+						))}
+					</div>
+				</div>
 
-        {/* Price */}
-        <div className="header-filter__group">
-          <label className="header-filter__label">Price (USD)</label>
-          <div className="header-filter__price">
-            <input
-              className="header-filter__price-inp"
-              type="number" placeholder="Min" min={0}
-              value={minPrice} onChange={e => setMinPrice(e.target.value)}
-            />
-            <span className="header-filter__price-sep">—</span>
-            <input
-              className="header-filter__price-inp"
-              type="number" placeholder="Max" min={0}
-              value={maxPrice} onChange={e => setMaxPrice(e.target.value)}
-            />
-          </div>
-        </div>
+				<div className="filter-card__sep" />
 
-        {/* Actions */}
-        <div className="header-filter__actions">
-          <button className="btn btn--primary" onClick={handleSearch}>
-            Search →
-          </button>
-          {(keyword || type || category || minPrice || maxPrice) && (
-            <button className="btn btn--ghost btn--sm" onClick={clear}>
-              Clear
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+				{/* Category */}
+				<div className="filter-card__group">
+					<span className="filter-card__label">Category</span>
+					<div className="filter-card__chips">
+						{CATEGORIES.map((c) => (
+							<button
+								key={c}
+								className={`fchip${category === c ? ' fchip--on' : ''}`}
+								onClick={() => setCategory((prev) => (prev === c ? '' : c))}
+							>
+								{CAT_ICON[c]} {c[0] + c.slice(1).toLowerCase()}
+							</button>
+						))}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }

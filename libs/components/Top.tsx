@@ -13,12 +13,16 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import { CaretDown } from 'phosphor-react';
 import { Logout } from '@mui/icons-material';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../apollo/store';
+import { userVar, chatOpenVar, onlineUsersVar } from '../../apollo/store';
+import { themeVar } from '../store/themeStore';
 import { API_URL } from '../config';
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -62,8 +66,18 @@ const NAV_LINKS = [
 const Top = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
+	const currentTheme = useReactiveVar(themeVar);
+	const onlineCount = useReactiveVar(onlineUsersVar);
 	const { t } = useTranslation('common');
 	const router = useRouter();
+
+	const toggleTheme = () => {
+		const next = currentTheme === 'dark' ? 'light' : 'dark';
+		themeVar(next);
+		localStorage.setItem('theme', next);
+	};
+
+	const toggleChat = () => chatOpenVar(!chatOpenVar());
 
 	const [scrolled, setScrolled] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
@@ -256,7 +270,14 @@ const Top = () => {
 							</IconButton>
 						</Link>
 
-						{/* User avatar / login */}
+						{/* Chat */}
+						<IconButton className={'icon-btn chat-btn'} onClick={toggleChat}>
+							<Badge badgeContent={onlineCount} color="error" max={99}>
+								<ChatBubbleOutlineRoundedIcon />
+							</Badge>
+						</IconButton>
+
+						{/* User avatar / login + sign up */}
 						{user?._id ? (
 							<>
 								<div
@@ -286,13 +307,25 @@ const Top = () => {
 								</Menu>
 							</>
 						) : (
-							<Link href={'/account/join'}>
-								<div className={'join-btn'}>
-									<AccountCircleOutlinedIcon />
-									<span>{t('Login')}</span>
-								</div>
-							</Link>
+							<>
+								<Link href={'/account/join'}>
+									<div className={'login-btn'}>
+										<AccountCircleOutlinedIcon />
+										<span>{t('Login')}</span>
+									</div>
+								</Link>
+								<Link href={'/account/join?view=signup'}>
+									<div className={'signup-btn'}>
+										<span>{t('Sign Up')}</span>
+									</div>
+								</Link>
+							</>
 						)}
+
+						{/* Dark mode toggle */}
+						<IconButton className={'icon-btn theme-btn'} onClick={toggleTheme}>
+							{currentTheme === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+						</IconButton>
 					</div>
 				</Stack>
 			</Stack>
