@@ -1,42 +1,89 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useWeather } from '../../hooks/useWeather';
+import type { WeatherCondition } from '../../hooks/useWeather';
 
-const SEASONS = [
-	{ key: 'sun', icon: '☀️', label: 'Summer' },
-	{ key: 'rain', icon: '🌧️', label: 'Rainy' },
-	{ key: 'snow', icon: '❄️', label: 'Winter' },
-	{ key: 'blossom', icon: '🌸', label: 'Spring' },
-];
+const ICON: Record<WeatherCondition, string> = {
+	sunny: '☀️',
+	rainy: '🌧️',
+	cloudy: '⛅',
+	snowy: '❄️',
+	windy: '💨',
+};
+
+const LABEL: Record<WeatherCondition, string> = {
+	sunny: 'Sunny',
+	rainy: 'Rainy',
+	cloudy: 'Cloudy',
+	snowy: 'Snowy',
+	windy: 'Windy',
+};
 
 const WeatherBar = () => {
-	const [activeSeason, setActiveSeason] = useState('sun');
+	const { weather, loading } = useWeather();
 
-	return (
-		<div className="weather-bar">
-			<div className="weather-bar__left">
-				<span className="weather-bar__temp-icon">☀️</span>
-				<div className="weather-bar__info">
-					<strong>24°C</strong>
-					<span>Clear &amp; Sunny</span>
+	const condition: WeatherCondition = weather?.condition ?? 'sunny';
+
+	/* Loading skeleton — never show --°C */
+	if (loading) {
+		return (
+			<div className="weather-bar weather-bar--loading" aria-busy="true">
+				<div className="weather-bar__left">
+					<span className="weather-bar__skeleton weather-bar__skeleton--icon" />
+					<div className="weather-bar__info">
+						<span className="weather-bar__skeleton weather-bar__skeleton--temp" />
+						<span className="weather-bar__skeleton weather-bar__skeleton--desc" />
+					</div>
+					<span className="weather-bar__skeleton weather-bar__skeleton--badge" />
 				</div>
-				<span className="weather-bar__season-badge">🌸 Spring Season</span>
+				<div className="weather-bar__right">
+					<span className="weather-bar__skeleton weather-bar__skeleton--loc" />
+				</div>
+			</div>
+		);
+	}
+
+	/* Loaded (real location or Hanam-si fallback) */
+	return (
+		<div className="weather-bar weather-bar--loaded" data-condition={condition}>
+			<div className="weather-bar__left">
+				<span
+					className={`weather-bar__icon weather-bar__icon--${condition}`}
+					aria-label={LABEL[condition]}
+				>
+					{ICON[condition]}
+				</span>
+
+				<div className="weather-bar__info">
+					<strong>{weather ? `${weather.temp}°C` : '...'}</strong>
+					<span>{weather?.description ?? 'Loading weather...'}</span>
+				</div>
+
+				{weather && (
+					<>
+						<span className="weather-bar__badge">
+							{ICON[condition]}&nbsp;{LABEL[condition]}
+						</span>
+						<span className="weather-bar__feels">
+							Feels {weather.feelsLike}°C
+						</span>
+					</>
+				)}
 			</div>
 
 			<div className="weather-bar__right">
 				<span className="weather-bar__location">
-					📍&nbsp;Daejeon, KR
+					{weather
+						? `📍 ${weather.city}, ${weather.country}`
+						: '📍 Detecting location...'}
 				</span>
-				<div className="weather-bar__seasons">
-					{SEASONS.map(({ key, icon, label }) => (
-						<button
-							key={key}
-							className={`weather-bar__season-btn${activeSeason === key ? ' weather-bar__season-btn--active' : ''}`}
-							aria-label={label}
-							onClick={() => setActiveSeason(key)}
-						>
-							{icon}
-						</button>
-					))}
-				</div>
+
+				{weather && (
+					<div className="weather-bar__meta">
+						<span title="Humidity">💧 {weather.humidity}%</span>
+						<span title="Wind">💨 {weather.windSpeed} m/s</span>
+						<span title="Visibility">👁 {weather.visibility} km</span>
+					</div>
+				)}
 			</div>
 		</div>
 	);

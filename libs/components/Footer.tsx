@@ -51,24 +51,27 @@ const Footer = () => {
 
 	if (device === 'mobile') {
 		return (
-			<Stack className={'footer-container'}>
-				<Stack className={'footer-brand'}>
-					<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'footer-logo'} />
-					<p className={'footer-tagline'}>Your pet's happy place 🐾</p>
-					<div className={'social-icons'}>
-						{SOCIAL_ICONS.map((s) => (
-							<span key={s.label} className={'social-icon'}>{s.icon}</span>
-						))}
-					</div>
+			<footer id="footer">
+				<Stack className={'footer-container'}>
+					<Stack className={'footer-brand'}>
+						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'footer-logo'} />
+						<p className={'footer-tagline'}>Your pet's happy place 🐾</p>
+						<div className={'social-icons'}>
+							{SOCIAL_ICONS.map((s) => (
+								<span key={s.label} className={'social-icon'}>{s.icon}</span>
+							))}
+						</div>
+					</Stack>
+					<Stack className={'footer-bottom'}>
+						<span>© Petoria {moment().year()}. All rights reserved.</span>
+					</Stack>
 				</Stack>
-				<Stack className={'footer-bottom'}>
-					<span>© Petoria {moment().year()}. All rights reserved.</span>
-				</Stack>
-			</Stack>
+			</footer>
 		);
 	}
 
 	return (
+		<footer id="footer">
 		<Stack className={'footer-container'}>
 			{/* Newsletter banner */}
 			<div className={'footer-newsletter'}>
@@ -152,6 +155,7 @@ const Footer = () => {
 				</div>
 			</div>
 		</Stack>
+		</footer>
 	);
 };
 

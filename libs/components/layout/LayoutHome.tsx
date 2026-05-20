@@ -38,9 +38,9 @@ const withLayoutHome = (Component: any) => {
 						<div className="filter-section">
 							<HeaderFilter />
 						</div>
-						<div id={'main'}>
+						<main className="homepage-content">
 							<Component {...props} />
-						</div>
+						</main>
 						<Footer />
 					</div>
 				</>
@@ -60,9 +60,9 @@ const withLayoutHome = (Component: any) => {
 					<div className="filter-section">
 						<HeaderFilter />
 					</div>
-					<div id={'main'}>
+					<main className="homepage-content">
 						<Component {...props} />
-					</div>
+					</main>
 					<Chat />
 					<Footer />
 				</div>
