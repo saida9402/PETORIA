@@ -17,6 +17,7 @@ export enum Message {
 	INSERT_ALL_INPUTS = 'Please provide all inputs',
 }
 
+// Backend stores as 1 / -1 in MongoDB, but GraphQL transport uses string 'ASC' | 'DESC'
 export enum Direction {
 	ASC = 'ASC',
 	DESC = 'DESC',

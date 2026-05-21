@@ -5,7 +5,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Product } from '../../types/product/product';
-import { AgentProductsInquiry } from '../../types/product/product.input';
+import { SellerProductsInquiry } from '../../types/product/product.input';
 import { T } from '../../types/common';
 import { ProductStatus } from '../../enums/product.enum';
 import { userVar } from '../../../apollo/store';
@@ -17,7 +17,7 @@ import ProductCard from '../common/ProductCard';
 
 const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
-	const [searchFilter, setSearchFilter] = useState<AgentProductsInquiry>(initialInput);
+	const [searchFilter, setSearchFilter] = useState<SellerProductsInquiry>(initialInput);
 	const [sellerProducts, setAgentProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const user = useReactiveVar(userVar);

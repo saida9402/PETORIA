@@ -11,7 +11,6 @@ const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> =
 	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
 	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
 	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
-	OTHER: { icon: '🐾', label: 'Other', color: 'var(--g700)' },
 };
 
 const TYPE_TABS = [

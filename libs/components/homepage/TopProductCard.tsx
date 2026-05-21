@@ -9,7 +9,6 @@ const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> =
 	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
 	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
 	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
-	OTHER: { icon: '🐾', label: 'Other', color: 'var(--g700)' },
 };
 
 const CAT_CFG: Record<string, { icon: string; label: string }> = {
@@ -17,7 +16,6 @@ const CAT_CFG: Record<string, { icon: string; label: string }> = {
 	TOY: { icon: '🧸', label: 'Toy' },
 	MEDICINE: { icon: '💊', label: 'Medicine' },
 	ACCESSORY: { icon: '🦴', label: 'Accessory' },
-	OTHER: { icon: '🐾', label: 'Other' },
 };
 
 interface Product {

@@ -1,17 +1,5 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
-export const availableOptions = ['propertyBarter', 'propertyRent'];
-
-const thisYear = new Date().getFullYear();
-
-export const propertyYears: any = [];
-
-for (let i = 1970; i <= thisYear; i++) {
-	propertyYears.push(String(i));
-}
-
-export const propertySquare = [0, 25, 50, 75, 100, 125, 150, 200, 300, 500];
-
 export const Messages = {
 	error1: 'Something went wrong!',
 	error2: 'Please login first!',
@@ -27,7 +15,6 @@ export const TYPE_CFG: Record<string, { icon: string; label: string; color: stri
 	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
 	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
 	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
-	OTHER: { icon: '🐾', label: 'Other', color: 'var(--g700)' },
 };
 
 export const CAT_CFG: Record<string, { icon: string; label: string }> = {
@@ -35,5 +22,4 @@ export const CAT_CFG: Record<string, { icon: string; label: string }> = {
 	TOY: { icon: '🧸', label: 'Toy' },
 	MEDICINE: { icon: '💊', label: 'Medicine' },
 	ACCESSORY: { icon: '🦴', label: 'Accessory' },
-	OTHER: { icon: '🐾', label: 'Other' },
 };

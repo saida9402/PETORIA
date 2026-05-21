@@ -112,36 +112,9 @@
 
 /* Each checkbox row — key fix for overlap */
 .filter-list {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0 !important;
-}
-
-.filter-item {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
-  min-height: 36px !important;
-  flex-wrap: nowrap !important;
-
-  /* MUI Checkbox */
-  .MuiCheckbox-root {
-    padding: 4px 6px !important;
-    flex-shrink: 0;
-    color: var(--bd, #C8E6A0) !important;
-
-    &.Mui-checked { color: var(--np, #4E8A28) !important; }
-  }
-
-  /* Label text */
-  .MuiTypography-root {
-    font-size: 13px !important;
-    color: var(--t2, #3A5020) !important;
-    white-space: nowrap;
-    line-height: 1.4 !important;
-    flex: 1;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 /* ── Filter sub-components ─────────────────────────── */
@@ -187,19 +160,33 @@
   margin: 0 0 8px;
 }
 
-/* Individual checkbox row — plain div, no MUI Stack */
+/* Checkbox row — single authoritative definition */
 .filter-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   min-height: 36px;
+  flex-wrap: nowrap;
 
+  /* MUI Checkbox size/color overrides */
+  .MuiCheckbox-root {
+    padding: 3px 5px !important;
+    flex-shrink: 0;
+    color: var(--bd, #C8E6A0) !important;
+
+    &.Mui-checked { color: var(--np, #4E8A28) !important; }
+  }
+
+  /* Plain span label */
   &__label {
     font-size: 13px;
     color: var(--t2, #3A5020);
     line-height: 1.4;
     user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

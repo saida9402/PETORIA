@@ -171,7 +171,7 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const GET_SELLER_PRODUCTS = gql`
-	query GetSellerProducts($input: AgentProductsInquiry!) {
+	query GetSellerProducts($input: SellerProductsInquiry!) {
 		getSellerProducts(input: $input) {
 			list {
 				_id

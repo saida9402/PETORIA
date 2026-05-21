@@ -105,10 +105,10 @@ const AdminProducts: NextPage = ({ initialInquiry, ...props }: any) => {
 					...productsInquiry,
 					page: 1,
 					sort: 'createdAt',
-					search: { ...productsInquiry.search, typeList: [newValue as ProductType] },
+					search: { ...productsInquiry.search, productTypeList: [newValue as ProductType] },
 				});
 			} else {
-				delete productsInquiry?.search?.typeList;
+				delete productsInquiry?.search?.productTypeList;
 				setProductsInquiry({ ...productsInquiry });
 			}
 		} catch (err: any) {

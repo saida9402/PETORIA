@@ -36,7 +36,7 @@ export interface ProductsInquiry {
 	};
 }
 
-export interface AgentProductsInquiry {
+export interface SellerProductsInquiry {
 	page: number;
 	limit: number;
 	sort?: string;
@@ -53,9 +53,7 @@ export interface AllProductsInquiry {
 	direction?: Direction;
 	search: {
 		productStatus?: ProductStatus;
-		productType?: ProductType;
-		typeList?: ProductType[];
-		memberId?: string;
-		text?: string;
+		productTypeList?: ProductType[];
+		productCategoryList?: ProductCategory[];
 	};
 }

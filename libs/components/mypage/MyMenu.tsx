@@ -9,7 +9,7 @@ import PortraitIcon from '@mui/icons-material/Portrait';
 import IconButton from '@mui/material/IconButton';
 import { API_URL } from '../../config';
 import { logOut } from '../../auth';
-import { sweetConfirmAlert, sweetMixinErrorAlert } from '../../sweetAlert';
+import { sweetConfirmAlert } from '../../sweetAlert';
 
 const MyMenu = () => {
 	const device = useDeviceDetect();
@@ -30,7 +30,7 @@ const MyMenu = () => {
 		return <div>MY MENU MOBILE</div>;
 	} else {
 		return (
-			<Stack width={'100%'} padding={'30px 24px'}>
+			<Stack width={'100%'}>
 				{/* Profile */}
 				<Stack className={'profile'}>
 					<Box component={'div'} className={'profile-img'}>
