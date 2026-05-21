@@ -1,186 +1,179 @@
+/* ═══════════════════════════════════════════════════════
+   COMMUNITY PAGE  —  #community-list-page
+   ═══════════════════════════════════════════════════════ */
+
 #pc-wrap {
-	#community-list-page {
-		position: relative;
-		.container {
-			padding-top: 100px;
-			flex-direction: column;
-			gap: 64px;
-			.main-box {
-				flex-direction: row;
-				gap: 31px;
-				.left-config {
-					width: 266px;
-					height: fit-content;
-					gap: 30px;
-					padding: 30px 15px 57px 21px;
-					margin-top: 100px;
-					margin-bottom: 50px;
-					border-radius: 12px;
-					border: 1px solid rgba(196, 196, 196, 0.79);
-					background: #fff;
-					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-					.image-info {
-						width: 100%;
-						flex-direction: row;
-						gap: 11px;
-						img {
-							width: 80px;
-							height: 80px;
-							border-radius: 50%;
-							object-fit: cover;
-						}
-						.community-name {
-							.name {
-								margin-top: 15px;
-								color: #181a20;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-							}
-						}
-					}
-					.tab-button {
-						width: 216.612px;
-						height: 36px;
-						padding: 0;
-						justify-content: center;
-						align-items: center;
-						border-radius: 6px;
-						border: 1px solid #181a20;
-						margin-bottom: 10px;
-						color: #181a20;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 500;
-						line-height: 150%;
-						letter-spacing: -0.266px;
-					}
-					.tab-button.active {
-						width: 216.612px;
-						height: 36px;
-						padding: 0;
-						justify-content: center;
-						align-items: center;
-						background-color: #000000;
-						color: #ffffff;
-						border-radius: 6px;
-						margin-bottom: 10px;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 500;
-						line-height: 150%;
-						letter-spacing: -0.266px;
-					}
-				}
-				.right-config {
-					width: 100%;
-					height: auto;
-					.panel-config {
-						width: 100%;
-						height: auto;
-						.title-box {
-							width: 100%;
-							height: auto;
-							flex-direction: row;
-							justify-content: space-between;
-							align-items: center;
-							margin-bottom: 45px;
-							.left {
-								width: 60%;
-								height: auto;
-								.title {
-									color: #000;
-									font-family: $font;
-									font-size: 24px;
-									font-style: normal;
-									font-weight: 600;
-									line-height: normal;
-									letter-spacing: 0.24px;
-								}
-								.sub-title {
-									color: #757575;
-									font-family: $font;
-									font-size: 13px;
-									font-style: normal;
-									font-weight: 700;
-									line-height: normal;
-									letter-spacing: 0.325px;
-								}
-							}
-							.right {
-								width: 91px;
-								height: 32px;
-								border-radius: 4px;
-								background: #eb6753;
-								color: #fff;
-								font-family: $font;
-								font-size: 13px;
-								font-style: normal;
-								font-weight: 500;
-								line-height: normal;
-								letter-spacing: 0.39px;
-							}
-						}
-						.list-box {
-							width: 100%;
-							height: auto;
-							flex-direction: row;
-							flex-wrap: wrap;
-							gap: 30px;
-						}
-					}
-				}
-			}
-			.similar-articles-config {
-				width: 100%;
-				height: auto;
-				gap: 75px;
-				padding: 30px 9px 28px 9px;
-				border-radius: 10px;
-				border: 1px solid #c4c4c4;
-				.similar-articles-title {
-					padding-left: 56px;
-					color: #000;
-					font-family: $font;
-					font-size: 30px;
-					font-style: normal;
-					font-weight: 600;
-					line-height: normal;
-				}
-				.articles-box-row {
-					width: 100%;
-					height: auto;
-					flex-direction: row;
-					gap: 5px;
-				}
-			}
-			.pagination-config {
-				width: 100%;
-				align-items: center;
-				justify-content: center;
-				margin-bottom: 50px;
-				gap: 20px;
-				padding-left: 270px;
-				.pagination-box {
-					align-items: center;
-					justify-content: center;
-				}
-				.total-result {
-					p {
-						color: #181a20;
-						text-align: center;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
-					}
-				}
-			}
-		}
-	}
+  #community-list-page {
+    position: relative;
+    padding: 40px 0 80px;
+    background: var(--pb, #F4FAF0);
+
+    .container {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Main two-column layout */
+    .main-box {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── Left sidebar ─────────────────────────────── */
+    .left-config {
+      position: sticky;
+      top: 80px;
+      background: var(--cb, #fff);
+      border: 1px solid var(--bd, #C8E6A0);
+      border-radius: 14px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .image-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 16px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--bd, #C8E6A0);
+
+        img {
+          width: 120px;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .community-name .name {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--t1, #1A2E0A);
+        }
+      }
+
+      /* MUI Tab buttons */
+      .MuiTab-root, .tab-button {
+        width: 100%;
+        height: 40px;
+        border-radius: 8px !important;
+        border: 1px solid var(--bd, #C8E6A0) !important;
+        margin-bottom: 6px;
+        color: var(--t2, #3A5020) !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        text-transform: none !important;
+        justify-content: flex-start !important;
+        padding: 0 14px !important;
+        min-height: 40px !important;
+        background: var(--pb, #F4FAF0);
+        transition: all 0.18s;
+
+        &:hover {
+          background: var(--nbg, #EAF3DE) !important;
+          border-color: var(--np, #4E8A28) !important;
+        }
+
+        &.active, &.Mui-selected {
+          background: var(--np, #4E8A28) !important;
+          border-color: var(--np, #4E8A28) !important;
+          color: #fff !important;
+        }
+      }
+    }
+
+    /* ── Right content panel ──────────────────────── */
+    .right-config {
+      width: 100%;
+    }
+
+    .panel-config {
+      width: 100%;
+
+      .title-box {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+
+        .left {
+          .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--t1, #1A2E0A);
+            margin-bottom: 4px;
+          }
+          .sub-title {
+            font-size: 13px;
+            color: var(--t3, #6B8A4E);
+          }
+        }
+
+        .right {
+          padding: 8px 20px;
+          border-radius: 8px;
+          background: var(--np, #4E8A28);
+          color: #fff;
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: none;
+          cursor: pointer;
+          border: none;
+
+          &:hover { background: var(--nm, #3A6B1E); }
+        }
+      }
+
+      .list-box {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        width: 100%;
+
+        @media (max-width: 900px) { grid-template-columns: 1fr; }
+      }
+    }
+
+    /* MUI TabPanel reset */
+    .MuiTabPanel-root {
+      padding: 0 !important;
+      width: 100%;
+    }
+
+    /* Pagination */
+    .pagination-config {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 32px;
+
+      .pagination-box { align-items: center; }
+
+      .total-result p, .total-result span {
+        font-size: 13px;
+        color: var(--t3, #6B8A4E);
+        text-align: center;
+      }
+    }
+
+    /* No-data state */
+    .no-data {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 60px 24px;
+      background: var(--cb, #fff);
+      border: 1px solid var(--bd, #C8E6A0);
+      border-radius: 12px;
+
+      img { width: 40px; opacity: 0.4; }
+      p { font-size: 14px; color: var(--t3, #6B8A4E); margin: 0; }
+    }
+  }
 }

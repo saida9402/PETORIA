@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stack, Typography, Checkbox, Slider, Button, Box } from '@mui/material';
+import { Checkbox, Slider } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCategory, ProductType } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
@@ -11,99 +11,105 @@ interface ShopFilterProps {
 }
 
 const PET_TYPES = [
-	{ value: ProductType.DOG, label: '🐶 Dogs' },
-	{ value: ProductType.CAT, label: '🐱 Cats' },
-	{ value: ProductType.BIRD, label: '🐦 Birds' },
+	{ value: ProductType.DOG,  label: '🐶 Dogs' },
+	{ value: ProductType.CAT,  label: '🐱 Cats' },
+	{ value: ProductType.BIRD, label: '🦜 Birds' },
 	{ value: ProductType.FISH, label: '🐠 Fish' },
 ];
 
 const CATEGORIES = [
-	{ value: ProductCategory.FOOD, label: '🍖 Food' },
-	{ value: ProductCategory.MEDICINE, label: '💊 Medicine' },
+	{ value: ProductCategory.FOOD,      label: '🍖 Food' },
+	{ value: ProductCategory.MEDICINE,  label: '💊 Medicine' },
 	{ value: ProductCategory.ACCESSORY, label: '🎀 Accessories' },
-	{ value: ProductCategory.TOY, label: '🎾 Toys' },
+	{ value: ProductCategory.TOY,       label: '🎾 Toys' },
 ];
 
 const BRANDS = [
-	'Royal Canin',
-	"Hill's",
-	'Orijen',
-	'Purina Pro',
-	'Acana',
-	'Pedigree',
-	'Whiskas',
-	'Kong',
-	'Frontline',
-	'Zymox',
+	'Royal Canin', "Hill's", 'Orijen', 'Purina Pro', 'Acana',
+	'Pedigree', 'Whiskas', 'Kong', 'Frontline', 'Zymox',
 ];
 
 const SIZES = [
-	{ value: 'XS', label: 'XS — Extra Small' },
-	{ value: 'S', label: 'S — Small' },
-	{ value: 'M', label: 'M — Medium' },
-	{ value: 'L', label: 'L — Large' },
-	{ value: 'XL', label: 'XL — Extra Large' },
-	{ value: '1KG', label: '1 kg' },
-	{ value: '3KG', label: '3 kg' },
-	{ value: '5KG', label: '5 kg' },
+	{ value: 'XS',   label: 'XS' },
+	{ value: 'S',    label: 'S' },
+	{ value: 'M',    label: 'M' },
+	{ value: 'L',    label: 'L' },
+	{ value: 'XL',   label: 'XL' },
+	{ value: '1KG',  label: '1 kg' },
+	{ value: '3KG',  label: '3 kg' },
+	{ value: '5KG',  label: '5 kg' },
 	{ value: '10KG', label: '10 kg' },
 	{ value: '20KG', label: '20 kg' },
 ];
 
 const VISIBLE_BRANDS = 5;
 
-const ShopFilter = (props: ShopFilterProps) => {
-	const { initialInput, searchFilter, setSearchFilter } = props;
+const CheckRow = ({
+	checked,
+	onChange,
+	label,
+}: {
+	checked: boolean;
+	onChange: (v: boolean) => void;
+	label: string;
+}) => (
+	<div className="filter-item">
+		<Checkbox
+			size="small"
+			checked={checked}
+			onChange={(e) => onChange(e.target.checked)}
+			sx={{
+				padding: '3px 6px',
+				color: '#C8E6A0',
+				'&.Mui-checked': { color: '#4E8A28' },
+				flexShrink: 0,
+			}}
+		/>
+		<span className="filter-item__label">{label}</span>
+	</div>
+);
+
+const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterProps) => {
 	const device = useDeviceDetect();
 	const [priceRange, setPriceRange] = useState<number[]>([0, 500]);
 	const [showAllBrands, setShowAllBrands] = useState(false);
 	const [selectedSize, setSelectedSize] = useState<string>('');
 
-	/** HANDLERS **/
 	const typeHandler = (type: ProductType, checked: boolean) => {
-		const current = searchFilter.search.typeList ?? [];
-		const updated = checked ? [...current, type] : current.filter((t) => t !== type);
-		setSearchFilter({ ...searchFilter, search: { ...searchFilter.search, typeList: updated } });
+		const cur = searchFilter.search.typeList ?? [];
+		const next = checked ? [...cur, type] : cur.filter((t) => t !== type);
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, typeList: next.length ? next : undefined } });
 	};
 
-	const categoryHandler = (category: ProductCategory, checked: boolean) => {
-		const current = searchFilter.search.categoryList ?? [];
-		const updated = checked ? [...current, category] : current.filter((c) => c !== category);
-		setSearchFilter({ ...searchFilter, search: { ...searchFilter.search, categoryList: updated } });
+	const categoryHandler = (cat: ProductCategory, checked: boolean) => {
+		const cur = searchFilter.search.categoryList ?? [];
+		const next = checked ? [...cur, cat] : cur.filter((c) => c !== cat);
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, categoryList: next.length ? next : undefined } });
 	};
 
 	const brandHandler = (brand: string, checked: boolean) => {
-		const current = searchFilter.search.brandList ?? [];
-		const updated = checked ? [...current, brand] : current.filter((b) => b !== brand);
-		setSearchFilter({ ...searchFilter, search: { ...searchFilter.search, brandList: updated } });
+		const cur = searchFilter.search.brandList ?? [];
+		const next = checked ? [...cur, brand] : cur.filter((b) => b !== brand);
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, brandList: next.length ? next : undefined } });
 	};
 
 	const sizeHandler = (size: string, checked: boolean) => {
 		const newSize = checked ? size : '';
 		setSelectedSize(newSize);
-		setSearchFilter({
-			...searchFilter,
-			search: { ...searchFilter.search, text: newSize || undefined },
-		});
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: newSize || undefined } });
 	};
 
-	const priceHandler = (_: Event, newValue: number | number[]) => {
-		setPriceRange(newValue as number[]);
+	const priceHandler = (_: Event, val: number | number[]) => {
+		setPriceRange(val as number[]);
 	};
 
-	const priceCommitHandler = (_: any, newValue: number | number[]) => {
-		const [start, end] = newValue as number[];
-		setSearchFilter({
-			...searchFilter,
-			search: { ...searchFilter.search, pricesRange: { start, end } },
-		});
+	const priceCommitHandler = (_: any, val: number | number[]) => {
+		const [start, end] = val as number[];
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, pricesRange: { start, end } } });
 	};
 
 	const saleHandler = (checked: boolean) => {
-		setSearchFilter({
-			...searchFilter,
-			search: { ...searchFilter.search, onSale: checked || undefined },
-		});
+		setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, onSale: checked || undefined } });
 	};
 
 	const resetHandler = () => {
@@ -120,93 +126,84 @@ const ShopFilter = (props: ShopFilterProps) => {
 	}
 
 	return (
-		<Stack className="shop-filter">
+		<div className="shop-filter">
+
+			{/* Header */}
+			<div className="sf-header">
+				<span className="sf-header__title">🔧 Filters</span>
+				<button className="sf-header__reset" onClick={resetHandler}>Reset</button>
+			</div>
 
 			{/* Pet Type */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">🐾 Pet Type</Typography>
-				<Stack className="filter-list">
+			<div className="filter-section">
+				<p className="filter-section__title">🐾 Pet Type</p>
+				<div className="filter-list">
 					{PET_TYPES.map((pt) => (
-						<Stack key={pt.value} direction="row" alignItems="center" className="filter-item">
-							<Checkbox
-								size="small"
-								checked={searchFilter.search.typeList?.includes(pt.value) ?? false}
-								onChange={(e) => typeHandler(pt.value, e.target.checked)}
-								sx={{ color: '#4E8A28', '&.Mui-checked': { color: '#4E8A28' } }}
-							/>
-							<Typography>{pt.label}</Typography>
-						</Stack>
+						<CheckRow
+							key={pt.value}
+							checked={searchFilter.search.typeList?.includes(pt.value) ?? false}
+							onChange={(v) => typeHandler(pt.value, v)}
+							label={pt.label}
+						/>
 					))}
-				</Stack>
-			</Stack>
+				</div>
+			</div>
 
 			{/* Category */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">📦 Category</Typography>
-				<Stack className="filter-list">
+			<div className="filter-section">
+				<p className="filter-section__title">📦 Category</p>
+				<div className="filter-list">
 					{CATEGORIES.map((cat) => (
-						<Stack key={cat.value} direction="row" alignItems="center" className="filter-item">
-							<Checkbox
-								size="small"
-								checked={searchFilter.search.categoryList?.includes(cat.value) ?? false}
-								onChange={(e) => categoryHandler(cat.value, e.target.checked)}
-								sx={{ color: '#4E8A28', '&.Mui-checked': { color: '#4E8A28' } }}
-							/>
-							<Typography>{cat.label}</Typography>
-						</Stack>
+						<CheckRow
+							key={cat.value}
+							checked={searchFilter.search.categoryList?.includes(cat.value) ?? false}
+							onChange={(v) => categoryHandler(cat.value, v)}
+							label={cat.label}
+						/>
 					))}
-				</Stack>
-			</Stack>
+				</div>
+			</div>
 
 			{/* Brand */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">🏷 Brand</Typography>
-				<Stack className="filter-list">
+			<div className="filter-section">
+				<p className="filter-section__title">🏷️ Brand</p>
+				<div className="filter-list">
 					{visibleBrands.map((brand) => (
-						<Stack key={brand} direction="row" alignItems="center" className="filter-item">
-							<Checkbox
-								size="small"
-								checked={searchFilter.search.brandList?.includes(brand) ?? false}
-								onChange={(e) => brandHandler(brand, e.target.checked)}
-								sx={{ color: '#4E8A28', '&.Mui-checked': { color: '#4E8A28' } }}
-							/>
-							<Typography>{brand}</Typography>
-						</Stack>
+						<CheckRow
+							key={brand}
+							checked={searchFilter.search.brandList?.includes(brand) ?? false}
+							onChange={(v) => brandHandler(brand, v)}
+							label={brand}
+						/>
 					))}
-				</Stack>
+				</div>
 				{BRANDS.length > VISIBLE_BRANDS && (
-					<Typography
-						onClick={() => setShowAllBrands((prev) => !prev)}
-						sx={{ color: '#4E8A28', cursor: 'pointer', fontSize: 12, mt: 0.5, pl: 1 }}
-					>
+					<button className="sf-show-more" onClick={() => setShowAllBrands((p) => !p)}>
 						{showAllBrands ? '▲ Show less' : `▼ +${BRANDS.length - VISIBLE_BRANDS} more`}
-					</Typography>
+					</button>
 				)}
-			</Stack>
+			</div>
 
-			{/* Size / Weight */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">📐 Size / Weight</Typography>
-				<Stack className="filter-list">
+			{/* Size */}
+			<div className="filter-section">
+				<p className="filter-section__title">📐 Size / Weight</p>
+				<div className="sf-size-grid">
 					{SIZES.map((s) => (
-						<Stack key={s.value} direction="row" alignItems="center" className="filter-item">
-							<Checkbox
-								size="small"
-								checked={selectedSize === s.value}
-								onChange={(e) => sizeHandler(s.value, e.target.checked)}
-								sx={{ color: '#4E8A28', '&.Mui-checked': { color: '#4E8A28' } }}
-							/>
-							<Typography>{s.label}</Typography>
-						</Stack>
+						<button
+							key={s.value}
+							className={`sf-size-chip${selectedSize === s.value ? ' sf-size-chip--active' : ''}`}
+							onClick={() => sizeHandler(s.value, selectedSize !== s.value)}
+						>
+							{s.label}
+						</button>
 					))}
-				</Stack>
-			</Stack>
+				</div>
+			</div>
 
 			{/* Price Range */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">💰 Price Range</Typography>
-				{/* @ts-ignore */}
-			<Box sx={{ px: 1 }}>
+			<div className="filter-section">
+				<p className="filter-section__title">💰 Price Range</p>
+				<div className="sf-price">
 					<Slider
 						value={priceRange}
 						onChange={priceHandler}
@@ -216,37 +213,24 @@ const ShopFilter = (props: ShopFilterProps) => {
 						max={500}
 						sx={{ color: '#4E8A28' }}
 					/>
-					<Stack direction="row" justifyContent="space-between">
-						<Typography variant="caption">${priceRange[0]}</Typography>
-						<Typography variant="caption">${priceRange[1]}</Typography>
-					</Stack>
-				</Box>
-			</Stack>
+					<div className="sf-price__labels">
+						<span>${priceRange[0]}</span>
+						<span>${priceRange[1]}</span>
+					</div>
+				</div>
+			</div>
 
 			{/* On Sale */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">🔥 Deals</Typography>
-				<Stack direction="row" alignItems="center" className="filter-item">
-					<Checkbox
-						size="small"
-						checked={searchFilter.search.onSale ?? false}
-						onChange={(e) => saleHandler(e.target.checked)}
-						sx={{ color: '#4E8A28', '&.Mui-checked': { color: '#4E8A28' } }}
-					/>
-					<Typography>On Sale only</Typography>
-				</Stack>
-			</Stack>
+			<div className="filter-section">
+				<p className="filter-section__title">🔥 Deals</p>
+				<CheckRow
+					checked={searchFilter.search.onSale ?? false}
+					onChange={(v) => saleHandler(v)}
+					label="On sale only"
+				/>
+			</div>
 
-			{/* Reset */}
-			<Button
-				onClick={resetHandler}
-				variant="outlined"
-				fullWidth
-				sx={{ borderColor: '#4E8A28', color: '#4E8A28', mt: 1 }}
-			>
-				Reset Filters
-			</Button>
-		</Stack>
+		</div>
 	);
 };
 

@@ -16,7 +16,6 @@ const nextConfig = {
 			// Missing pages → closest existing equivalent
 			{ source: '/events', destination: '/cs', permanent: false },
 			{ source: '/events/:id', destination: '/cs', permanent: false },
-			{ source: '/vet', destination: '/cs', permanent: false },
 			{ source: '/seller', destination: '/seller/detail', permanent: false },
 		];
 	},

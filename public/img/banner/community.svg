@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 280" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="comGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#12350a;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#255214;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#3a681c;stop-opacity:1"/>
+    </linearGradient>
+    <radialGradient id="comGlow" cx="60%" cy="40%" r="45%">
+      <stop offset="0%" style="stop-color:#6DB535;stop-opacity:0.25"/>
+      <stop offset="100%" style="stop-color:#6DB535;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="280" fill="url(#comGrad)"/>
+  <rect width="1440" height="280" fill="url(#comGlow)"/>
+  <circle cx="1300" cy="60"  r="220" fill="#4E8A28" opacity="0.13"/>
+  <circle cx="100"  cy="300" r="200" fill="#3A6B1E" opacity="0.15"/>
+  <circle cx="700"  cy="-60" r="160" fill="#6DB535" opacity="0.08"/>
+  <pattern id="dots3" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1.5" fill="#A8CC7A" opacity="0.09"/>
+  </pattern>
+  <rect width="1440" height="280" fill="url(#dots3)"/>
+  <!-- chat bubble icons -->
+  <g opacity="0.08" fill="#A8CC7A" transform="translate(1150, 60)">
+    <rect x="0" y="0" width="100" height="70" rx="12"/>
+    <polygon points="20,70 10,95 50,70"/>
+  </g>
+  <g opacity="0.05" fill="#A8CC7A" transform="translate(1100, 110)">
+    <rect x="0" y="0" width="80" height="56" rx="10"/>
+    <polygon points="60,56 75,78 40,56"/>
+  </g>
+</svg>

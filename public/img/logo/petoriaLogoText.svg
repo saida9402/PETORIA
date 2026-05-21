@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="none">
+  <!-- Paw icon -->
+  <circle cx="18" cy="24" r="8" fill="#A8CC7A"/>
+  <circle cx="10" cy="14" r="5" fill="#A8CC7A"/>
+  <circle cx="18" cy="10" r="5" fill="#A8CC7A"/>
+  <circle cx="26" cy="14" r="5" fill="#A8CC7A"/>
+  <circle cx="30" cy="22" r="5" fill="#A8CC7A"/>
+  <!-- Petoria text -->
+  <text x="44" y="34" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" fill="#A8CC7A" letter-spacing="-0.5">Petoria</text>
+</svg>

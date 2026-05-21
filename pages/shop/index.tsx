@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
+import { Button, Menu, MenuItem, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
@@ -25,9 +25,27 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const ShopPage: NextPage = ({ initialInput, ...props }: any) => {
+const SORT_OPTIONS = [
+	{ id: 'newest',  label: 'Newest',       sort: 'createdAt',    direction: Direction.DESC },
+	{ id: 'lowest',  label: 'Lowest Price',  sort: 'productPrice', direction: Direction.ASC  },
+	{ id: 'highest', label: 'Highest Price', sort: 'productPrice', direction: Direction.DESC },
+	{ id: 'popular', label: 'Most Popular',  sort: 'productLikes', direction: Direction.DESC },
+];
+
+function ProductSkeleton() {
+	return (
+		<div className="shop-skeleton">
+			{[1, 2, 3, 4, 5, 6].map((i) => (
+				<div key={i} className="shop-skeleton__card" />
+			))}
+		</div>
+	);
+}
+
+const ShopPage: NextPage = ({ initialInput }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
+
 	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
@@ -40,8 +58,8 @@ const ShopPage: NextPage = ({ initialInput, ...props }: any) => {
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	const { refetch: getProductsRefetch } = useQuery(GET_PRODUCTS, {
-		fetchPolicy: 'network-only',
+	const { loading, refetch: getProductsRefetch } = useQuery(GET_PRODUCTS, {
+		fetchPolicy: 'cache-and-network',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
@@ -55,12 +73,18 @@ const ShopPage: NextPage = ({ initialInput, ...props }: any) => {
 			setSearchFilter(JSON.parse(router.query.input as string));
 		}
 		setCurrentPage(searchFilter.page ?? 1);
-	}, [router]);
+	}, [router.query.input]);
+
+	/* Keep query in sync whenever filter state changes */
+	useEffect(() => {
+		getProductsRefetch({ input: searchFilter });
+	}, [searchFilter]);
 
 	const handlePaginationChange = async (_: ChangeEvent<unknown>, value: number) => {
 		const next = { ...searchFilter, page: value };
-		await router.push(`/shop?input=${JSON.stringify(next)}`, undefined, { scroll: false });
+		setSearchFilter(next);
 		setCurrentPage(value);
+		await router.push(`/shop?input=${JSON.stringify(next)}`, undefined, { scroll: false });
 	};
 
 	const likeProductHandler = async (user: T, id: string) => {
@@ -86,97 +110,130 @@ const ShopPage: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		const sorts: Record<string, { sort: string; direction: Direction; label: string }> = {
-			newest:  { sort: 'createdAt',    direction: Direction.DESC, label: 'Newest' },
-			lowest:  { sort: 'productPrice', direction: Direction.ASC,  label: 'Lowest Price' },
-			highest: { sort: 'productPrice', direction: Direction.DESC, label: 'Highest Price' },
-			popular: { sort: 'productLikes', direction: Direction.DESC, label: 'Most Popular' },
-		};
-		const chosen = sorts[e.currentTarget.id];
+		const chosen = SORT_OPTIONS.find((o) => o.id === e.currentTarget.id);
 		if (chosen) {
-			setSearchFilter({ ...searchFilter, sort: chosen.sort, direction: chosen.direction });
+			setSearchFilter({ ...searchFilter, sort: chosen.sort, direction: chosen.direction, page: 1 });
 			setFilterSortName(chosen.label);
 		}
 		setSortingOpen(false);
 		setAnchorEl(null);
 	};
 
+	const resetFilters = () => {
+		setSearchFilter(initialInput);
+		setFilterSortName('Newest');
+		setCurrentPage(1);
+	};
+
+	const totalPages = total > 0 ? Math.ceil(total / searchFilter.limit) : 0;
+
 	if (device === 'mobile') {
 		return (
-			<Stack className="shop-page-mobile">
+			<div className="shop-page-mobile">
 				{products.map((p) => (
 					<ProductCard product={p} likeProductHandler={likeProductHandler} key={p._id} />
 				))}
-			</Stack>
+			</div>
 		);
 	}
 
 	return (
-		<div id="shop-list-page" style={{ position: 'relative' }}>
-			<div className="container">
-				<Box component="div" className="right">
-					<span>Sort by</span>
-					<div>
-						<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
+		<div id="shop-list-page">
+			<div className="shop-wrap">
+
+				{/* Sort bar */}
+				<div className="shop-sort-bar">
+					<span className="shop-sort-bar__count">
+						{loading ? 'Loading…' : `${total} product${total !== 1 ? 's' : ''} found`}
+					</span>
+					<div className="shop-sort-bar__right">
+						<span className="shop-sort-bar__label">Sort by</span>
+						<Button
+							onClick={sortingClickHandler}
+							endIcon={<KeyboardArrowDownRoundedIcon />}
+							className="shop-sort-btn"
+						>
 							{filterSortName}
 						</Button>
-						<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-							{[
-								{ id: 'newest', label: 'Newest' },
-								{ id: 'lowest', label: 'Lowest Price' },
-								{ id: 'highest', label: 'Highest Price' },
-								{ id: 'popular', label: 'Most Popular' },
-							].map((item) => (
-								<MenuItem key={item.id} onClick={sortingHandler} id={item.id} disableRipple
-									sx={{ boxShadow: 'rgba(149,157,165,0.2) 0px 8px 24px' }}>
+						<Menu
+							anchorEl={anchorEl}
+							open={sortingOpen}
+							onClose={sortingCloseHandler}
+							PaperProps={{ elevation: 2, sx: { mt: 1, borderRadius: '10px', minWidth: '160px' } }}
+						>
+							{SORT_OPTIONS.map((item) => (
+								<MenuItem
+									key={item.id}
+									onClick={sortingHandler}
+									id={item.id}
+									disableRipple
+									selected={filterSortName === item.label}
+									sx={{ fontSize: '13px', py: 1 }}
+								>
 									{item.label}
 								</MenuItem>
 							))}
 						</Menu>
 					</div>
-				</Box>
+				</div>
 
-				<Stack className="shop-page">
-					<Stack className="filter-config">
-						<ShopFilter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
-					</Stack>
+				{/* Main grid: sidebar + product area */}
+				<div className="shop-layout">
 
-					<Stack className="main-config" mb="76px">
-						<Stack className="list-config">
-							{products.length === 0 ? (
-								<div className="no-data">
-									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No products found!</p>
-								</div>
-							) : (
-								products.map((p) => (
-									<ProductCard product={p} likeProductHandler={likeProductHandler} key={p._id} />
-								))
-							)}
-						</Stack>
+					{/* Filter sidebar */}
+					<aside className="shop-sidebar">
+						<ShopFilter
+							searchFilter={searchFilter}
+							setSearchFilter={setSearchFilter}
+							initialInput={initialInput}
+						/>
+					</aside>
 
-						<Stack className="pagination-config">
-							{products.length > 0 && (
-								<>
-									<Stack className="pagination-box">
-										<Pagination
-											page={currentPage}
-											count={Math.ceil(total / searchFilter.limit)}
-											onChange={handlePaginationChange}
-											shape="circular"
-											color="primary"
-										/>
-									</Stack>
-									<Stack className="total-result">
-										<Typography>
-											Total {total} product{total !== 1 ? 's' : ''} available
-										</Typography>
-									</Stack>
-								</>
-							)}
-						</Stack>
-					</Stack>
-				</Stack>
+					{/* Product area */}
+					<main className="shop-main">
+						{loading ? (
+							<ProductSkeleton />
+						) : products.length === 0 ? (
+							<div className="shop-empty">
+								<div className="shop-empty__icon">🔍</div>
+								<h3>No products found</h3>
+								<p>Try adjusting your filters or search terms.</p>
+								<button className="btn btn--primary btn--sm" onClick={resetFilters}>
+									Reset filters
+								</button>
+							</div>
+						) : (
+							<div className="shop-grid">
+								{products.map((p) => (
+									<ProductCard
+										product={p}
+										likeProductHandler={likeProductHandler}
+										key={p._id}
+									/>
+								))}
+							</div>
+						)}
+
+						{/* Pagination */}
+						{!loading && totalPages > 1 && (
+							<div className="shop-pagination">
+								<Pagination
+									page={currentPage}
+									count={totalPages}
+									onChange={handlePaginationChange}
+									shape="rounded"
+									color="primary"
+									size="medium"
+								/>
+								<p className="shop-pagination__total">
+									Showing {Math.min((currentPage - 1) * searchFilter.limit + 1, total)}–
+									{Math.min(currentPage * searchFilter.limit, total)} of {total}
+								</p>
+							</div>
+						)}
+					</main>
+
+				</div>
 			</div>
 		</div>
 	);
@@ -188,9 +245,7 @@ ShopPage.defaultProps = {
 		limit: 12,
 		sort: 'createdAt',
 		direction: 'DESC',
-		search: {
-			pricesRange: { start: 0, end: 500 },
-		},
+		search: {},
 	},
 };
 

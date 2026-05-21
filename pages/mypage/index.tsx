@@ -21,6 +21,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Messages } from '../../libs/config';
 import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
 import AddNewProduct from '../../libs/components/mypage/AddNewProduct';
+import MyOrders from '../../libs/components/mypage/MyOrders';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -110,6 +111,7 @@ const MyPage: NextPage = () => {
 							{/* Main content */}
 							<Stack className="main-config" mb={'76px'}>
 								<Stack className={'list-config'}>
+									{category === 'myOrders' && <MyOrders />}
 									{category === 'addProduct' && <AddNewProduct />}
 									{category === 'products' && <MyProducts />}
 									{category === 'myFavorites' && <MyFavorites />}

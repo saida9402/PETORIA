@@ -21,7 +21,7 @@ const withLayoutBasic = (Component: any) => {
 		const { t } = useTranslation('common');
 		const device = useDeviceDetect();
 		const [authHeader, setAuthHeader] = useState<boolean>(false);
-		const user = useReactiveVar(userVar);
+		useReactiveVar(userVar);
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -32,22 +32,22 @@ const withLayoutBasic = (Component: any) => {
 				case '/shop':
 					title = 'Pet Shop';
 					desc = 'Find everything your pet needs!';
-					bgImage = '/img/banner/shop.png';
+					bgImage = '/img/banner/shop.svg';
 					break;
 				case '/shop/detail':
 					title = 'Product Detail';
 					desc = 'Premium quality for your pet';
-					bgImage = '/img/banner/shop.png';
+					bgImage = '/img/banner/shop.svg';
 					break;
 				case '/vet':
 					title = 'Veterinarians';
 					desc = 'Trusted vets near you';
-					bgImage = '/img/banner/vets.webp';
+					bgImage = '/img/banner/vets.svg';
 					break;
 				case '/vet/detail':
 					title = 'Vet Profile';
 					desc = 'Book an appointment';
-					bgImage = '/img/banner/vets.webp';
+					bgImage = '/img/banner/vets.svg';
 					break;
 				case '/mypage':
 					title = 'My Page';
