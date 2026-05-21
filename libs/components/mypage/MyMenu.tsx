@@ -5,8 +5,6 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
-import PortraitIcon from '@mui/icons-material/Portrait';
-import IconButton from '@mui/material/IconButton';
 import { API_URL } from '../../config';
 import { logOut } from '../../auth';
 import { sweetConfirmAlert } from '../../sweetAlert';
@@ -57,7 +55,7 @@ const MyMenu = () => {
 
 				<Stack className={'sections'}>
 					{/* SELLER menu items */}
-					<Stack className={'section'} style={{ height: user.memberType === 'SELLER' ? '228px' : '153px' }}>
+					<Stack className={'section'}>
 						<Typography className="title" variant={'h5'}>
 							🛍 MY SHOP
 						</Typography>
@@ -75,9 +73,6 @@ const MyMenu = () => {
 												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 													Add Product
 												</Typography>
-												<IconButton sx={{ ml: '40px' }}>
-													<PortraitIcon style={{ color: '#4E8A28' }} />
-												</IconButton>
 											</div>
 										</Link>
 									</ListItem>
@@ -93,9 +88,6 @@ const MyMenu = () => {
 												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 													My Products
 												</Typography>
-												<IconButton sx={{ ml: '36px' }}>
-													<PortraitIcon style={{ color: '#4E8A28' }} />
-												</IconButton>
 											</div>
 										</Link>
 									</ListItem>
@@ -201,7 +193,7 @@ const MyMenu = () => {
 					</Stack>
 
 					{/* Community */}
-					<Stack className={'section'} sx={{ marginTop: '10px' }}>
+					<Stack className={'section'}>
 						<Typography className="title" variant={'h5'}>
 							🐾 COMMUNITY
 						</Typography>
@@ -239,7 +231,7 @@ const MyMenu = () => {
 					</Stack>
 
 					{/* Manage Account */}
-					<Stack className={'section'} sx={{ marginTop: '30px' }}>
+					<Stack className={'section'}>
 						<Typography className="title" variant={'h5'}>
 							⚙️ MANAGE ACCOUNT
 						</Typography>

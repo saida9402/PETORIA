@@ -587,13 +587,15 @@
 }
 
 /* ═══════════════════════════════════════════════
-   FLOATING FILTER SECTION
+   FLOATING FILTER SECTION  (homepage hero only)
+   Renamed from .filter-section → .hero-filter-section
+   to prevent leaking into shop sidebar filter items.
 ═══════════════════════════════════════════════ */
-.filter-section {
+.hero-filter-section {
 	position: relative;
 	z-index: 20;
 	margin-top: -70px;
-	padding: 0 32px;   /* no bottom padding — homepage-content owns the gap */
+	padding: 0 32px;
 	box-sizing: border-box;
 }
 
@@ -873,7 +875,7 @@
 		.hero__card { display: none; }
 	}
 
-	.filter-section { margin-top: -40px; padding: 0 16px; }
+	.hero-filter-section { margin-top: -40px; padding: 0 16px; }
 
 	.homepage-content { padding-top: 80px; }
 
@@ -899,7 +901,7 @@
 	.hero .hero__btn { padding: 10px 20px; font-size: 12px; }
 	.hero .hero__actions { gap: 8px; }
 
-	.filter-section { margin-top: -32px; padding: 0 12px; }
+	.hero-filter-section { margin-top: -32px; padding: 0 12px; }
 	.homepage-content { padding-top: 64px; }
 
 	.filter-card__chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }

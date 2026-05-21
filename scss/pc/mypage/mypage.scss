@@ -19,17 +19,27 @@
 					background: #fff;
 					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 					.left-config {
-						position: relative;
+						position: sticky;
+						top: 20px;
+						align-self: flex-start;
 						padding: 0;
 						width: 266px;
 						height: auto;
-						min-height: 400px;
+						max-height: calc(100vh - 60px);
+						min-height: 200px;
 						border-radius: 12px;
 						background: var(--cb, #fff);
 						border: 1px solid var(--bd, #C8E6A0);
 						box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 						margin: 24px 20px 40px 20px;
-						overflow: hidden;
+						/* Allow sidebar to scroll when menu is long */
+						overflow-y: auto;
+						overflow-x: hidden;
+						scrollbar-width: thin;
+						scrollbar-color: var(--bd, #C8E6A0) transparent;
+						&::-webkit-scrollbar { width: 4px; }
+						&::-webkit-scrollbar-thumb { background: var(--bd, #C8E6A0); border-radius: 2px; }
+						&::-webkit-scrollbar-track { background: transparent; }
 						.profile {
 							margin: 0;
 							padding: 16px;
@@ -96,10 +106,16 @@
 						}
 						.sections {
 							height: auto;
-							padding: 8px 0 16px;
+							padding: 4px 0 20px;
 							.section {
 								height: auto;
-								margin-bottom: 4px;
+								margin-bottom: 0;
+
+								/* Space between sections — not after the last one */
+								& + .section {
+									margin-top: 12px;
+								}
+
 								.title {
 									font-family: $font;
 									font-size: 10px;
@@ -108,7 +124,7 @@
 									text-transform: uppercase;
 									letter-spacing: 0.8px;
 									color: var(--t3, #6B8A4E);
-									padding: 8px 16px 4px;
+									padding: 10px 16px 4px;
 									margin: 0;
 									line-height: 1.3;
 								}

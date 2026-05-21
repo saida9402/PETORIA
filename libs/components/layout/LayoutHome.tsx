@@ -35,7 +35,7 @@ const withLayoutHome = (Component: any) => {
 						<Top />
 						<WeatherBar />
 						<HeroBanner />
-						<div className="filter-section">
+						<div className="hero-filter-section">
 							<HeaderFilter />
 						</div>
 						<main className="homepage-content">
@@ -57,7 +57,7 @@ const withLayoutHome = (Component: any) => {
 					<Top />
 					<WeatherBar />
 					<HeroBanner />
-					<div className="filter-section">
+					<div className="hero-filter-section">
 						<HeaderFilter />
 					</div>
 					<main className="homepage-content">
