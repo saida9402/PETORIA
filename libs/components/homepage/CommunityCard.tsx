@@ -42,8 +42,8 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 	const [likeArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
 	const cfg = CAT_CFG[a.articleCategory] ?? { icon: '🐾', badge: 'badge--green' };
-	const imgSrc = a.articleImage ? `${API_URL}/uploads/${a.articleImage}` : null;
-	const avSrc = a.memberData?.memberImage ? `${API_URL}/uploads/${a.memberData.memberImage}` : null;
+	const imgSrc = a.articleImage ? `${API_URL}/${a.articleImage}` : null;
+	const avSrc = a.memberData?.memberImage ? `${API_URL}/${a.memberData.memberImage}` : null;
 
 	const daysAgo = Math.floor((Date.now() - new Date(a.createdAt).getTime()) / 86_400_000);
 	const timeLabel = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`;

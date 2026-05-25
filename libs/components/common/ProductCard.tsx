@@ -103,7 +103,7 @@ const ProductCard = (props: ProductCardProps) => {
 					<Stack
 						className="coloured-box"
 						sx={{ background: statusColors.bg }}
-						onClick={(e) => setAnchorEl(e.currentTarget)}
+						onClick={(e: React.MouseEvent<HTMLDivElement>) => setAnchorEl(e.currentTarget)}
 					>
 						<Typography className="status" sx={{ color: statusColors.text }}>
 							{product.productStatus}
@@ -228,6 +228,27 @@ const ProductCard = (props: ProductCardProps) => {
 						</Stack>
 					)}
 				</Stack>
+
+				{/* Store identity */}
+				{product.memberData && (
+					<Link
+						href={`/seller/${product.memberData._id}`}
+						className="store-id-row"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<img
+							src={
+								product.memberData.memberImage
+									? `${API_URL}/${product.memberData.memberImage}`
+									: '/img/profile/defaultUser.svg'
+							}
+							alt={product.memberData.memberNick}
+							className="store-id-row__avatar"
+						/>
+						<span className="store-id-row__name">{product.memberData.memberNick}</span>
+						<span className="store-id-row__badge">✓</span>
+					</Link>
+				)}
 
 				<Stack className="divider" />
 

@@ -188,7 +188,144 @@
          background-image: url("/img/banner/joinBg.svg");
          background-size: cover;
        }
+
+       /* ── Seller mode: taller card ── */
+       &.main--seller {
+         height: auto;
+         min-height: 900px;
+       }
      }
    }
+  }
+
+  /* ── Seller registration styles ── */
+  .join-page {
+    .seller-heading {
+      color: var(--np, #4E8A28) !important;
+      font-size: 20px !important;
+    }
+
+    .store-url-preview {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--np, #4E8A28);
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      opacity: 0.85;
+    }
+
+    .seller-store-perks {
+      margin-top: 18px;
+      width: 470px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .ssp-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: #f4faf0;
+        border: 1px solid #C8E6A0;
+
+        .ssp-icon {
+          font-size: 18px;
+          line-height: 1;
+          flex-shrink: 0;
+        }
+
+        span:last-child {
+          font-size: 13px;
+          color: #3A5020;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .seller-signup-btn {
+      background: var(--np, #4E8A28) !important;
+
+      &:hover {
+        background: #3a6b1e !important;
+      }
+    }
+
+    /* ── Seller right panel ── */
+    .right--seller {
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(160deg, #2D5016 0%, #3A6B1E 50%, #4E8A28 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0 12px 12px 0;
+
+      .seller-right-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 40px 36px;
+        gap: 18px;
+
+        .src-logo {
+          font-size: 54px;
+          line-height: 1;
+          filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+        }
+
+        .src-tagline {
+          font-size: 18px;
+          font-weight: 700;
+          color: #E8F5D0;
+          margin: 0;
+          letter-spacing: 0.3px;
+        }
+
+        .src-stats {
+          display: flex;
+          gap: 24px;
+          margin-top: 6px;
+
+          .src-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+
+            strong {
+              font-size: 22px;
+              font-weight: 700;
+              color: #fff;
+              line-height: 1;
+            }
+
+            span {
+              font-size: 11px;
+              color: #A8CC7A;
+              font-weight: 500;
+              white-space: nowrap;
+            }
+          }
+        }
+
+        .src-quote {
+          font-size: 13px;
+          color: #A8CC7A;
+          font-style: italic;
+          line-height: 1.6;
+          margin: 6px 0 0;
+          padding: 0 8px;
+        }
+
+        .src-author {
+          font-size: 12px;
+          color: #6DB535;
+          font-weight: 600;
+        }
+      }
+    }
   }
 }

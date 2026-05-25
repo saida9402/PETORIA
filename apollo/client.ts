@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { ApolloClient, ApolloLink, InMemoryCache, split, from, NormalizedCacheObject } from '@apollo/client';
-import createUploadLink from 'apollo-upload-client/public/createUploadLink.js';
+import { createUploadLink } from 'apollo-upload-client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
@@ -8,6 +8,17 @@ import { getJwtToken } from '../libs/auth';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { sweetErrorAlert } from '../libs/sweetAlert';
 import { socketVar } from './store';
+
+const GRAPHQL_URI =
+	process.env.NEXT_PUBLIC_API_GRAPHQL_URL ||
+	`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/graphql`;
+const WS_URI = process.env.NEXT_PUBLIC_API_WS || 'ws://localhost:3002';
+
+if (typeof window !== 'undefined') {
+	console.log('[Apollo] GraphQL URI:', GRAPHQL_URI);
+	console.log('[Apollo] WebSocket URI:', WS_URI);
+}
+
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -56,19 +67,26 @@ function createIsomorphicLink() {
 	if (typeof window !== 'undefined') {
 		const authLink = new ApolloLink((operation, forward) => {
 			operation.setContext(({ headers = {} }) => ({
-				headers: { ...headers, ...getHeaders() },
+				headers: {
+					...headers,
+					...getHeaders(),
+					// Required by Apollo Server v4 CSRF prevention for multipart uploads
+					'apollo-require-preflight': 'true',
+				},
 			}));
 			return forward(operation);
 		});
 
-		// @ts-ignore
-		const link = new createUploadLink({
-			uri: process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
-		});
+		const link = createUploadLink({
+			uri: GRAPHQL_URI,
+			headers: { 'apollo-require-preflight': 'true' },
+			credentials: 'include',
+			fetch,
+		}) as unknown as ApolloLink;
 
 		/* WEBSOCKET SUBSCRIPTION LINK */
 		const wsLink = new WebSocketLink({
-			uri: process.env.NEXT_PUBLIC_API_WS ?? 'ws://127.0.0.1:3002',
+			uri: WS_URI,
 			options: {
 				reconnect: false,
 				timeout: 30000,
@@ -79,16 +97,26 @@ function createIsomorphicLink() {
 			webSocketImpl: LoggingWebSocket,
 		});
 
-		const errorLink = onError(({ graphQLErrors, networkError }) => {
+		const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
 			if (graphQLErrors) {
-				graphQLErrors.map(({ message, locations, path }) => {
-					console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-					if (!message.includes('input')) sweetErrorAlert(message);
+				graphQLErrors.forEach(({ message, locations, path }) => {
+					console.error(
+						`[GraphQL error] op=${operation.operationName} msg=${message} path=${path} loc=${JSON.stringify(
+							locations,
+						)}`,
+					);
+					// Surface every GraphQL error to the user — previously a substring filter
+					// silently hid upload/validation errors and made bugs invisible.
+					sweetErrorAlert(message);
 				});
 			}
-			if (networkError) console.log(`[Network error]: ${networkError}`);
-			// @ts-ignore
-			if (networkError?.statusCode === 401) {
+			if (networkError) {
+				console.error(`[Network error] op=${operation.operationName}:`, networkError);
+				// @ts-ignore
+				if (networkError?.statusCode === 401) {
+					console.error('[Auth error]: Token expired or missing. Please log in again.');
+				}
+				sweetErrorAlert((networkError as any)?.message ?? 'Network error');
 			}
 		});
 

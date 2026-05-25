@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { Stack, Typography, Box, List, ListItem } from '@mui/material';
+import { Stack, Typography, Box, List, ListItem, Chip } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
@@ -8,6 +8,8 @@ import { userVar } from '../../../apollo/store';
 import { API_URL } from '../../config';
 import { logOut } from '../../auth';
 import { sweetConfirmAlert } from '../../sweetAlert';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 
 const MyMenu = () => {
 	const device = useDeviceDetect();
@@ -29,29 +31,65 @@ const MyMenu = () => {
 	} else {
 		return (
 			<Stack width={'100%'}>
-				{/* Profile */}
-				<Stack className={'profile'}>
-					<Box component={'div'} className={'profile-img'}>
-						<img
-							src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
-							alt={'profile'}
-						/>
-					</Box>
-					<Stack className={'user-info'}>
-						<Typography className={'user-name'}>{user?.memberNick}</Typography>
-						<Box component={'div'} className={'user-phone'}>
-							<img src={'/img/icons/call.svg'} alt={'icon'} />
-							<Typography className={'p-number'}>{user?.memberPhone}</Typography>
+				{/* Profile / Store header */}
+				{user?.memberType === 'SELLER' ? (
+					<div className="mymenu-store">
+						<div className="mymenu-store__banner" />
+						<div className="mymenu-store__body">
+							<div className="mymenu-store__avatar-wrap">
+								<img
+									src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+									alt={user?.memberNick}
+									className="mymenu-store__avatar"
+								/>
+								<span className="mymenu-store__verified">✓</span>
+							</div>
+							<Typography className="mymenu-store__name">{user?.memberNick}</Typography>
+							<Chip label="Verified Store" size="small" className="mymenu-store__chip" />
+							<div className="mymenu-store__stats">
+								<div className="mymenu-store__stat">
+									<strong>{user?.memberLikes ?? 0}</strong>
+									<span>Likes</span>
+								</div>
+								<div className="mymenu-store__stat">
+									<strong>{user?.memberLikes ?? 0}</strong>
+									<span>Likes</span>
+								</div>
+								<div className="mymenu-store__stat">
+									<strong>{user?.memberViews ?? 0}</strong>
+									<span>Views</span>
+								</div>
+							</div>
+							<Link href={`/seller/${user?._id}`} className="mymenu-store__view-link">
+								<StorefrontIcon sx={{ fontSize: 13 }} />
+								View My Store
+							</Link>
+						</div>
+					</div>
+				) : (
+					<Stack className={'profile'}>
+						<Box component={'div'} className={'profile-img'}>
+							<img
+								src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+								alt={'profile'}
+							/>
 						</Box>
-						{user?.memberType === 'ADMIN' ? (
-							<a href="/_admin/users" target={'_blank'}>
+						<Stack className={'user-info'}>
+							<Typography className={'user-name'}>{user?.memberNick}</Typography>
+							<Box component={'div'} className={'user-phone'}>
+								<img src={'/img/icons/call.svg'} alt={'icon'} />
+								<Typography className={'p-number'}>{user?.memberPhone}</Typography>
+							</Box>
+							{user?.memberType === 'ADMIN' ? (
+								<a href="/_admin/users" target={'_blank'}>
+									<Typography className={'view-list'}>{user?.memberType}</Typography>
+								</a>
+							) : (
 								<Typography className={'view-list'}>{user?.memberType}</Typography>
-							</a>
-						) : (
-							<Typography className={'view-list'}>{user?.memberType}</Typography>
-						)}
+							)}
+						</Stack>
 					</Stack>
-				</Stack>
+				)}
 
 				<Stack className={'sections'}>
 					{/* SELLER menu items */}
@@ -62,6 +100,18 @@ const MyMenu = () => {
 						<List className={'sub-section'}>
 							{user.memberType === 'SELLER' && (
 								<>
+									{/* Dashboard shortcut */}
+									<ListItem>
+										<Link href="/seller/dashboard" style={{ width: '100%' }}>
+											<div className="flex-box mymenu-dashboard-link">
+												<DashboardIcon sx={{ fontSize: 16, color: 'inherit', flexShrink: 0 }} />
+												<Typography className="sub-title" variant="subtitle1" component="p">
+													Dashboard
+												</Typography>
+											</div>
+										</Link>
+									</ListItem>
+
 									<ListItem className={pathname === 'addProduct' ? 'focus' : ''}>
 										<Link href={{ pathname: '/mypage', query: { category: 'addProduct' } }} scroll={false}>
 											<div className={'flex-box'}>

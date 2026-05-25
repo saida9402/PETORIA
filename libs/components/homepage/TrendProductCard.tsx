@@ -53,7 +53,7 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 	const [added, setAdded] = useState(false);
 	const [likeProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	const imgSrc = p.productImages?.[0] ? `${API_URL}/uploads/${p.productImages[0]}` : null;
+	const imgSrc = p.productImages?.[0] ? `${API_URL}/${p.productImages[0]}` : null;
 	const catCfg = CAT_CFG[p.productCategory] ?? { icon: '🦴', label: p.productCategory };
 	const typeCfg = TYPE_CFG[p.productType] ?? { icon: '🐾', label: p.productType, color: '#4e8a28' };
 

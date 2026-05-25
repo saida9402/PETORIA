@@ -32,7 +32,9 @@ const withLayoutHome = (Component: any) => {
 						<meta name={'title'} content={`Petoria - Your Pet's Happy Place`} />
 					</Head>
 					<div id="mobile-wrap">
+						<div id="top">
 						<Top />
+					</div>
 						<WeatherBar />
 						<HeroBanner />
 						<div className="hero-filter-section">
@@ -54,7 +56,9 @@ const withLayoutHome = (Component: any) => {
 					<meta name={'title'} content={`Petoria - Your Pet's Happy Place`} />
 				</Head>
 				<div id="pc-wrap">
-					<Top />
+					<div id="top">
+						<Top />
+					</div>
 					<WeatherBar />
 					<HeroBanner />
 					<div className="hero-filter-section">

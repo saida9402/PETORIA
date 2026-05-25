@@ -1,19 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, Chip, CircularProgress, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import Link from 'next/link';
 import { Messages, API_URL } from '../../config';
-import { getJwtToken } from '../../auth';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { ProductInput } from '../../types/product/product.input';
 import { ProductCategory, ProductType } from '../../enums/product.enum';
-import { CREATE_PRODUCT, UPDATE_PRODUCT } from '../../../apollo/user/mutation';
+import { CREATE_PRODUCT, UPDATE_PRODUCT, IMAGES_UPLOADER } from '../../../apollo/user/mutation';
 import { GET_PRODUCT } from '../../../apollo/user/query';
-import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../sweetAlert';
+import { sweetErrorHandling, sweetMixinSuccessAlert, sweetErrorAlert } from '../../sweetAlert';
 import { T } from '../../types/common';
+
+const MAX_IMAGES = 5;
+const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB
+const ACCEPTED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
+const ACCEPTED_EXT = /\.(jpe?g|png|webp)$/i;
 
 const PRODUCT_CATEGORIES = [
 	{ value: ProductCategory.FOOD, label: '🍖 Food & Treats' },
@@ -32,15 +36,20 @@ const PET_TYPES = [
 const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 	const [productInput, setProductInput] = useState<ProductInput>(initialInput);
 	const [productImages, setProductImages] = useState<string[]>([]);
+	const [uploading, setUploading] = useState(false);
+	const [uploadCount, setUploadCount] = useState({ done: 0, total: 0 });
+	const [dragActive, setDragActive] = useState(false);
+	const inputRef = useRef<HTMLInputElement | null>(null);
 	const { productId } = router.query;
+	const isSeller = user.memberType === 'SELLER';
 
 	/** APOLLO REQUESTS **/
 	const [createProduct] = useMutation(CREATE_PRODUCT);
 	const [updateProduct] = useMutation(UPDATE_PRODUCT);
+	const [imagesUploader] = useMutation(IMAGES_UPLOADER);
 
 	const { loading: getProductLoading, data: getProductData } = useQuery(GET_PRODUCT, {
 		fetchPolicy: 'network-only',
@@ -68,76 +77,148 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 	});
 
 	/** HANDLERS **/
-	const uploadImages = async (e: any) => {
-		try {
-			const files: FileList = e.target.files;
-			const uploaded: string[] = [];
+	const validateFile = (file: File): string | null => {
+		const mimeOk = ACCEPTED_MIME.includes(file.type) || ACCEPTED_EXT.test(file.name);
+		if (!mimeOk) return `${file.name}: unsupported format. Use JPG, PNG or WEBP.`;
+		if (file.size > MAX_FILE_SIZE) {
+			const mb = (file.size / (1024 * 1024)).toFixed(1);
+			return `${file.name}: ${mb}MB exceeds 15MB limit.`;
+		}
+		return null;
+	};
 
-			for (let i = 0; i < Math.min(files.length, 5 - productImages.length); i++) {
-				const formData = new FormData();
-				formData.append(
-					'operations',
-					JSON.stringify({
-						query: `mutation ImageUploader($file: Upload!, $target: String!) {
-							imageUploader(file: $file, target: $target)
-						}`,
-						variables: { file: null, target: 'product' },
-					}),
-				);
-				formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
-				formData.append('0', files[i]);
+	const ingestFiles = async (rawFiles: FileList | File[]) => {
+		const filesArr = Array.from(rawFiles);
+		console.log('FILE_SELECTED', filesArr.map((f) => ({ name: f.name, type: f.type, size: f.size })));
+		if (filesArr.length === 0) return;
 
-				const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						'apollo-require-preflight': true,
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				uploaded.push(response.data.data.imageUploader);
+		const currentCount = productImages.length;
+		const room = MAX_IMAGES - currentCount;
+		if (room <= 0) {
+			await sweetErrorAlert(`Maximum ${MAX_IMAGES} images allowed.`);
+			return;
+		}
+
+		const queued: File[] = [];
+		for (const f of filesArr.slice(0, room)) {
+			const err = validateFile(f);
+			if (err) {
+				console.error('UPLOAD_ERROR', 'validation', err);
+				await sweetErrorAlert(err);
+				continue;
 			}
+			queued.push(f);
+		}
+		if (queued.length === 0) return;
 
-			const combined = [...productImages, ...uploaded].slice(0, 5);
-			setProductImages(combined);
-			setProductInput({ ...productInput, productImages: combined });
-		} catch (err) {
-			console.log('Error uploading images:', err);
+		setUploading(true);
+		setUploadCount({ done: 0, total: queued.length });
+
+		try {
+			console.log('UPLOAD_START', {
+				count: queued.length,
+				files: queued.map((f) => f.name),
+				target: 'product',
+			});
+			const { data } = await imagesUploader({
+				variables: { files: queued, target: 'product' },
+				context: { headers: { 'apollo-require-preflight': 'true' } },
+			});
+			console.log('UPLOAD_RESPONSE', data);
+
+			const paths: string[] = (data?.imagesUploader ?? []).filter(Boolean);
+			if (paths.length === 0) {
+				console.error('UPLOAD_ERROR', 'empty response', data);
+				await sweetErrorAlert('Upload failed: server returned no paths.');
+				return;
+			}
+			console.log('UPLOAD_SUCCESS', paths);
+
+			setProductImages((prev) => {
+				const combined = [...prev, ...paths].slice(0, MAX_IMAGES);
+				setProductInput((prevInput) => ({ ...prevInput, productImages: combined }));
+				return combined;
+			});
+			setUploadCount({ done: queued.length, total: queued.length });
+		} catch (err: any) {
+			console.error('UPLOAD_ERROR', err);
+			sweetErrorHandling(err).then();
+		} finally {
+			setUploading(false);
+			setUploadCount({ done: 0, total: 0 });
+			if (inputRef.current) inputRef.current.value = '';
 		}
 	};
 
+	const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files;
+		if (!files || files.length === 0) return;
+		void ingestFiles(files);
+	};
+
+	const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragActive(false);
+		if (uploading) return;
+		const files = e.dataTransfer?.files;
+		if (files && files.length > 0) void ingestFiles(files);
+	};
+
+	const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (!dragActive) setDragActive(true);
+	};
+
+	const onDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragActive(false);
+	};
+
 	const removeImage = (index: number) => {
-		const updated = productImages.filter((_, i) => i !== index);
-		setProductImages(updated);
-		setProductInput({ ...productInput, productImages: updated });
+		setProductImages((prev) => {
+			const updated = prev.filter((_, i) => i !== index);
+			setProductInput((prevInput) => ({ ...prevInput, productImages: updated }));
+			return updated;
+		});
 	};
 
 	const submitHandler = useCallback(async () => {
 		try {
 			if (!user._id) throw new Error(Messages.error2);
-			productInput.productImages = productImages;
+			if (uploading) {
+				await sweetErrorAlert('Please wait for image upload to finish.');
+				return;
+			}
+
+			const payload: ProductInput = { ...productInput, productImages };
 
 			if (productId) {
-				await updateProduct({ variables: { input: { _id: productId, ...productInput } } });
+				await updateProduct({ variables: { input: { _id: productId, ...payload } } });
 				await sweetMixinSuccessAlert('Product updated successfully!');
 			} else {
-				await createProduct({ variables: { input: productInput } });
+				await createProduct({ variables: { input: payload } });
 				await sweetMixinSuccessAlert('Product listed successfully!');
 			}
 
 			await router.push({ pathname: '/mypage', query: { category: 'myProducts' } });
 		} catch (err: any) {
+			console.error('PRODUCT_SUBMIT_ERROR', err);
 			sweetErrorHandling(err).then();
 		}
-	}, [productInput, productImages]);
+	}, [productInput, productImages, uploading, productId, user._id, createProduct, updateProduct, router]);
 
 	const isDisabled = () => {
 		return (
+			uploading ||
+			productImages.length === 0 ||
 			!productInput.productName ||
 			!productInput.productBrand ||
 			!productInput.productCategory ||
 			!productInput.productType ||
-			!productInput.productPrice ||
-			productImages.length === 0
+			!productInput.productPrice
 		);
 	};
 
@@ -147,207 +228,338 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 
 	return (
 		<div id="add-product-page">
-			<Stack className="main-title-box">
-				<Stack className="right-box">
-					<Typography className="main-title">{productId ? 'Edit Product' : 'Add New Product'}</Typography>
-					<Typography className="sub-title">
-						{productId ? 'Update your listing' : 'List a new product in the pet shop'}
-					</Typography>
-				</Stack>
-			</Stack>
+			{/* ── Store Identity Banner ── */}
+			{isSeller && (
+				<div className="anp-store-banner">
+					<div className="anp-store-banner__left">
+						<div className="anp-store-banner__avatar-wrap">
+							<img
+								src={user.memberImage ? `${API_URL}/${user.memberImage}` : '/img/profile/defaultUser.svg'}
+								alt={user.memberNick}
+								className="anp-store-banner__avatar"
+							/>
+							<span className="anp-store-banner__verified">✓</span>
+						</div>
+						<div className="anp-store-banner__info">
+							<span className="anp-store-banner__publishing">Publishing as</span>
+							<span className="anp-store-banner__name">{user.memberNick}</span>
+							<span className="anp-store-banner__badge">Verified Store</span>
+						</div>
+					</div>
+					<div className="anp-store-banner__right">
+						<div className="anp-store-banner__stat">
+							<strong>{user.memberLikes ?? 0}</strong>
+							<span>Likes</span>
+						</div>
+						<div className="anp-store-banner__stat">
+							<strong>{user.memberViews ?? 0}</strong>
+							<span>Views</span>
+						</div>
+						<Link href={`/seller/${user._id}`} className="anp-store-banner__link">
+							View My Store →
+						</Link>
+					</div>
+				</div>
+			)}
 
-			<Stack className="product-form-box">
-				{/* Images */}
-				<Stack className="form-section">
-					<Typography className="section-title">📷 Product Images (up to 5)</Typography>
-					<Stack className="image-upload-area">
-						<Stack className="uploaded-images">
+			{/* ── Page Header ── */}
+			<div className="anp-header">
+				<div>
+					<Typography className="anp-header__title">{productId ? '✏️ Edit Product' : '📦 List New Product'}</Typography>
+					<Typography className="anp-header__sub">
+						{productId
+							? 'Update your product details and republish'
+							: 'Fill in the details below to publish your product to the marketplace'}
+					</Typography>
+				</div>
+			</div>
+
+			<div className="anp-body">
+				{/* ── Section 1: Product Images ── */}
+				<Card className="anp-card" elevation={0}>
+					<CardContent className="anp-card__content">
+						<div className="anp-card__head">
+							<span className="anp-card__icon">📷</span>
+							<div>
+								<Typography className="anp-card__title">Product Images</Typography>
+								<Typography className="anp-card__desc">Upload up to 5 photos. First image is the cover.</Typography>
+							</div>
+						</div>
+
+						<div
+							className={`anp-image-grid ${dragActive ? 'anp-image-grid--drag' : ''}`}
+							onDrop={onDrop}
+							onDragOver={onDragOver}
+							onDragEnter={onDragOver}
+							onDragLeave={onDragLeave}
+						>
 							{productImages.map((img, idx) => (
-								<Stack key={idx} className="img-preview">
+								<div key={`${img}-${idx}`} className="anp-image-slot anp-image-slot--filled">
 									<img src={`${API_URL}/${img}`} alt={`product-${idx}`} />
-									<button className="remove-btn" onClick={() => removeImage(idx)}>
+									{idx === 0 && <span className="anp-image-slot__cover">Cover</span>}
+									<button
+										type="button"
+										className="anp-image-slot__remove"
+										onClick={() => removeImage(idx)}
+										disabled={uploading}
+										aria-label={`Remove image ${idx + 1}`}
+									>
 										✕
 									</button>
-								</Stack>
+								</div>
 							))}
-							{productImages.length < 5 && (
+
+							{uploading &&
+								Array.from({ length: Math.max(0, uploadCount.total - uploadCount.done) }).map((_, i) => (
+									<div key={`uploading-${i}`} className="anp-image-slot anp-image-slot--uploading">
+										<CircularProgress size={28} thickness={4} />
+										<span className="anp-image-slot__label">
+											{uploadCount.done + 1}/{uploadCount.total}
+										</span>
+									</div>
+								))}
+
+							{!uploading && productImages.length < MAX_IMAGES && (
 								<>
 									<input
+										ref={inputRef}
 										type="file"
 										hidden
 										id="product-images"
 										multiple
-										accept="image/jpg, image/jpeg, image/png, image/webp"
-										onChange={uploadImages}
+										accept="image/jpeg,image/png,image/webp"
+										onChange={onFileInputChange}
 									/>
-									<label htmlFor="product-images" className="upload-placeholder">
-										<span>+</span>
-										<Typography>Add Photo</Typography>
+									<label
+										htmlFor="product-images"
+										className={`anp-image-slot anp-image-slot--add ${dragActive ? 'is-drag' : ''}`}
+									>
+										<span className="anp-image-slot__plus">+</span>
+										<span className="anp-image-slot__label">
+											{dragActive ? 'Drop here' : 'Add Photo'}
+										</span>
+										<span className="anp-image-slot__hint">JPG · PNG · WEBP · ≤15MB</span>
 									</label>
 								</>
 							)}
-						</Stack>
-					</Stack>
-				</Stack>
+						</div>
+						{uploading && (
+							<Typography className="anp-upload-status">
+								Uploading {uploadCount.done}/{uploadCount.total}…
+							</Typography>
+						)}
+					</CardContent>
+				</Card>
 
-				{/* Basic Info */}
-				<Stack className="form-section">
-					<Typography className="section-title">📦 Product Information</Typography>
-					<Stack className="form-grid">
-						<Stack className="input-box">
-							<Typography className="label">Product Name *</Typography>
-							<input
-								type="text"
-								placeholder="e.g. Royal Canin Adult Dog Food"
-								value={productInput.productName}
-								onChange={({ target: { value } }) => setProductInput({ ...productInput, productName: value })}
-							/>
-						</Stack>
+				{/* ── Section 2: Product Details ── */}
+				<Card className="anp-card" elevation={0}>
+					<CardContent className="anp-card__content">
+						<div className="anp-card__head">
+							<span className="anp-card__icon">🏷️</span>
+							<div>
+								<Typography className="anp-card__title">Product Details</Typography>
+								<Typography className="anp-card__desc">Basic information about your product.</Typography>
+							</div>
+						</div>
 
-						<Stack className="input-box">
-							<Typography className="label">Brand *</Typography>
-							<input
-								type="text"
-								placeholder="e.g. Royal Canin"
-								value={productInput.productBrand}
-								onChange={({ target: { value } }) => setProductInput({ ...productInput, productBrand: value })}
-							/>
-						</Stack>
-
-						{/* productType — ProductInput da bor */}
-						<Stack className="input-box">
-							<Typography className="label">Pet Type *</Typography>
-							<select
-								value={productInput.productType ?? ''}
-								onChange={({ target: { value } }) =>
-									setProductInput({ ...productInput, productType: value as ProductType })
-								}
-							>
-								<option value="">Select pet type</option>
-								{PET_TYPES.map((p) => (
-									<option key={p.value} value={p.value}>
-										{p.label}
-									</option>
-								))}
-							</select>
-						</Stack>
-
-						{/* productCategory — ProductInput da bor */}
-						<Stack className="input-box">
-							<Typography className="label">Category *</Typography>
-							<select
-								value={productInput.productCategory ?? ''}
-								onChange={({ target: { value } }) =>
-									setProductInput({ ...productInput, productCategory: value as ProductCategory })
-								}
-							>
-								<option value="">Select category</option>
-								{PRODUCT_CATEGORIES.map((c) => (
-									<option key={c.value} value={c.value}>
-										{c.label}
-									</option>
-								))}
-							</select>
-						</Stack>
-
-						<Stack className="input-box">
-							<Typography className="label">Price ($) *</Typography>
-							<input
-								type="number"
-								placeholder="0.00"
-								min={0}
-								value={productInput.productPrice || ''}
-								onChange={({ target: { value } }) => setProductInput({ ...productInput, productPrice: Number(value) })}
-							/>
-						</Stack>
-
-						<Stack className="input-box">
-							<Typography className="label">Stock Quantity</Typography>
-							<input
-								type="number"
-								placeholder="Available units"
-								min={0}
-								value={productInput.productStock || ''}
-								onChange={({ target: { value } }) => setProductInput({ ...productInput, productStock: Number(value) })}
-							/>
-						</Stack>
-
-						{/* productSize — ProductInput da bor */}
-						<Stack className="input-box">
-							<Typography className="label">Size / Weight</Typography>
-							<input
-								type="text"
-								placeholder="e.g. 5KG, M, XL"
-								value={productInput.productSize ?? ''}
-								onChange={({ target: { value } }) => setProductInput({ ...productInput, productSize: value })}
-							/>
-						</Stack>
-					</Stack>
-				</Stack>
-
-				{/* Sale — productSale va productSalePercent ProductInput da bor */}
-				<Stack className="form-section">
-					<Typography className="section-title">🔥 Sale Settings</Typography>
-					<Stack direction="row" alignItems="center" gap={2}>
-						<Stack direction="row" alignItems="center" gap={1}>
-							<input
-								type="checkbox"
-								id="productSale"
-								checked={productInput.productSale ?? false}
-								onChange={({ target: { checked } }) => setProductInput({ ...productInput, productSale: checked })}
-							/>
-							<label htmlFor="productSale">On Sale</label>
-						</Stack>
-						{productInput.productSale && (
-							<Stack className="input-box" style={{ width: '150px' }}>
-								<Typography className="label">Discount %</Typography>
+						<div className="anp-form-grid">
+							<div className="anp-field anp-field--full">
+								<label className="anp-field__label">Product Name *</label>
 								<input
+									className="anp-field__input"
+									type="text"
+									placeholder="e.g. Royal Canin Adult Dog Food 10kg"
+									value={productInput.productName}
+									onChange={({ target: { value } }) => setProductInput({ ...productInput, productName: value })}
+								/>
+							</div>
+
+							<div className="anp-field">
+								<label className="anp-field__label">Brand *</label>
+								<input
+									className="anp-field__input"
+									type="text"
+									placeholder="e.g. Royal Canin"
+									value={productInput.productBrand}
+									onChange={({ target: { value } }) => setProductInput({ ...productInput, productBrand: value })}
+								/>
+							</div>
+
+							<div className="anp-field">
+								<label className="anp-field__label">Size / Weight</label>
+								<input
+									className="anp-field__input"
+									type="text"
+									placeholder="e.g. 5KG, M, XL"
+									value={productInput.productSize ?? ''}
+									onChange={({ target: { value } }) => setProductInput({ ...productInput, productSize: value })}
+								/>
+							</div>
+						</div>
+
+						{/* Pet Type */}
+						<div className="anp-chip-group">
+							<label className="anp-field__label">Pet Type *</label>
+							<div className="anp-chips">
+								{PET_TYPES.map((p) => (
+									<Chip
+										key={p.value}
+										label={p.label}
+										onClick={() => setProductInput({ ...productInput, productType: p.value })}
+										className={`anp-chip ${productInput.productType === p.value ? 'anp-chip--active' : ''}`}
+										variant={productInput.productType === p.value ? 'filled' : 'outlined'}
+									/>
+								))}
+							</div>
+						</div>
+
+						{/* Category */}
+						<div className="anp-chip-group">
+							<label className="anp-field__label">Category *</label>
+							<div className="anp-chips">
+								{PRODUCT_CATEGORIES.map((c) => (
+									<Chip
+										key={c.value}
+										label={c.label}
+										onClick={() => setProductInput({ ...productInput, productCategory: c.value })}
+										className={`anp-chip ${productInput.productCategory === c.value ? 'anp-chip--active' : ''}`}
+										variant={productInput.productCategory === c.value ? 'filled' : 'outlined'}
+									/>
+								))}
+							</div>
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* ── Section 3: Inventory & Pricing ── */}
+				<Card className="anp-card" elevation={0}>
+					<CardContent className="anp-card__content">
+						<div className="anp-card__head">
+							<span className="anp-card__icon">💰</span>
+							<div>
+								<Typography className="anp-card__title">Inventory & Pricing</Typography>
+								<Typography className="anp-card__desc">Set your price and available stock.</Typography>
+							</div>
+						</div>
+
+						<div className="anp-form-grid">
+							<div className="anp-field">
+								<label className="anp-field__label">Price (USD) *</label>
+								<div className="anp-field__prefix-wrap">
+									<span className="anp-field__prefix">$</span>
+									<input
+										className="anp-field__input anp-field__input--prefixed"
+										type="number"
+										placeholder="0.00"
+										min={0}
+										value={productInput.productPrice || ''}
+										onChange={({ target: { value } }) =>
+											setProductInput({ ...productInput, productPrice: Number(value) })
+										}
+									/>
+								</div>
+							</div>
+
+							<div className="anp-field">
+								<label className="anp-field__label">Stock Quantity</label>
+								<input
+									className="anp-field__input"
 									type="number"
-									placeholder="e.g. 20"
-									min={1}
-									max={99}
-									value={productInput.productSalePercent ?? ''}
+									placeholder="Available units"
+									min={0}
+									value={productInput.productStock || ''}
 									onChange={({ target: { value } }) =>
-										setProductInput({ ...productInput, productSalePercent: Number(value) })
+										setProductInput({ ...productInput, productStock: Number(value) })
 									}
 								/>
-							</Stack>
-						)}
-					</Stack>
-				</Stack>
+							</div>
+						</div>
 
-				{/* Description */}
-				<Stack className="form-section">
-					<Typography className="section-title">📝 Description</Typography>
-					<textarea
-						className="desc-textarea"
-						rows={5}
-						placeholder="Describe your product..."
-						value={productInput.productDesc ?? ''}
-						onChange={({ target: { value } }) => setProductInput({ ...productInput, productDesc: value })}
-					/>
-				</Stack>
-
-				{/* Submit */}
-				<Stack className="submit-box">
-					<Button className="submit-button" onClick={submitHandler} disabled={isDisabled()}>
-						<Typography>{productId ? 'Update Product' : 'List Product'}</Typography>
-						<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
-							<g clipPath="url(#clip0)">
-								<path
-									d="M12.6389 0H4.69446C4.49486 0 4.33334 0.161518 4.33334 0.361122C4.33334 0.560727 4.49486 0.722245 4.69446 0.722245H11.7672L0.105803 12.3836C-0.0352676 12.5247 -0.0352676 12.7532 0.105803 12.8942C0.176321 12.9647 0.268743 13 0.361131 13C0.453519 13 0.545907 12.9647 0.616459 12.8942L12.2778 1.23287V8.30558C12.2778 8.50518 12.4393 8.6667 12.6389 8.6667C12.8385 8.6667 13 8.50518 13 8.30558V0.361122C13 0.161518 12.8385 0 12.6389 0Z"
-									fill="white"
+						{/* Sale toggle */}
+						<div className="anp-sale-row">
+							<label className="anp-sale-toggle">
+								<input
+									type="checkbox"
+									className="anp-sale-toggle__check"
+									checked={productInput.productSale ?? false}
+									onChange={({ target: { checked } }) => setProductInput({ ...productInput, productSale: checked })}
 								/>
-							</g>
-							<defs>
-								<clipPath id="clip0">
-									<rect width="13" height="13" fill="white" />
-								</clipPath>
-							</defs>
-						</svg>
+								<span className="anp-sale-toggle__track" />
+								<span className="anp-sale-toggle__label">On Sale</span>
+							</label>
+
+							{productInput.productSale && (
+								<div className="anp-field anp-field--inline">
+									<label className="anp-field__label">Discount %</label>
+									<input
+										className="anp-field__input"
+										type="number"
+										placeholder="e.g. 20"
+										min={1}
+										max={99}
+										value={productInput.productSalePercent ?? ''}
+										onChange={({ target: { value } }) =>
+											setProductInput({ ...productInput, productSalePercent: Number(value) })
+										}
+									/>
+								</div>
+							)}
+
+							{productInput.productSale && productInput.productSalePercent && productInput.productPrice ? (
+								<div className="anp-sale-preview">
+									<span>Sale price: </span>
+									<strong>
+										${(productInput.productPrice * (1 - productInput.productSalePercent / 100)).toFixed(2)}
+									</strong>
+									<span className="anp-sale-preview__original">${productInput.productPrice.toFixed(2)}</span>
+								</div>
+							) : null}
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* ── Section 4: Description ── */}
+				<Card className="anp-card" elevation={0}>
+					<CardContent className="anp-card__content">
+						<div className="anp-card__head">
+							<span className="anp-card__icon">📝</span>
+							<div>
+								<Typography className="anp-card__title">Product Description</Typography>
+								<Typography className="anp-card__desc">Tell buyers what makes your product special.</Typography>
+							</div>
+						</div>
+
+						<textarea
+							className="anp-textarea"
+							rows={6}
+							placeholder="Describe ingredients, benefits, sizing, usage instructions..."
+							value={productInput.productDesc ?? ''}
+							onChange={({ target: { value } }) => setProductInput({ ...productInput, productDesc: value })}
+						/>
+					</CardContent>
+				</Card>
+
+				{/* ── Submit ── */}
+				<div className="anp-submit">
+					<Button className="anp-submit__btn" onClick={submitHandler} disabled={isDisabled()} variant="contained">
+						{uploading ? (
+							<>
+								<CircularProgress size={18} sx={{ mr: 1, color: 'inherit' }} />
+								Uploading images…
+							</>
+						) : productId ? (
+							'Update Product'
+						) : (
+							'Publish to Marketplace'
+						)}
 					</Button>
-				</Stack>
-			</Stack>
+					{isDisabled() && !uploading && (
+						<Typography className="anp-submit__hint">
+							* Add at least one image and fill in name, brand, pet type, category and price to publish.
+						</Typography>
+					)}
+				</div>
+			</div>
 		</div>
 	);
 };

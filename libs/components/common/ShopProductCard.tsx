@@ -6,6 +6,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { Product } from '../../types/product/product';
@@ -100,6 +101,27 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 
 				{/* Name */}
 				<Typography className="shop-product-card__name">{product.productName}</Typography>
+
+				{/* Store identity */}
+				{product.memberData && (
+					<Link
+						href={`/seller/${product.memberData._id}`}
+						className="shop-product-card__store"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<img
+							src={
+								product.memberData.memberImage
+									? `${API_URL}/${product.memberData.memberImage}`
+									: '/img/profile/defaultUser.svg'
+							}
+							alt={product.memberData.memberNick}
+							className="shop-product-card__store-avatar"
+						/>
+						<span className="shop-product-card__store-name">{product.memberData.memberNick}</span>
+						<span className="shop-product-card__store-badge">✓</span>
+					</Link>
+				)}
 
 				{/* Product type tag */}
 				{product.productType && (

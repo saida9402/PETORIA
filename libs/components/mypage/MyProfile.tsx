@@ -2,23 +2,22 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
-import axios from 'axios';
 import { API_URL, Messages } from '../../config';
-import { getJwtToken, updateStorage, updateUserInfo } from '../../auth';
+import { updateStorage, updateUserInfo } from '../../auth';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { MemberUpdate } from '../../types/member/member.update';
-import { UPDATE_MEMBER } from '../../../apollo/user/mutation';
+import { UPDATE_MEMBER, IMAGE_UPLOADER } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../sweetAlert';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const device = useDeviceDetect();
-	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
 
 	/** APOLLO REQUESTS **/
 	const [updateMember] = useMutation(UPDATE_MEMBER);
+	const [imageUploader] = useMutation(IMAGE_UPLOADER);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -35,35 +34,15 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	/** HANDLERS **/
 	const uploadImage = async (e: any) => {
 		try {
-			const image = e.target.files[0];
-			const formData = new FormData();
-			formData.append(
-				'operations',
-				JSON.stringify({
-					query: `mutation ImageUploader($file: Upload!, $target: String!) {
-						imageUploader(file: $file, target: $target)
-					}`,
-					variables: { file: null, target: 'member' },
-				}),
-			);
-			formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
-			formData.append('0', image);
+			const file = e.target.files?.[0];
+			if (!file) return;
 
-			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					'apollo-require-preflight': true,
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			const { data } = await imageUploader({ variables: { file, target: 'member' } });
+			if (!data?.imageUploader) return;
 
-			const responseImage = response.data.data.imageUploader;
-			updateData.memberImage = responseImage;
-			setUpdateData({ ...updateData });
-
-			return `${API_URL}/${responseImage}`;
-		} catch (err) {
-			console.log('Error, uploadImage:', err);
+			setUpdateData((prev) => ({ ...prev, memberImage: data.imageUploader }));
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
 		}
 	};
 

@@ -2,26 +2,23 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextField } from '@mui/material';
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
-import { getJwtToken } from '../../auth';
-
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import { T } from '../../types/common';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { useMutation } from '@apollo/client';
-import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { CREATE_BOARD_ARTICLE, IMAGE_UPLOADER } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
 import { API_URL } from '../../config';
 
 const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
-		token = getJwtToken(),
 		router = useRouter();
 	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(BoardArticleCategory.FREE);
 
 	/** APOLLO REQUESTS **/
 	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
+	const [imageUploader] = useMutation(IMAGE_UPLOADER);
 
 	const memoizedValues = useMemo(() => {
 		const articleTitle = '',
@@ -32,44 +29,15 @@ const TuiEditor = () => {
 	}, []);
 
 	/** HANDLERS **/
-	const uploadImage = async (image: any) => {
+	const uploadImage = async (image: any): Promise<string> => {
 		try {
-			const formData = new FormData();
-			formData.append(
-				'operations',
-				JSON.stringify({
-					query: `mutation ImageUploader($file: Upload!, $target: String!) {
-						imageUploader(file: $file, target: $target) 
-				  }`,
-					variables: {
-						file: null,
-						target: 'article',
-					},
-				}),
-			);
-			formData.append(
-				'map',
-				JSON.stringify({
-					'0': ['variables.file'],
-				}),
-			);
-			formData.append('0', image);
-
-			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					'apollo-require-preflight': true,
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			const responseImage = response.data.data.imageUploader;
-			console.log('=responseImage: ', responseImage);
-			memoizedValues.articleImage = responseImage;
-
-			return `${API_URL}/${responseImage}`;
-		} catch (err) {
-			console.log('Error, uploadImage:', err);
+			const { data } = await imageUploader({ variables: { file: image, target: 'article' } });
+			if (!data?.imageUploader) return '';
+			memoizedValues.articleImage = data.imageUploader;
+			return `${API_URL}/${data.imageUploader}`;
+		} catch (err: any) {
+			console.error('Error, uploadImage:', err);
+			return '';
 		}
 	};
 

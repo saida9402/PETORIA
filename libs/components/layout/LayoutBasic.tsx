@@ -51,7 +51,7 @@ const withLayoutBasic = (Component: any) => {
 					break;
 				case '/mypage':
 					title = 'My Page';
-					desc = 'Manage your account';
+					desc = 'Manage your profile, orders & favorites';
 					bgImage = '/img/banner/mypage.svg';
 					break;
 				case '/community':
@@ -78,6 +78,26 @@ const withLayoutBasic = (Component: any) => {
 				case '/member':
 					title = 'Member Profile';
 					desc = 'Pet lover community';
+					bgImage = '/img/banner/mypage.svg';
+					break;
+				case '/seller/[sellerId]':
+					title = 'Seller Store';
+					desc = 'Explore this pet shop';
+					bgImage = '/img/banner/shop.svg';
+					break;
+				case '/seller/dashboard':
+					title = 'Seller Dashboard';
+					desc = 'Manage your pet store';
+					bgImage = '/img/banner/mypage.svg';
+					break;
+				case '/seller/products':
+					title = 'Products Management';
+					desc = 'Manage your listings';
+					bgImage = '/img/banner/shop.svg';
+					break;
+				case '/seller/settings':
+					title = 'Store Settings';
+					desc = 'Update your store profile';
 					bgImage = '/img/banner/mypage.svg';
 					break;
 				default:
@@ -124,18 +144,10 @@ const withLayoutBasic = (Component: any) => {
 							<Top />
 						</Stack>
 
-						<Stack
-							className={`header-basic ${authHeader && 'auth'}`}
-							style={{
-								backgroundImage: `url(${memoizedValues.bgImage})`,
-								backgroundSize: 'cover',
-								backgroundPosition: 'center',
-								boxShadow: 'inset 10px 40px 150px 40px rgba(45, 80, 22, 0.85)',
-							}}
-						>
+						<Stack className={`header-basic ${authHeader && 'auth'}`}>
 							<Stack className={'container'}>
-								<strong style={{ color: '#E8F5D0' }}>{t(memoizedValues.title)}</strong>
-								<span style={{ color: '#A8CC7A' }}>{t(memoizedValues.desc)}</span>
+								<strong>{t(memoizedValues.title)}</strong>
+								<span>{t(memoizedValues.desc)}</span>
 							</Stack>
 						</Stack>
 

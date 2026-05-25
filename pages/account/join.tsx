@@ -26,6 +26,7 @@ const Join: NextPage = () => {
 	const device = useDeviceDetect();
 	const [input, setInput] = useState<JoinInput>({ nick: '', password: '', phone: '', type: 'USER' });
 	const [loginView, setLoginView] = useState<boolean>(true);
+	const isSeller = input.type === 'SELLER';
 
 	/** HANDLERS **/
 	const viewChangeHandler = (state: boolean) => setLoginView(state);
@@ -64,25 +65,66 @@ const Join: NextPage = () => {
 	return (
 		<Stack className={'join-page'}>
 			<Stack className={'container'}>
-				<Stack className={'main'}>
+				<Stack className={`main${isSeller && !loginView ? ' main--seller' : ''}`}>
 					<Stack className={'left'}>
-						{/* Logo — plain div avoids MUI Box TS2590 union-type complexity */}
+						{/* Logo */}
 						<div className={'logo'}>
 							<img src="/img/logo/petoriaLogoDark.svg" alt="Petoria" />
 							<span>Petoria 🐾</span>
 						</div>
 
+						{/* Dynamic heading */}
 						<div className={'info'}>
-							<span>{loginView ? 'Welcome back!' : 'Join Petoria'}</span>
-							<p>{loginView ? 'Login to your pet lover account.' : 'Create your Petoria account today.'}</p>
+							{loginView ? (
+								<>
+									<span>Welcome back!</span>
+									<p>Login to your pet lover account.</p>
+								</>
+							) : isSeller ? (
+								<>
+									<span className="seller-heading">Create Your Pet Store</span>
+									<p>Launch your pet shop on Petoria marketplace.</p>
+								</>
+							) : (
+								<>
+									<span>Join Petoria</span>
+									<p>Create your Petoria account today.</p>
+								</>
+							)}
 						</div>
+
+						{/* Seller store perks panel */}
+						{!loginView && isSeller && (
+							<div className="seller-store-perks">
+								<div className="ssp-item">
+									<span className="ssp-icon">🏪</span>
+									<span>Your own branded store page</span>
+								</div>
+								<div className="ssp-item">
+									<span className="ssp-icon">📦</span>
+									<span>List unlimited pet products</span>
+								</div>
+								<div className="ssp-item">
+									<span className="ssp-icon">📊</span>
+									<span>Real-time dashboard &amp; analytics</span>
+								</div>
+								<div className="ssp-item">
+									<span className="ssp-icon">✓</span>
+									<span>Verified Seller badge on all products</span>
+								</div>
+							</div>
+						)}
 
 						<div className={'input-wrap'}>
 							<div className={'input-box'}>
-								<span>Nickname</span>
+								<span>{!loginView && isSeller ? 'Store Name' : 'Nickname'}</span>
 								<input
 									type="text"
-									placeholder={'Enter Nickname'}
+									placeholder={
+										!loginView && isSeller
+											? 'Your pet store name (e.g. PawsWorld)'
+											: 'Enter Nickname'
+									}
 									onChange={(e) => handleInput('nick', e.target.value)}
 									required
 									onKeyDown={(e) => {
@@ -90,6 +132,11 @@ const Join: NextPage = () => {
 										if (e.key === 'Enter' && !loginView) doSignUp();
 									}}
 								/>
+								{!loginView && isSeller && input.nick && (
+									<span className="store-url-preview">
+										petoria.com/seller/{input.nick.toLowerCase().replace(/\s+/g, '-')}
+									</span>
+								)}
 							</div>
 							<div className={'input-box'}>
 								<span>Password</span>
@@ -123,7 +170,7 @@ const Join: NextPage = () => {
 						<div className={'register'}>
 							{!loginView && (
 								<div className={'type-option'}>
-									<span className={'text'}>I want to register as:</span>
+									<span className={'text'}>I want to:</span>
 									<div>
 										<FormGroup>
 											<FormControlLabel
@@ -135,7 +182,7 @@ const Join: NextPage = () => {
 														checked={input.type === 'USER'}
 													/>
 												}
-												label="🐾 Pet Lover (User)"
+												label="🐾 Shop as Pet Lover"
 											/>
 										</FormGroup>
 										<FormGroup>
@@ -145,10 +192,10 @@ const Join: NextPage = () => {
 														size="small"
 														name={'SELLER'}
 														onChange={checkUserTypeHandler}
-														checked={input.type === 'SELLER'}
+														checked={isSeller}
 													/>
 												}
-												label="🛍 Pet Shop (Seller)"
+												label="🛍 Open a Pet Store"
 											/>
 										</FormGroup>
 									</div>
@@ -176,11 +223,12 @@ const Join: NextPage = () => {
 							) : (
 								<Button
 									variant="contained"
+									className={isSeller ? 'seller-signup-btn' : ''}
 									disabled={!input.nick || !input.password || !input.phone || !input.type}
 									onClick={doSignUp}
 									endIcon={<img src="/img/icons/rightup.svg" alt="" />}
 								>
-									SIGN UP
+									{isSeller ? 'CREATE MY STORE' : 'SIGN UP'}
 								</Button>
 							)}
 						</div>
@@ -199,7 +247,36 @@ const Join: NextPage = () => {
 							)}
 						</div>
 					</Stack>
-					<Stack className={'right'} />
+
+					{/* Right panel — seller gets branded panel */}
+					{!loginView && isSeller ? (
+						<Stack className="right right--seller">
+							<div className="seller-right-content">
+								<div className="src-logo">🐾</div>
+								<p className="src-tagline">Join 500+ pet stores on Petoria</p>
+								<div className="src-stats">
+									<div className="src-stat">
+										<strong>10K+</strong>
+										<span>Daily Shoppers</span>
+									</div>
+									<div className="src-stat">
+										<strong>500+</strong>
+										<span>Active Stores</span>
+									</div>
+									<div className="src-stat">
+										<strong>4.9★</strong>
+										<span>Seller Rating</span>
+									</div>
+								</div>
+								<p className="src-quote">
+									&ldquo;Petoria helped me grow my pet food business 3x in just 6 months.&rdquo;
+								</p>
+								<span className="src-author">— PawsWorld Store</span>
+							</div>
+						</Stack>
+					) : (
+						<Stack className={'right'} />
+					)}
 				</Stack>
 			</Stack>
 		</Stack>
