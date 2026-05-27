@@ -1,42 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { Member } from '../../types/member/member';
-import { API_URL } from '../../config';
+import { API_URL, Messages } from '../../config';
 import { GET_MEMBER } from '../../../apollo/user/query';
-import { useQuery } from '@apollo/client';
+import { SUBSCRIBE, UNSUBSCRIBE } from '../../../apollo/user/mutation';
+import { useQuery, useMutation, useReactiveVar } from '@apollo/client';
 import { T } from '../../types/common';
+import { userVar } from '../../../apollo/store';
+import { sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
-interface MemberMenuProps {
-	subscribeHandler: any;
-	unsubscribeHandler: any;
-}
+interface MemberMenuProps {}
 
-const MemberMenu = (props: MemberMenuProps) => {
-	const { subscribeHandler, unsubscribeHandler } = props;
+const MemberMenu = (_props: MemberMenuProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const category: any = router.query?.category;
+	const user = useReactiveVar(userVar);
 	const [member, setMember] = useState<Member | null>(null);
+	const [isFollowing, setIsFollowing] = useState(false);
 	const { memberId } = router.query;
 
 	/** APOLLO REQUESTS **/
+	const [subscribe] = useMutation(SUBSCRIBE);
+	const [unsubscribe] = useMutation(UNSUBSCRIBE);
+
 	const {
-		loading: getMemberLoading,
 		data: getMemberData,
-		error: getMemberError,
 		refetch: getMemberRefetch,
 	} = useQuery(GET_MEMBER, {
 		fetchPolicy: 'network-only',
 		variables: { input: memberId },
 		skip: !memberId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setMember(data?.getMember);
-		},
 	});
+
+	useEffect(() => {
+		if (getMemberData?.getMember) {
+			const m: Member = getMemberData.getMember;
+			setMember(m);
+			setIsFollowing(m?.meFollowed?.[0]?.myFollowing ?? false);
+		}
+	}, [getMemberData]);
+
+	const handleFollow = async () => {
+		try {
+			if (!member?._id) throw new Error(Messages.error1);
+			if (!user?._id) throw new Error(Messages.error2);
+			const next = !isFollowing;
+			setIsFollowing(next);
+			if (next) {
+				await subscribe({ variables: { input: member._id } });
+				await sweetTopSmallSuccessAlert('Followed!', 800);
+			} else {
+				await unsubscribe({ variables: { input: member._id } });
+				await sweetTopSmallSuccessAlert('Unfollowed!', 800);
+			}
+			getMemberRefetch({ input: memberId });
+		} catch (err: any) {
+			setIsFollowing((v) => !v);
+			sweetErrorHandling(err).then();
+		}
+	};
 
 	if (device === 'mobile') {
 		return <div>MEMBER MENU MOBILE</div>;
@@ -63,12 +90,12 @@ const MemberMenu = (props: MemberMenuProps) => {
 
 				{/* Follow Button */}
 				<Stack className="follow-button-box">
-					{member?.meFollowed && member?.meFollowed[0]?.myFollowing ? (
+					{isFollowing ? (
 						<>
 							<Button
 								variant="outlined"
 								sx={{ background: '#b9b9b9' }}
-								onClick={() => unsubscribeHandler(member?._id, getMemberRefetch, memberId)}
+								onClick={handleFollow}
 							>
 								Unfollow
 							</Button>
@@ -78,7 +105,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 						<Button
 							variant="contained"
 							sx={{ background: '#4E8A28', ':hover': { background: '#3A6B1E' } }}
-							onClick={() => subscribeHandler(member?._id, getMemberRefetch, memberId)}
+							onClick={handleFollow}
 						>
 							Follow 🐾
 						</Button>

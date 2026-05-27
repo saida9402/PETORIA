@@ -103,7 +103,7 @@ const MemberPage: NextPage = () => {
 					<Stack className={'member-page'}>
 						<Stack className={'back-frame'}>
 							<Stack className={'left-config'}>
-								<MemberMenu subscribeHandler={subscribeHandler} unsubscribeHandler={unsubscribeHandler} />
+								<MemberMenu />
 							</Stack>
 							<Stack className="main-config" mb={'76px'}>
 								<Stack className={'list-config'}>

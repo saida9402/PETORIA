@@ -317,19 +317,20 @@
 /* Product grid */
 .shop-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 
-  @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 800px)  { grid-template-columns: 1fr; }
+  @media (max-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px)  { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 600px)  { grid-template-columns: 1fr; }
 }
 
 /* ── Skeleton loading ──────────────────────────────────────────── */
 
 .shop-skeleton {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 
   &__card {
     height: 360px;
@@ -426,7 +427,7 @@
   .top {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: var(--nbg, #EAF3DE);
     flex-shrink: 0;
@@ -446,7 +447,7 @@
     }
 
     &:hover img {
-      transform: scale(1.07);
+      transform: scale(1.03);
     }
 
     /* TOP badge */
@@ -610,6 +611,7 @@
       align-items: center !important;
       justify-content: space-between !important;
       gap: 6px;
+      margin-top: auto;
 
       .type {
         display: flex !important;

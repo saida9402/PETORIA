@@ -69,7 +69,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 	const [subscribe] = useMutation(SUBSCRIBE);
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
 
-	const { refetch: getMemberRefetch } = useQuery(GET_MEMBER, {
+	const { data: getMemberData, refetch: getMemberRefetch } = useQuery(GET_MEMBER, {
 		fetchPolicy: 'network-only',
 		variables: { input: sellerId },
 		skip: !sellerId,
@@ -81,6 +81,12 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 			setInsertCommentData((prev) => ({ ...prev, commentRefId: m?._id }));
 		},
 	});
+
+	useEffect(() => {
+		if (getMemberData?.getMember) {
+			setSeller(getMemberData.getMember);
+		}
+	}, [getMemberData]);
 
 	const { refetch: getProductsRefetch } = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'network-only',
@@ -123,17 +129,26 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 	};
 
 	const followHandler = async () => {
+		if (!user._id) { sweetErrorHandling(new Error(Messages.error2)).then(); return; }
+		if (!seller?._id) return;
+		const wasFollowing = seller.meFollowed?.[0]?.myFollowing ?? false;
+		// Optimistic update — instant UI feedback
+		setSeller((prev) =>
+			prev ? { ...prev, meFollowed: [{ myFollowing: !wasFollowing }] } : prev,
+		);
 		try {
-			if (!user._id) throw new Error(Messages.error2);
-			if (!seller?._id) return;
-			if (seller.meFollowed?.[0]?.myFollowing) {
+			if (wasFollowing) {
 				await unsubscribe({ variables: { input: seller._id } });
 			} else {
 				await subscribe({ variables: { input: seller._id } });
 			}
-			await getMemberRefetch({ input: sellerId });
 			await sweetTopSmallSuccessAlert('Done!', 800);
+			getMemberRefetch({ input: sellerId });
 		} catch (err: any) {
+			// Revert optimistic update on failure
+			setSeller((prev) =>
+				prev ? { ...prev, meFollowed: [{ myFollowing: wasFollowing }] } : prev,
+			);
 			sweetErrorHandling(err).then();
 		}
 	};

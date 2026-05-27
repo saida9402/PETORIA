@@ -83,7 +83,7 @@ const ProductDetail: NextPage = () => {
 	if (!validId) {
 		return (
 			<div className="product-detail-page">
-				<div className="wrap">
+				<section className="product-detail-container">
 					<div className="product-detail__empty">
 						<p className="product-detail__empty-icon">🐾</p>
 						<h2>Product not found</h2>
@@ -92,7 +92,7 @@ const ProductDetail: NextPage = () => {
 							Back to shop
 						</Link>
 					</div>
-				</div>
+				</section>
 			</div>
 		);
 	}
@@ -100,11 +100,11 @@ const ProductDetail: NextPage = () => {
 	if (loading) {
 		return (
 			<div className="product-detail-page">
-				<div className="wrap">
+				<section className="product-detail-container">
 					<div className="product-detail__loading">
 						<div className="skeleton" style={{ height: 400, borderRadius: 16 }} />
 					</div>
-				</div>
+				</section>
 			</div>
 		);
 	}
@@ -112,7 +112,7 @@ const ProductDetail: NextPage = () => {
 	if (!product) {
 		return (
 			<div className="product-detail-page">
-				<div className="wrap">
+				<section className="product-detail-container">
 					<div className="product-detail__empty">
 						<p className="product-detail__empty-icon">🐾</p>
 						<h2>Product not found</h2>
@@ -121,7 +121,7 @@ const ProductDetail: NextPage = () => {
 							Back to shop
 						</Link>
 					</div>
-				</div>
+				</section>
 			</div>
 		);
 	}
@@ -186,7 +186,7 @@ const ProductDetail: NextPage = () => {
 
 	return (
 		<div className="product-detail-page">
-			<div className="wrap">
+			<section className="product-detail-container">
 				{/* Breadcrumb */}
 				<nav className="product-detail__breadcrumb">
 					<Link href="/">Home</Link>
@@ -374,7 +374,7 @@ const ProductDetail: NextPage = () => {
 						</div>
 					</section>
 				</div>
-			</div>
+			</section>
 		</div>
 	);
 };
