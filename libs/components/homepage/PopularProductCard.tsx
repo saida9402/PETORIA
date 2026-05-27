@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { API_URL } from '../../config';
+import { addToCart } from '../../cart';
 
 const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
 	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },
@@ -62,8 +63,19 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 	};
 
 	const handleAdd = (e: React.MouseEvent) => {
+		e.preventDefault();
 		e.stopPropagation();
 		if (isSold) return;
+
+		addToCart({
+			productId: p._id,
+			productName: p.productName,
+			productBrand: '',
+			productImage: p.productImages?.[0] ?? '',
+			productPrice: p.productPrice,
+			productType: p.productType,
+		});
+
 		onAddCart?.(p);
 		setAdded(true);
 		setTimeout(() => setAdded(false), 1200);
@@ -86,6 +98,7 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 
 				{/* Like btn */}
 				<button
+					type="button"
 					className={`popular-product-card__fav${liked ? ' popular-product-card__fav--liked' : ''}`}
 					onClick={handleLike}
 					aria-label="Like"
@@ -96,6 +109,7 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 				{/* Quick add */}
 				{!isSold && (
 					<button
+						type="button"
 						className={`popular-product-card__quick${added ? ' popular-product-card__quick--added' : ''}`}
 						onClick={handleAdd}
 					>

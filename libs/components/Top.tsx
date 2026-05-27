@@ -24,6 +24,7 @@ import { useReactiveVar } from '@apollo/client';
 import { userVar, chatOpenVar, onlineUsersVar } from '../../apollo/store';
 import { themeVar } from '../store/themeStore';
 import { API_URL } from '../config';
+import { cartCount as readCartCount, subscribeCart } from '../cart';
 
 const StyledMenu = styled((props: MenuProps) => (
 	<Menu
@@ -85,7 +86,12 @@ const Top = () => {
 	const [logoutAnchor, setLogoutAnchor] = useState<null | HTMLElement>(null);
 	const [lang, setLang] = useState<string>('en');
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [cartCount] = useState(0);
+	const [cartCount, setCartCount] = useState(0);
+
+	useEffect(() => {
+		setCartCount(readCartCount());
+		return subscribeCart(() => setCartCount(readCartCount()));
+	}, []);
 	const [bgColor, setBgColor] = useState(false);
 
 	const langOpen = Boolean(langAnchor);
@@ -98,7 +104,7 @@ const Top = () => {
 	}, [router]);
 
 	useEffect(() => {
-		setBgColor(router.pathname === '/shop/detail');
+		setBgColor(router.pathname === '/shop/[id]');
 	}, [router.pathname]);
 
 	useEffect(() => {

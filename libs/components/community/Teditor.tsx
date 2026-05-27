@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextField } from '@mui/material';
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
@@ -12,28 +12,24 @@ import { Message } from '../../enums/common.enum';
 import { API_URL } from '../../config';
 
 const TuiEditor = () => {
-	const editorRef = useRef<Editor>(null),
-		router = useRouter();
+	const editorRef = useRef<Editor>(null);
+	const router = useRouter();
+
 	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(BoardArticleCategory.FREE);
+	const [articleTitle, setArticleTitle] = useState<string>('');
+	const [articleImage, setArticleImage] = useState<string>('');
+	const [submitting, setSubmitting] = useState<boolean>(false);
 
 	/** APOLLO REQUESTS **/
 	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
 	const [imageUploader] = useMutation(IMAGE_UPLOADER);
-
-	const memoizedValues = useMemo(() => {
-		const articleTitle = '',
-			articleContent = '',
-			articleImage = '';
-
-		return { articleTitle, articleContent, articleImage };
-	}, []);
 
 	/** HANDLERS **/
 	const uploadImage = async (image: any): Promise<string> => {
 		try {
 			const { data } = await imageUploader({ variables: { file: image, target: 'article' } });
 			if (!data?.imageUploader) return '';
-			memoizedValues.articleImage = data.imageUploader;
+			setArticleImage(data.imageUploader);
 			return `${API_URL}/${data.imageUploader}`;
 		} catch (err: any) {
 			console.error('Error, uploadImage:', err);
@@ -46,36 +42,66 @@ const TuiEditor = () => {
 	};
 
 	const articleTitleHandler = (e: T) => {
-		console.log(e.target.value);
-		memoizedValues.articleTitle = e.target.value;
+		setArticleTitle(e.target.value);
 	};
 
 	const handleRegisterButton = async () => {
+		if (submitting) return;
+		setSubmitting(true);
+
 		try {
 			const editor = editorRef.current;
-			const articleContent = editor?.getInstance().getHTML() as string;
-			memoizedValues.articleContent = articleContent;
+			const articleContent = (editor?.getInstance().getHTML() as string) ?? '';
 
-			if (memoizedValues.articleContent === '' && memoizedValues.articleTitle === '') {
-				throw new Error(Message.INSERT_ALL_INPUTS);
+			// Validation
+			const trimmedTitle = articleTitle.trim();
+			const trimmedContent = articleContent.trim();
+
+			if (!trimmedTitle) {
+				throw new Error('Please enter a title');
 			}
+			if (trimmedTitle.length < 3) {
+				throw new Error('Title must be at least 3 characters');
+			}
+			if (trimmedTitle.length > 50) {
+				throw new Error('Title must be 50 characters or less');
+			}
+			if (!trimmedContent || trimmedContent === '<p><br></p>' || trimmedContent === '<p>Type here</p>') {
+				throw new Error('Please write some content');
+			}
+			if (trimmedContent.length < 3) {
+				throw new Error('Content is too short');
+			}
+
+			console.log('[ARTICLE SUBMIT]', {
+				articleCategory,
+				articleTitle: trimmedTitle,
+				contentLength: trimmedContent.length,
+				articleImage,
+			});
 
 			await createBoardArticle({
 				variables: {
-					input: { ...memoizedValues, articleCategory },
+					input: {
+						articleCategory,
+						articleTitle: trimmedTitle,
+						articleContent: trimmedContent,
+						articleImage: articleImage || undefined,
+					},
 				},
 			});
 
 			await sweetTopSuccessAlert('Article is created successfully', 700);
 			await router.push({
 				pathname: '/mypage',
-				query: {
-					category: 'myArticles',
-				},
+				query: { category: 'myArticles' },
 			});
 		} catch (err: any) {
-			console.log(err);
-			sweetErrorHandling(new Error(Message.INSERT_ALL_INPUTS)).then();
+			console.error('[ARTICLE SUBMIT ERROR]', err);
+			const msg = err?.message || Message.INSERT_ALL_INPUTS;
+			sweetErrorHandling(new Error(msg)).then();
+		} finally {
+			setSubmitting(false);
 		}
 	};
 
@@ -107,17 +133,19 @@ const TuiEditor = () => {
 						Title
 					</Typography>
 					<TextField
+						value={articleTitle}
 						onChange={articleTitleHandler}
 						id="filled-basic"
-						label="Type Title"
+						label="Type Title (3-50 chars)"
 						style={{ width: '300px', background: 'white' }}
+						inputProps={{ maxLength: 50 }}
 					/>
 				</Box>
 			</Stack>
 
 			<Editor
-				initialValue={'Type here'}
-				placeholder={'Type here'}
+				initialValue={''}
+				placeholder={'Write your article here...'}
 				previewStyle={'vertical'}
 				height={'640px'}
 				// @ts-ignore
@@ -146,8 +174,9 @@ const TuiEditor = () => {
 					color="primary"
 					style={{ margin: '30px', width: '250px', height: '45px' }}
 					onClick={handleRegisterButton}
+					disabled={submitting}
 				>
-					Register
+					{submitting ? 'Submitting...' : 'Register'}
 				</Button>
 			</Stack>
 		</Stack>

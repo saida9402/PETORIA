@@ -120,12 +120,12 @@ export const ProductPanelList = (props: ProductPanelListType) => {
 										<TableCell align="left" className="name">
 											{product.productStatus === ProductStatus.ACTIVE ? (
 												<Stack direction={'row'}>
-													<Link href={`/shop/detail?id=${product?._id}`}>
+													<Link href={`/shop/${product?._id}`}>
 														<div>
 															<Avatar alt={product.productName} src={productImage} sx={{ ml: '2px', mr: '10px' }} />
 														</div>
 													</Link>
-													<Link href={`/shop/detail?id=${product?._id}`}>
+													<Link href={`/shop/${product?._id}`}>
 														<div>{product.productName}</div>
 													</Link>
 												</Stack>

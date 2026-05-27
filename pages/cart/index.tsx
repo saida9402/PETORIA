@@ -7,6 +7,7 @@ import { CREATE_ORDER } from '../../apollo/user/mutation';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { sweetConfirmAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { CartItem as SharedCartItem, getCart as readCart, saveCart as writeCart, subscribeCart } from '../../libs/cart';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -14,32 +15,9 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-interface CartItem {
-	productId: string;
-	productName: string;
-	productBrand: string;
-	productImage: string;
-	productPrice: number;
-	productType: string;
-	quantity: number;
-}
-
-const CART_KEY = 'petoria_cart';
-
-function getCart(): CartItem[] {
-	if (typeof window === 'undefined') return [];
-	try {
-		return JSON.parse(localStorage.getItem(CART_KEY) ?? '[]');
-	} catch {
-		return [];
-	}
-}
-
-function saveCart(items: CartItem[]) {
-	if (typeof window === 'undefined') return;
-	localStorage.setItem(CART_KEY, JSON.stringify(items));
-	window.dispatchEvent(new Event('petoria-cart-update'));
-}
+type CartItem = SharedCartItem;
+const getCart = readCart;
+const saveCart = writeCart;
 
 const TYPE_EMOJI: Record<string, string> = { DOG: '🐶', CAT: '🐱', BIRD: '🦜', FISH: '🐟' };
 
@@ -54,9 +32,7 @@ const CartPage: NextPage = () => {
 
 	useEffect(() => {
 		setItems(getCart());
-		const sync = () => setItems(getCart());
-		window.addEventListener('petoria-cart-update', sync);
-		return () => window.removeEventListener('petoria-cart-update', sync);
+		return subscribeCart(() => setItems(getCart()));
 	}, []);
 
 	const updateQty = (productId: string, delta: number) => {

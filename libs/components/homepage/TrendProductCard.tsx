@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { API_URL, TYPE_CFG, CAT_CFG } from '../../config';
+import { addToCart } from '../../cart';
 
 interface Product {
 	_id: string;
@@ -39,7 +40,10 @@ function Stars({ rating }: { rating: number }) {
 	const empty = 5 - full - (half ? 1 : 0);
 	return (
 		<span className="tpc__stars" aria-label={`Rating ${rating}`}>
-			<span className="tpc__stars-filled">{'★'.repeat(full)}{half ? '½' : ''}</span>
+			<span className="tpc__stars-filled">
+				{'★'.repeat(full)}
+				{half ? '½' : ''}
+			</span>
 			<span className="tpc__stars-empty">{'☆'.repeat(empty)}</span>
 			<em className="tpc__stars-score">{rating}</em>
 		</span>
@@ -62,9 +66,7 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 	const isLowStock = !isSold && !isOutOfStock && typeof p.productStock === 'number' && p.productStock <= 5;
 
 	const oldPrice =
-		p.productSale && p.productSalePercent
-			? Math.round(p.productPrice / (1 - p.productSalePercent / 100))
-			: null;
+		p.productSale && p.productSalePercent ? Math.round(p.productPrice / (1 - p.productSalePercent / 100)) : null;
 
 	const rating = deriveRating(p.productLikes, p.productViews);
 
@@ -81,8 +83,19 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 	};
 
 	const handleCart = (e: React.MouseEvent) => {
+		e.preventDefault();
 		e.stopPropagation();
 		if (isSold || isOutOfStock) return;
+
+		addToCart({
+			productId: p._id,
+			productName: p.productName,
+			productBrand: p.productBrand ?? '',
+			productImage: p.productImages?.[0] ?? '',
+			productPrice: p.productPrice,
+			productType: p.productType,
+		});
+
 		onAddCart?.(p);
 		setAdded(true);
 		setTimeout(() => setAdded(false), 1400);
@@ -102,13 +115,7 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 			{/* ── Image ── */}
 			<div className="tpc__img-wrap">
 				{imgSrc ? (
-					<img
-						src={imgSrc}
-						alt={p.productName}
-						className="tpc__img"
-						loading="lazy"
-						draggable={false}
-					/>
+					<img src={imgSrc} alt={p.productName} className="tpc__img" loading="lazy" draggable={false} />
 				) : (
 					<div className="tpc__placeholder" aria-hidden="true">
 						<span>{catCfg.icon}</span>
@@ -118,13 +125,12 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 				{/* Badges */}
 				<div className="tpc__badges" aria-hidden="true">
 					<span className="badge badge--new">NEW</span>
-					{p.productSale && p.productSalePercent && (
-						<span className="badge badge--sale">-{p.productSalePercent}%</span>
-					)}
+					{p.productSale && p.productSalePercent && <span className="badge badge--sale">-{p.productSalePercent}%</span>}
 				</div>
 
 				{/* Wishlist */}
 				<button
+					type="button"
 					className={`tpc__fav${liked ? ' tpc__fav--on' : ''}`}
 					onClick={handleLike}
 					aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
@@ -135,6 +141,7 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 				{/* Quick add */}
 				{!isSold && !isOutOfStock && (
 					<button
+						type="button"
 						className={`tpc__quick-add${added ? ' tpc__quick-add--done' : ''}`}
 						onClick={handleCart}
 						aria-label="Add to cart"
@@ -157,10 +164,14 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 					<span className="tpc__type-tag" style={{ color: typeCfg.color }}>
 						{typeCfg.icon} {typeCfg.label}
 					</span>
-					<time className="tpc__time" dateTime={p.createdAt}>{timeLabel}</time>
+					<time className="tpc__time" dateTime={p.createdAt}>
+						{timeLabel}
+					</time>
 				</div>
 
-				<p className="tpc__category">{catCfg.icon} {catCfg.label}</p>
+				<p className="tpc__category">
+					{catCfg.icon} {catCfg.label}
+				</p>
 
 				<h3 className="tpc__name">{p.productName}</h3>
 
@@ -173,9 +184,7 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 
 				<div className="tpc__price-row">
 					<strong className="tpc__price">${p.productPrice.toLocaleString()}</strong>
-					{oldPrice && (
-						<s className="tpc__old-price">${oldPrice.toLocaleString()}</s>
-					)}
+					{oldPrice && <s className="tpc__old-price">${oldPrice.toLocaleString()}</s>}
 				</div>
 
 				{isLowStock && (

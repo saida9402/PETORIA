@@ -12,6 +12,7 @@ import { userVar } from '../../../apollo/store';
 import { Product } from '../../types/product/product';
 import { ProductType } from '../../enums/product.enum';
 import { API_URL } from '../../config';
+import { addToCart as addToCartStore } from '../../cart';
 
 interface ShopProductCardProps {
 	product: Product;
@@ -33,19 +34,26 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 
 	/** HANDLERS **/
 	const pushProductDetail = async () => {
-		await router.push({
-			pathname: '/shop/detail',
-			query: { id: product._id },
-		});
+		await router.push(`/shop/${product._id}`);
 	};
 
 	const handleAddToCart = (e: React.MouseEvent) => {
+		e.preventDefault();
 		e.stopPropagation();
 		if (addToCartHandler) {
 			addToCartHandler(product._id);
-			setCartAdded(true);
-			setTimeout(() => setCartAdded(false), 1200);
+		} else {
+			addToCartStore({
+				productId: product._id,
+				productName: product.productName,
+				productBrand: product.productBrand ?? '',
+				productImage: product.productImages?.[0] ?? '',
+				productPrice: product.productPrice,
+				productType: product.productType,
+			});
 		}
+		setCartAdded(true);
+		setTimeout(() => setCartAdded(false), 1200);
 	};
 
 	const handleLike = (e: React.MouseEvent) => {
@@ -85,13 +93,6 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 					)}
 				</button>
 
-				{/* Cart overlay */}
-				<div className={`shop-product-card__cart-overlay${cartAdded ? ' visible' : ''}`}>
-					<button className="shop-product-card__cart-btn" onClick={handleAddToCart} aria-label="Add to cart">
-						<ShoppingCartIcon sx={{ fontSize: 16 }} />
-						<span>{cartAdded ? 'Added!' : 'Add to Cart'}</span>
-					</button>
-				</div>
 			</Stack>
 
 			{/* ── Body ── */}
@@ -165,6 +166,18 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 				{product.productStock === 0 && (
 					<Typography className="shop-product-card__out-of-stock">Out of Stock</Typography>
 				)}
+
+				{/* Add to Cart — permanent, anchored to the bottom of the card */}
+				<button
+					type="button"
+					className={`shop-product-card__cart-btn${cartAdded ? ' shop-product-card__cart-btn--added' : ''}`}
+					onClick={handleAddToCart}
+					disabled={product.productStock === 0}
+					aria-label="Add to cart"
+				>
+					<ShoppingCartIcon sx={{ fontSize: 16 }} />
+					<span>{cartAdded ? 'Added!' : 'Add to Cart'}</span>
+				</button>
 			</Stack>
 		</Stack>
 	);

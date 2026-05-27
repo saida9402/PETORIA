@@ -34,7 +34,7 @@ const withLayoutBasic = (Component: any) => {
 					desc = 'Find everything your pet needs!';
 					bgImage = '/img/banner/shop.svg';
 					break;
-				case '/shop/detail':
+				case '/shop/[id]':
 					title = 'Product Detail';
 					desc = 'Premium quality for your pet';
 					bgImage = '/img/banner/shop.svg';

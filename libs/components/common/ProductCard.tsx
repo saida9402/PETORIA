@@ -16,6 +16,7 @@ import { userVar } from '../../../apollo/store';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Product } from '../../types/product/product';
 import { ProductStatus } from '../../enums/product.enum';
+import { addToCart } from '../../cart';
 
 export interface ProductCardProps {
 	product: Product;
@@ -53,6 +54,7 @@ const ProductCard = (props: ProductCardProps) => {
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [added, setAdded] = useState(false);
 
 	const imagePath = product?.productImages?.[0]
 		? `${API_URL}/${product.productImages[0]}`
@@ -62,12 +64,31 @@ const ProductCard = (props: ProductCardProps) => {
 
 	const pushProductDetail = (id: string) => {
 		if (memberPage || variant === 'shop') {
-			router.push({ pathname: '/shop/detail', query: { id } });
+			router.push(`/shop/${id}`);
 		}
 	};
 
 	const pushEditProduct = (id: string) => {
 		router.push({ pathname: '/mypage', query: { category: 'addProduct', productId: id } });
+	};
+
+	const handleAddToCart = (e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (product.productStatus === ProductStatus.SOLD) return;
+		if (product.productStock === 0) return;
+
+		addToCart({
+			productId: product._id,
+			productName: product.productName,
+			productBrand: product.productBrand ?? '',
+			productImage: product.productImages?.[0] ?? '',
+			productPrice: product.productPrice,
+			productType: product.productType,
+		});
+
+		setAdded(true);
+		setTimeout(() => setAdded(false), 1400);
 	};
 
 	if (device === 'mobile') {
@@ -171,7 +192,7 @@ const ProductCard = (props: ProductCardProps) => {
 	return (
 		<Stack className="card-config">
 			<Stack className="top">
-				<Link href={{ pathname: '/shop/detail', query: { id: product._id } }}>
+				<Link href={`/shop/${product._id}`}>
 					<img src={imagePath} alt={product.productName} />
 				</Link>
 
@@ -197,7 +218,7 @@ const ProductCard = (props: ProductCardProps) => {
 				<Stack className="name-address">
 					<Stack className="name">
 						<Typography className="brand-label">{product.productBrand}</Typography>
-						<Link href={{ pathname: '/shop/detail', query: { id: product._id } }}>
+						<Link href={`/shop/${product._id}`}>
 							<Typography>{product.productName}</Typography>
 						</Link>
 					</Stack>
@@ -217,9 +238,7 @@ const ProductCard = (props: ProductCardProps) => {
 					</Stack>
 					<Stack className="option">
 						<img src="/img/icons/stock.svg" alt="stock" />
-						<Typography>
-							{product.productStock > 0 ? `${product.productStock} in stock` : 'Out of stock'}
-						</Typography>
+						<Typography>{product.productStock > 0 ? `${product.productStock} in stock` : 'Out of stock'}</Typography>
 					</Stack>
 					{product.productSize && (
 						<Stack className="option">
@@ -275,10 +294,7 @@ const ProductCard = (props: ProductCardProps) => {
 							</IconButton>
 							<Typography className="view-cnt">{product.productViews ?? 0}</Typography>
 
-							<IconButton
-								color={'default'}
-								onClick={() => likeProductHandler?.(user, product._id)}
-							>
+							<IconButton color={'default'} onClick={() => likeProductHandler?.(user, product._id)}>
 								{myFavorites || product?.meLiked?.[0]?.myFavorite ? (
 									<FavoriteIcon color="primary" />
 								) : (
@@ -289,6 +305,39 @@ const ProductCard = (props: ProductCardProps) => {
 						</Stack>
 					)}
 				</Stack>
+
+				{/* Add to Cart button */}
+				{product.productStatus !== ProductStatus.SOLD && product.productStock > 0 && (
+					<button
+						type="button"
+						onClick={handleAddToCart}
+						style={{
+							width: '100%',
+							padding: '10px 16px',
+							marginTop: '12px',
+							background: added ? '#22c55e' : '#4ade80',
+							color: '#0b1f10',
+							border: 'none',
+							borderRadius: '8px',
+							fontWeight: 700,
+							fontSize: '14px',
+							cursor: 'pointer',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							gap: '6px',
+							transition: 'background 0.2s ease, transform 0.2s ease',
+						}}
+						onMouseEnter={(e) => {
+							if (!added) e.currentTarget.style.background = '#22c55e';
+						}}
+						onMouseLeave={(e) => {
+							if (!added) e.currentTarget.style.background = '#4ade80';
+						}}
+					>
+						{added ? '✓ Added to cart' : '🛒 Add to Cart'}
+					</button>
+				)}
 			</Stack>
 		</Stack>
 	);

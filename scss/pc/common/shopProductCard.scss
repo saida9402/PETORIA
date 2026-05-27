@@ -1,0 +1,255 @@
+// Shared product card styles — used on seller page, mypage favorites,
+// member products, and anywhere <ShopProductCard /> is rendered.
+// Light theme + design tokens from CLAUDE.md.
+
+.shop-product-card {
+	display: flex;
+	flex-direction: column;
+	background: var(--cb, #ffffff);
+	border: 1px solid var(--bd, #C8E6A0);
+	border-radius: 12px;
+	overflow: visible;
+	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+	padding: 0;
+	gap: 0;
+	min-width: 0;
+
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 22px rgba(45, 80, 22, 0.14);
+	}
+
+	// ── Image area (the ONLY clipping container) ──
+	&__img-wrap {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: 12px 12px 0 0;
+		background: var(--nbg, #EAF3DE);
+		flex-shrink: 0;
+	}
+
+	&__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	// ── Sale / discount badges (top-left of image) ──
+	&__badge,
+	&__discount-badge {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		padding: 4px 10px;
+		border-radius: 14px;
+		font-size: 11px;
+		font-weight: 700;
+		color: #fff;
+		z-index: 2;
+		line-height: 1;
+		letter-spacing: 0.2px;
+		white-space: nowrap;
+	}
+	&__badge--sale {
+		background: #ef4444;
+	}
+	// When both Sale + discount render, stack discount below the sale badge.
+	&__discount-badge {
+		top: 38px;
+		background: var(--np, #4E8A28);
+	}
+	// If only the discount badge is present (no sale label), move it to top-left.
+	&__img-wrap > &__discount-badge:first-child {
+		top: 10px;
+	}
+
+	// ── Like button (top-right of image) ──
+	&__fav {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		border: none;
+		background: rgba(255, 255, 255, 0.95);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		z-index: 2;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+		transition: transform 0.15s ease;
+		padding: 0;
+		&:hover { transform: scale(1.08); }
+	}
+
+	// ── Add-to-cart: permanent, anchored to the bottom of the body ──
+	&__cart-btn {
+		width: 100%;
+		height: 40px;
+		margin-top: 8px;
+		border: none;
+		border-radius: 6px;
+		background: var(--np, #4E8A28);
+		color: #fff;
+		font-size: 13px;
+		font-weight: 700;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		cursor: pointer;
+		transition: background 0.15s ease, transform 0.1s ease;
+		padding: 0 12px;
+		letter-spacing: 0.2px;
+
+		&:hover:not(:disabled) { background: var(--nm, #3A6B1E); }
+		&:active:not(:disabled) { transform: scale(0.985); }
+		&:disabled { background: #c8d8b6; color: #f4faf0; cursor: not-allowed; }
+		&--added { background: var(--nl, #6DB535); }
+	}
+
+	// ── Body ──
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		padding: 12px 14px 14px;
+		min-width: 0;
+		flex: 1;
+	}
+
+	&__brand {
+		font-size: 11px;
+		font-weight: 600;
+		color: var(--t3, #6B8A4E);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		line-height: 1.2;
+	}
+
+	&__name {
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--t1, #1A2E0A);
+		line-height: 1.3;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		min-height: 36px;
+	}
+
+	&__store {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		margin-top: 2px;
+		text-decoration: none;
+		max-width: 100%;
+		overflow: hidden;
+		&-avatar {
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			object-fit: cover;
+			flex-shrink: 0;
+		}
+		&-name {
+			font-size: 11px;
+			color: var(--t2, #3A5020);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			min-width: 0;
+		}
+		&-badge {
+			font-size: 10px;
+			color: var(--np, #4E8A28);
+			flex-shrink: 0;
+		}
+	}
+
+	&__pet-tag {
+		align-self: flex-start;
+		margin-top: 4px;
+		padding: 3px 9px;
+		font-size: 10px;
+		font-weight: 700;
+		color: var(--nm, #3A6B1E);
+		background: var(--nbg, #EAF3DE);
+		border-radius: 14px;
+		letter-spacing: 0.3px;
+		line-height: 1.2;
+	}
+
+	&__divider {
+		margin: 10px 0 6px;
+		border: none;
+		border-top: 1px solid var(--bd, #C8E6A0);
+	}
+
+	&__footer {
+		display: flex;
+		flex-direction: row !important;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		gap: 8px;
+		margin-top: auto;
+	}
+
+	&__price-box {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	&__price {
+		font-size: 16px;
+		font-weight: 700;
+		color: var(--np, #4E8A28);
+		line-height: 1.1;
+	}
+
+	&__original-price {
+		font-size: 10px;
+		color: var(--t3, #6B8A4E);
+		text-decoration: line-through;
+	}
+
+	&__stats {
+		display: flex;
+		flex-direction: row !important;
+		align-items: center;
+		gap: 8px;
+		flex-shrink: 0;
+	}
+
+	&__stat {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
+		font-size: 11px;
+		color: var(--t3, #6B8A4E);
+		svg { color: var(--t3, #6B8A4E); }
+	}
+
+	&__stock-warn {
+		margin-top: 6px;
+		font-size: 11px;
+		color: #d97706;
+	}
+
+	&__out-of-stock {
+		margin-top: 6px;
+		font-size: 11px;
+		font-weight: 700;
+		color: #b91c1c;
+	}
+}
