@@ -71,9 +71,18 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 	useEffect(() => {
 		if (router.query.input) {
 			setSearchFilter(JSON.parse(router.query.input as string));
+		} else if (router.query.type || router.query.cat || router.query.text) {
+			setSearchFilter({
+				...initialInput,
+				search: {
+					...(router.query.type ? { typeList: [router.query.type as string] } : {}),
+					...(router.query.cat ? { categoryList: [router.query.cat as string] } : {}),
+					...(router.query.text ? { text: router.query.text as string } : {}),
+				},
+			});
 		}
 		setCurrentPage(searchFilter.page ?? 1);
-	}, [router.query.input]);
+	}, [router.query.input, router.query.type, router.query.cat, router.query.text]);
 
 	/* Keep query in sync whenever filter state changes */
 	useEffect(() => {

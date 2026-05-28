@@ -19,10 +19,11 @@ const SellerCard = (props: SellerCardProps) => {
 	const { seller, likeMemberHandler } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
-	const imagePath: string = seller?.storeLogo
-		? `${API_URL}/${seller.storeLogo}`
-		: seller?.memberImage
-		? `${API_URL}/${seller.memberImage}`
+	const logoSrc = seller?.storeLogo ?? seller?.memberImage ?? null;
+	const imagePath: string = logoSrc
+		? logoSrc.startsWith('http')
+			? logoSrc
+			: `${API_URL}/${logoSrc}`
 		: '/img/profile/defaultUser.svg';
 
 	if (device === 'mobile') {

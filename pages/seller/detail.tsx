@@ -173,7 +173,12 @@ const SellerDetail: NextPage = ({ initialInput, initialComment, ...props }: any)
 					{/* Seller Info */}
 					<Stack className={'agent-info'}>
 						<img
-							src={seller?.memberImage ? `${API_URL}/${seller?.memberImage}` : '/img/profile/defaultUser.svg'}
+							src={seller?.memberImage
+								? seller.memberImage.startsWith('http')
+									? seller.memberImage
+									: `${API_URL}/${seller.memberImage}`
+								: '/img/profile/defaultUser.svg'
+							}
 							alt=""
 						/>
 						<Box

@@ -57,7 +57,9 @@ const ProductCard = (props: ProductCardProps) => {
 	const [added, setAdded] = useState(false);
 
 	const imagePath = product?.productImages?.[0]
-		? `${API_URL}/${product.productImages[0]}`
+		? product.productImages[0].startsWith('http')
+			? product.productImages[0]
+			: `${API_URL}/${product.productImages[0]}`
 		: '/img/banner/defaultProduct.svg';
 
 	const statusColors = STATUS_COLORS[product.productStatus] ?? { bg: '#f0f0f0', text: '#333' };
@@ -258,7 +260,9 @@ const ProductCard = (props: ProductCardProps) => {
 						<img
 							src={
 								product.memberData.memberImage
-									? `${API_URL}/${product.memberData.memberImage}`
+									? product.memberData.memberImage.startsWith('http')
+										? product.memberData.memberImage
+										: `${API_URL}/${product.memberData.memberImage}`
 									: '/img/profile/defaultUser.svg'
 							}
 							alt={product.memberData.memberNick}

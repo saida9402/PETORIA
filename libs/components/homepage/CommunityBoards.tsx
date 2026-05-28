@@ -5,76 +5,12 @@ import Link from 'next/link';
 import CommunityCard from './CommunityCard';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 
-const CATEGORIES = [
+const TABS = [
 	{ key: 'ALL', icon: '📋', label: 'All' },
 	{ key: 'NEWS', icon: '📰', label: 'News' },
-	{ key: 'TIP', icon: '💡', label: 'Tips' },
-	{ key: 'HEALTH', icon: '🩺', label: 'Health' },
-	{ key: 'NUTRITION', icon: '🥗', label: 'Nutrition' },
-	{ key: 'STORY', icon: '🐾', label: 'Stories' },
-];
-
-const MOCK_ARTICLES = [
-	{
-		_id: 'a1',
-		articleTitle: 'Best nutrition for senior dogs — complete guide',
-		articleCategory: 'NUTRITION',
-		articleLikes: 189,
-		articleViews: 2341,
-		createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-		memberData: { memberNick: 'DrSmith_Vet', memberImage: undefined },
-		articleContent: 'Senior dogs require special dietary...',
-	},
-	{
-		_id: 'a2',
-		articleTitle: '5 ways to reduce cat shedding this spring',
-		articleCategory: 'TIP',
-		articleLikes: 234,
-		articleViews: 1890,
-		createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-		memberData: { memberNick: 'CatLoverKim', memberImage: undefined },
-		articleContent: 'Spring is here and so is cat shedding...',
-	},
-	{
-		_id: 'a3',
-		articleTitle: 'New Seoul pet-friendly parks opened in 2025',
-		articleCategory: 'NEWS',
-		articleLikes: 156,
-		articleViews: 3100,
-		createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-		memberData: { memberNick: 'PetNewsKorea', memberImage: undefined },
-		articleContent: 'The Seoul city government has announced...',
-	},
-	{
-		_id: 'a4',
-		articleTitle: "My golden retriever's first agility win! 🏆",
-		articleCategory: 'STORY',
-		articleLikes: 301,
-		articleViews: 1450,
-		createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-		memberData: { memberNick: 'BuddysDad', memberImage: undefined },
-		articleContent: 'After six months of training...',
-	},
-	{
-		_id: 'a5',
-		articleTitle: 'Essential spring vaccinations for your pets',
-		articleCategory: 'HEALTH',
-		articleLikes: 412,
-		articleViews: 3100,
-		createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-		memberData: { memberNick: 'HealthyPets', memberImage: undefined },
-		articleContent: 'Spring brings new environmental risks...',
-	},
-	{
-		_id: 'a6',
-		articleTitle: 'Natural homemade cat food recipes — vet approved',
-		articleCategory: 'NUTRITION',
-		articleLikes: 78,
-		articleViews: 967,
-		createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
-		memberData: { memberNick: 'NutriPet', memberImage: undefined },
-		articleContent: 'Three nutritionists share their recipes...',
-	},
+	{ key: 'RECOMMEND', icon: '💡', label: 'Tips' },
+	{ key: 'FREE', icon: '💬', label: 'Health' },
+	{ key: 'HUMOR', icon: '😄', label: 'Stories' },
 ];
 
 export default function CommunityBoards() {
@@ -86,7 +22,8 @@ export default function CommunityBoards() {
 			input: {
 				page: 1,
 				limit: 6,
-				sort: 'articleLikes',
+				sort: 'createdAt',
+				direction: 'DESC',
 				search: {
 					...(activeCategory !== 'ALL' ? { articleCategory: activeCategory } : {}),
 				},
@@ -94,9 +31,7 @@ export default function CommunityBoards() {
 		},
 	});
 
-	const articles = (data?.getBoardArticles?.list?.length ? data.getBoardArticles.list : MOCK_ARTICLES).filter(
-		(a: any) => activeCategory === 'ALL' || a.articleCategory === activeCategory,
-	);
+	const articles: any[] = data?.getBoardArticles?.list ?? [];
 
 	return (
 		<section className="community-boards">
@@ -114,7 +49,7 @@ export default function CommunityBoards() {
 
 				{/* Category chips */}
 				<div className="community-boards__cats">
-					{CATEGORIES.map((c) => (
+					{TABS.map((c) => (
 						<button
 							key={c.key}
 							onClick={() => setActiveCategory(c.key)}

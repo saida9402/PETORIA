@@ -41,7 +41,7 @@ export default function TopProductCard({ product: p, rank }: Props) {
 	const [likes, setLikes] = useState(p.productLikes);
 	const [likeProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	const imgSrc = p.productImages?.[0] ? `${API_URL}/${p.productImages[0]}` : null;
+	const imgSrc = p.productImages?.[0] ? (p.productImages[0].startsWith('http') ? p.productImages[0] : `${API_URL}/${p.productImages[0]}`) : null;
 	const catCfg = CAT_CFG[p.productCategory] ?? { icon: '🦴', label: p.productCategory };
 	const typeCfg = TYPE_CFG[p.productType] ?? { icon: '🐾', label: p.productType, color: 'var(--g700)' };
 

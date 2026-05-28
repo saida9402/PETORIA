@@ -46,7 +46,7 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 
 	const [likeProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	const imgSrc = p.productImages?.[0] ? `${API_URL}/${p.productImages[0]}` : null;
+	const imgSrc = p.productImages?.[0] ? (p.productImages[0].startsWith('http') ? p.productImages[0] : `${API_URL}/${p.productImages[0]}`) : null;
 
 	const typeCfg = TYPE_CFG[p.productType] ?? { icon: '🐾', label: p.productType, color: 'var(--g700)' };
 	const catCfg = CAT_CFG[p.productCategory] ?? { icon: '🦴', label: p.productCategory };

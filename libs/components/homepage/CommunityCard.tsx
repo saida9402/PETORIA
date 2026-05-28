@@ -6,11 +6,10 @@ import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { API_URL } from '../../config';
 
 const CAT_CFG: Record<string, { icon: string; badge: string }> = {
-	NEWS: { icon: '📰', badge: 'badge--blue' },
-	TIP: { icon: '💡', badge: 'badge--green' },
-	HEALTH: { icon: '🩺', badge: 'badge--purple' },
-	NUTRITION: { icon: '🥗', badge: 'badge--teal' },
-	STORY: { icon: '🐾', badge: 'badge--amber' },
+	FREE: { icon: '💬', badge: 'badge--green' },
+	RECOMMEND: { icon: '💡', badge: 'badge--blue' },
+	NEWS: { icon: '📰', badge: 'badge--purple' },
+	HUMOR: { icon: '😄', badge: 'badge--amber' },
 };
 
 interface Article {

@@ -127,7 +127,11 @@ const ProductDetail: NextPage = () => {
 	}
 
 	const images: string[] = product.productImages ?? [];
-	const mainImg = images[activeImg] ? `${API_URL}/${images[activeImg]}` : null;
+	const mainImg = images[activeImg]
+		? images[activeImg].startsWith('http')
+			? images[activeImg]
+			: `${API_URL}/${images[activeImg]}`
+		: null;
 
 	const typeCfg = TYPE_CFG[product.productType] ?? { icon: '🐾', label: product.productType, color: 'var(--np)' };
 	const catCfg = CAT_CFG[product.productCategory] ?? { icon: '🦴', label: product.productCategory };
@@ -142,7 +146,9 @@ const ProductDetail: NextPage = () => {
 
 	const seller = product.memberData;
 	const sellerAvatar = seller?.memberImage
-		? `${API_URL}/${seller.memberImage}`
+		? seller.memberImage.startsWith('http')
+			? seller.memberImage
+			: `${API_URL}/${seller.memberImage}`
 		: '/img/profile/defaultUser.svg';
 
 	const canPurchase = !isSold && !isOutOfStock;
@@ -228,7 +234,7 @@ const ProductDetail: NextPage = () => {
 										aria-label={`View image ${i + 1}`}
 									>
 										<img
-											src={`${API_URL}/${img}`}
+											src={img.startsWith('http') ? img : `${API_URL}/${img}`}
 											alt=""
 											onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
 										/>

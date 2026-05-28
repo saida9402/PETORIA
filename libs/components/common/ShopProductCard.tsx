@@ -78,7 +78,11 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 				{/* Product image */}
 				<img
 					src={
-						product.productImages?.[0] ? `${API_URL}/${product.productImages[0]}` : '/img/product/defaultProduct.svg'
+						product.productImages?.[0]
+							? product.productImages[0].startsWith('http')
+								? product.productImages[0]
+								: `${API_URL}/${product.productImages[0]}`
+							: '/img/product/defaultProduct.svg'
 					}
 					alt={product.productName}
 					className="shop-product-card__img"
@@ -113,7 +117,9 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 						<img
 							src={
 								product.memberData.memberImage
-									? `${API_URL}/${product.memberData.memberImage}`
+									? product.memberData.memberImage.startsWith('http')
+										? product.memberData.memberImage
+										: `${API_URL}/${product.memberData.memberImage}`
 									: '/img/profile/defaultUser.svg'
 							}
 							alt={product.memberData.memberNick}
