@@ -15,7 +15,6 @@ import { userVar } from '../../apollo/store';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Messages } from '../../libs/config';
 import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
-import MyProducts from '../../libs/components/member/MyProducts';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -26,7 +25,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 const MemberPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const category: any = router.query?.category;
+	const { category, memberId } = router.query;
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
@@ -38,7 +37,7 @@ const MemberPage: NextPage = () => {
 	useEffect(() => {
 		if (!router.isReady) return;
 		if (!category) {
-			router.replace({ pathname: router.pathname, query: { ...router.query, category: 'products' } }, undefined, {
+			router.replace({ pathname: router.pathname, query: { ...router.query, category: 'articles' } }, undefined, {
 				shallow: true,
 			});
 		}
@@ -71,10 +70,11 @@ const MemberPage: NextPage = () => {
 		}
 	};
 
-	const redirectToMemberPageHandler = async (memberId: string) => {
+	const redirectToMemberPageHandler = async (memberId: string, memberType?: string) => {
 		try {
-			if (memberId === user?._id) await router.push(`/mypage?memberId=${memberId}`);
-			else await router.push(`/member?memberId=${memberId}`);
+			if (memberId === user?._id) await router.push({ pathname: '/mypage', query: { memberId } });
+			else if (memberType === 'SELLER') await router.push(`/seller/${memberId}`);
+			else await router.push({ pathname: '/member', query: { memberId } });
 		} catch (error) {
 			await sweetErrorHandling(error);
 		}
@@ -107,7 +107,6 @@ const MemberPage: NextPage = () => {
 							</Stack>
 							<Stack className="main-config" mb={'76px'}>
 								<Stack className={'list-config'}>
-									{category === 'products' && <MyProducts />}
 									{category === 'followers' && (
 										<MemberFollowers
 											subscribeHandler={subscribeHandler}

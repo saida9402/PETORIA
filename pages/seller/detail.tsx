@@ -23,7 +23,7 @@ import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation'
 import ReviewCard from '../../libs/components/agent/ReviewCard';
 import ProductCard from '../../libs/components/common/ProductCard';
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getServerSideProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
 	},
@@ -107,13 +107,13 @@ const SellerDetail: NextPage = ({ initialInput, initialComment, ...props }: any)
 
 	useEffect(() => {
 		if (searchFilter.search.memberId) {
-			getProductsRefetch({ variables: { input: searchFilter } }).then();
+			getProductsRefetch({ input: searchFilter }).then();
 		}
 	}, [searchFilter]);
 
 	useEffect(() => {
 		if (commentInquiry.search.commentRefId) {
-			getCommentsRefetch({ variables: { input: commentInquiry } }).then();
+			getCommentsRefetch({ input: commentInquiry }).then();
 		}
 	}, [commentInquiry]);
 

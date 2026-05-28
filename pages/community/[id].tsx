@@ -195,7 +195,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 		if (!id) return;
 		if (id === user?._id) router.push('/mypage');
 		else if (memberType === 'SELLER') router.push(`/seller/${id}`);
-		else router.push(`/member?memberId=${id}`);
+		else router.push({ pathname: '/member', query: { memberId: id } });
 	};
 
 	const cancelButtonHandler = () => {

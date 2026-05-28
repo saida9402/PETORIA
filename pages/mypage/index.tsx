@@ -86,10 +86,11 @@ const MyPage: NextPage = () => {
 		}
 	};
 
-	const redirectToMemberPageHandler = async (memberId: string) => {
+	const redirectToMemberPageHandler = async (memberId: string, memberType?: string) => {
 		try {
-			if (memberId === user?._id) await router.push(`/mypage?memberId=${memberId}`);
-			else await router.push(`/member?memberId=${memberId}`);
+			if (memberId === user?._id) await router.push({ pathname: '/mypage', query: { memberId } });
+			else if (memberType === 'SELLER') await router.push(`/seller/${memberId}`);
+			else await router.push({ pathname: '/member', query: { memberId } });
 		} catch (error) {
 			await sweetErrorHandling(error);
 		}

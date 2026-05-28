@@ -48,14 +48,10 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (router.query.memberId)
-			setFollowInquiry({ ...followInquiry, search: { followingId: router.query.memberId as string } });
-		else setFollowInquiry({ ...followInquiry, search: { followingId: user?._id } });
-	}, [router]);
-
-	useEffect(() => {
-		getMemberFollowersRefetch({ input: followInquiry }).then();
-	}, [followInquiry]);
+		const id = router.query.memberId ?? user?._id;
+		if (!id) return;
+		setFollowInquiry({ ...followInquiry, search: { followingId: id as string } });
+	}, [router.query.memberId, user?._id]);
 
 	/** HANDLERS **/
 	const paginationHandler = async (event: ChangeEvent<unknown>, value: number) => {
@@ -94,7 +90,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 							: '/img/profile/defaultUser.svg';
 						return (
 							<Stack className="follows-card-box" key={follower._id}>
-								<Stack className={'info'} onClick={() => redirectToMemberPageHandler(follower?.followerData?._id)}>
+								<Stack className={'info'} onClick={() => redirectToMemberPageHandler(follower?.followerData?._id, follower?.followerData?.memberType)}>
 									<Stack className="image-box">
 										<img src={imagePath} alt="" />
 									</Stack>
@@ -189,7 +185,7 @@ MemberFollowers.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 5,
-		search: { followingId: '' },
+		search: { followingId: undefined },
 	},
 };
 

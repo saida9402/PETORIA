@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -27,6 +27,10 @@ const Join: NextPage = () => {
 	const [input, setInput] = useState<JoinInput>({ nick: '', password: '', phone: '', type: 'USER' });
 	const [loginView, setLoginView] = useState<boolean>(true);
 	const isSeller = input.type === 'SELLER';
+
+	useEffect(() => {
+		if (router.query.view === 'signup') setLoginView(false);
+	}, [router.query.view]);
 
 	/** HANDLERS **/
 	const viewChangeHandler = (state: boolean) => setLoginView(state);
@@ -275,7 +279,29 @@ const Join: NextPage = () => {
 							</div>
 						</Stack>
 					) : (
-						<Stack className={'right'} />
+						<Stack className={'right'}>
+							<div className="right-content">
+								<div className="right-logo">🐾</div>
+								<h2 className="right-title">Join Petoria</h2>
+								<p className="right-sub">The #1 pet care community in Korea 🐾</p>
+								<div className="right-stats">
+									<div className="right-stat">
+										<strong>10K+</strong>
+										<span>Daily Shoppers</span>
+									</div>
+									<div className="right-stat">
+										<strong>500+</strong>
+										<span>Active Stores</span>
+									</div>
+									<div className="right-stat">
+										<strong>4.9★</strong>
+										<span>Seller Rating</span>
+									</div>
+								</div>
+								<p className="right-quote">"Petoria helped me grow my pet food business 3x in just 6 months."</p>
+								<span className="right-author">— PawsWorld Store</span>
+							</div>
+						</Stack>
 					)}
 				</Stack>
 			</Stack>

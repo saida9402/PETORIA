@@ -54,10 +54,7 @@
                 justify-content: center;
                 align-items: center;
                 background: #F6F6F6;
-                img {
-                  width: 36px;
-                  height: 36px;
-                }
+                font-size: 32px;
               }
               span {
                 margin: 20px 0px 10px;
@@ -88,16 +85,8 @@
       justify-content: center;
       .container {
         flex-direction: column;
-        .banner {
-          width: 100%;
-          height: 500px;
-          img {
-            width: 100%;
-            border-radius: 12px;
-          }
-        }
         .info {
-          margin-top: 120px;
+          margin-top: 0;
           display: flex;
           flex-direction: row;
           justify-content: space-evenly;
@@ -171,14 +160,7 @@
       align-items: center;
       border-radius: 24px;
       background: #FEF4F3;
-      .about-banner {
-        position: absolute;
-        right: 0%;
-        width: 821px;
-        height: 720px;
-        border-radius: 0 24px 24px 0;
-      }
-      .container {
+.container {
         flex-direction: column;
         strong {
           width: 445px;

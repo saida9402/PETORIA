@@ -320,11 +320,6 @@ const Top = () => {
 										<span>{t('Login')}</span>
 									</div>
 								</Link>
-								<Link href={'/account/join?view=signup'}>
-									<div className={'signup-btn'}>
-										<span>{t('Sign Up')}</span>
-									</div>
-								</Link>
 							</>
 						)}
 
