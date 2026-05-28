@@ -27,6 +27,7 @@ const CLINICS = [
 		emergency: true,
 		tags: ['Dogs', 'Cats', 'Surgery'],
 		icon: '🏥',
+		phone: '+821012345678',
 	},
 	{
 		id: 'c2',
@@ -40,6 +41,7 @@ const CLINICS = [
 		emergency: false,
 		tags: ['Dogs', 'Cats', 'Birds'],
 		icon: '🩺',
+		phone: '+821098765432',
 	},
 	{
 		id: 'c3',
@@ -53,6 +55,7 @@ const CLINICS = [
 		emergency: false,
 		tags: ['Reptiles', 'Birds', 'Rabbits'],
 		icon: '🦎',
+		phone: '+821055556666',
 	},
 	{
 		id: 'c4',
@@ -66,6 +69,7 @@ const CLINICS = [
 		emergency: true,
 		tags: ['Emergency', 'Surgery', 'ICU'],
 		icon: '🚑',
+		phone: '+821012345678',
 	},
 ];
 
@@ -81,6 +85,7 @@ const ZOOS = [
 		hours: 'Daily 09:00–17:00',
 		price: '₩5,000',
 		icon: '🦁',
+		mapQuery: 'Seoul Grand Park Zoo Seoul Grand Park Gwacheon',
 	},
 	{
 		id: 'z2',
@@ -93,6 +98,7 @@ const ZOOS = [
 		hours: 'Daily 10:00–18:00',
 		price: '₩39,000',
 		icon: '🎡',
+		mapQuery: 'Everland Animal Kingdom Everland Yongin',
 	},
 ];
 
@@ -107,6 +113,7 @@ const ZOO_CAFES = [
 		reviews: 760,
 		price: '₩12,000',
 		icon: '🐱',
+		mapQuery: 'Meow Brewers 44 Insadong-gil Jongno-gu',
 	},
 	{
 		id: 'zc2',
@@ -118,6 +125,7 @@ const ZOO_CAFES = [
 		reviews: 530,
 		price: '₩10,000',
 		icon: '🐶',
+		mapQuery: 'Bau House Dog Cafe 102 Hongdae-ro Mapo-gu',
 	},
 	{
 		id: 'zc3',
@@ -129,6 +137,7 @@ const ZOO_CAFES = [
 		reviews: 280,
 		price: '₩15,000',
 		icon: '🦉',
+		mapQuery: 'Owl Village 19 Myeongdong-gil Jung-gu',
 	},
 ];
 
@@ -237,7 +246,7 @@ const VetPage: NextPage = () => {
 									</div>
 									<div className="vet-card__foot">
 										<span className="vet-card__distance">📌 {c.distance}</span>
-										<button className="btn btn--primary btn--sm">Book visit →</button>
+										<a href={`tel:${c.phone}`} className="btn btn--primary btn--sm">Book visit →</a>
 									</div>
 								</div>
 							))}
@@ -270,7 +279,7 @@ const VetPage: NextPage = () => {
 									</div>
 									<div className="vet-card__foot">
 										<span className="vet-card__distance">📌 {z.distance}</span>
-										<button className="btn btn--outline btn--sm">Get directions →</button>
+										<a href={`https://maps.google.com/?q=${encodeURIComponent(z.address)}`} target="_blank" rel="noopener noreferrer" className="btn btn--outline btn--sm">Get directions →</a>
 									</div>
 								</div>
 							))}
@@ -295,7 +304,7 @@ const VetPage: NextPage = () => {
 									</p>
 									<div className="vet-card__foot">
 										<span className="vet-badge vet-badge--price">{z.price}</span>
-										<button className="btn btn--outline btn--sm">Visit →</button>
+										<a href={`https://maps.google.com/?q=${encodeURIComponent(z.address)}`} target="_blank" rel="noopener noreferrer" className="btn btn--outline btn--sm">Visit →</a>
 									</div>
 								</div>
 							))}
@@ -315,7 +324,7 @@ const VetPage: NextPage = () => {
 								<p>Full ICU, surgery, critical care for all animals.</p>
 								<div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
 									<a href="tel:+821012345678" className="btn btn--danger">📞 Call now</a>
-									<button className="btn btn--outline">Get directions</button>
+									<a href="https://maps.google.com/?q=7+Itaewon-daero+Yongsan-gu+Seoul" target="_blank" rel="noopener noreferrer" className="btn btn--outline">Get directions →</a>
 								</div>
 							</div>
 						</div>

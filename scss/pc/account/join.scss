@@ -329,74 +329,68 @@
     .right--seller {
       width: 50%;
       height: 100%;
-      background: linear-gradient(160deg, #2D5016 0%, #3A6B1E 50%, #4E8A28 100%);
+      border-radius: 0 12px 12px 0;
+      background: #1A2E0A;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      border-radius: 0 12px 12px 0;
+      padding: 40px;
+      overflow: hidden;
 
       .seller-right-content {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 40px 36px;
-        gap: 18px;
+        gap: 16px;
 
-        .src-logo {
-          font-size: 54px;
-          line-height: 1;
-          filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
-        }
+        .src-logo { font-size: 48px; }
 
         .src-tagline {
-          font-size: 18px;
-          font-weight: 700;
-          color: #E8F5D0;
+          font-size: 15px;
+          color: rgba(255,255,255,0.8);
           margin: 0;
-          letter-spacing: 0.3px;
         }
 
         .src-stats {
           display: flex;
-          gap: 24px;
-          margin-top: 6px;
+          flex-direction: row;
+          gap: 28px;
+          margin: 8px 0;
 
           .src-stat {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
 
             strong {
               font-size: 22px;
               font-weight: 700;
-              color: #fff;
-              line-height: 1;
+              color: #A3D977;
             }
 
             span {
-              font-size: 11px;
-              color: #A8CC7A;
-              font-weight: 500;
-              white-space: nowrap;
+              font-size: 12px;
+              color: rgba(255,255,255,0.6);
             }
           }
         }
 
         .src-quote {
-          font-size: 13px;
-          color: #A8CC7A;
+          font-size: 14px;
+          color: rgba(255,255,255,0.8);
           font-style: italic;
+          max-width: 300px;
           line-height: 1.6;
-          margin: 6px 0 0;
-          padding: 0 8px;
+          margin: 0;
         }
 
         .src-author {
-          font-size: 12px;
-          color: #6DB535;
+          font-size: 13px;
           font-weight: 600;
+          color: #A3D977;
         }
       }
     }

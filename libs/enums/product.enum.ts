@@ -21,4 +21,5 @@ export enum ProductCategory {
 	MEDICINE = 'MEDICINE',
 	ACCESSORY = 'ACCESSORY',
 	TOY = 'TOY',
+	STROLLER = 'STROLLER',
 }

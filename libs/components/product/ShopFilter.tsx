@@ -22,11 +22,22 @@ const CATEGORIES = [
 	{ value: ProductCategory.MEDICINE,  label: '💊 Medicine' },
 	{ value: ProductCategory.ACCESSORY, label: '🎀 Accessories' },
 	{ value: ProductCategory.TOY,       label: '🎾 Toys' },
+	{ value: ProductCategory.STROLLER,  label: '🛒 Stroller' },
 ];
 
 const BRANDS = [
-	'Royal Canin', "Hill's", 'Orijen', 'Purina Pro', 'Acana',
-	'Pedigree', 'Whiskas', 'Kong', 'Frontline', 'Zymox',
+	'Royal Canin',
+	'Purina',
+	'Hills',
+	'Whiskas',
+	'Elanco',
+	'Furminator',
+	'Kong',
+	'PetStyle',
+	'Trixie',
+	'Ferplast',
+	'Catit',
+	'Ibiyaya',
 ];
 
 const SIZES = [
