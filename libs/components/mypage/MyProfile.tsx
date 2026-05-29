@@ -1,4 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
+/* ── Daum Postcode loader ─────────────────────────────────────────────────── */
+declare global {
+	interface Window {
+		daum?: { Postcode: new (opts: { oncomplete: (data: any) => void }) => { open: () => void } };
+	}
+}
+
+function loadDaumPostcode(): Promise<void> {
+	return new Promise((resolve) => {
+		if (window.daum?.Postcode) { resolve(); return; }
+		const script = document.createElement('script');
+		script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+		script.onload = () => resolve();
+		document.head.appendChild(script);
+	});
+}
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
@@ -64,6 +81,17 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			sweetErrorHandling(err).then();
 		}
 	}, [updateData]);
+
+	const openPostcode = async () => {
+		await loadDaumPostcode();
+		if (!window.daum?.Postcode) return;
+		new window.daum.Postcode({
+			oncomplete: (data: any) => {
+				const parts = [data.roadAddress, data.buildingName, data.zonecode].filter(Boolean);
+				setUpdateData((prev) => ({ ...prev, memberAddress: parts.join(' ') }));
+			},
+		}).open();
+	};
 
 	const doDisabledCheck = () => {
 		return !updateData.memberNick || !updateData.memberPhone || !updateData.memberAddress || !updateData.memberImage;
@@ -134,12 +162,23 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 				<Stack className="address-box">
 					<Typography className="title">Delivery Address</Typography>
-					<input
-						type="text"
-						placeholder="Your delivery address"
-						value={updateData.memberAddress}
-						onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
-					/>
+					<Stack direction="row" gap={1} alignItems="center">
+						<input
+							type="text"
+							placeholder="Your delivery address"
+							value={updateData.memberAddress}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
+							style={{ flex: 1 }}
+						/>
+						<Button
+							variant="outlined"
+							size="small"
+							onClick={openPostcode}
+							sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+						>
+							Search address
+						</Button>
+					</Stack>
 				</Stack>
 
 				{/* About / Bio */}

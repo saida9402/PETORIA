@@ -6,7 +6,7 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { ChatsCircle, Headset, User, UserCircleGear } from 'phosphor-react';
+import { ChatsCircle, Headset, User, UserCircleGear, ShoppingCart } from 'phosphor-react';
 import cookies from 'js-cookie';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
@@ -38,6 +38,9 @@ const AdminMenuList = (props: any) => {
 				break;
 			case 'cs':
 				setClickMenu(['Cs']);
+				break;
+			case 'orders':
+				setClickMenu(['Orders']);
 				break;
 			default:
 				setClickMenu(['Users']);
@@ -98,6 +101,11 @@ const AdminMenuList = (props: any) => {
 			icon: <Headset size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Cs'),
 		},
+		{
+			title: 'Orders',
+			icon: <ShoppingCart size={20} color="#bdbdbd" weight="fill" />,
+			on_click: () => subMenuChangeHandler('Orders'),
+		},
 	];
 
 	const sub_menu_set: any = {
@@ -108,6 +116,7 @@ const AdminMenuList = (props: any) => {
 			{ title: 'FAQ', url: '/_admin/cs/faq' },
 			{ title: 'Notice', url: '/_admin/cs/notice' },
 		],
+		Orders: [{ title: 'List', url: '/_admin/orders' }],
 	};
 
 	return (
