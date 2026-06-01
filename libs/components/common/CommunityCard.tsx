@@ -9,6 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { API_URL } from '../../config';
+import UserAvatar from './UserAvatar';
 
 interface CommunityCardProps {
 	boardArticle: BoardArticle;
@@ -34,7 +35,7 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 
 	const imagePath = boardArticle.articleImage
 		? `${API_URL}/${boardArticle.articleImage}`
-		: '/img/community/articleImg.png';
+		: null;
 
 	const authorImage = boardArticle.memberData?.memberImage
 		? `${API_URL}/${boardArticle.memberData.memberImage}`
@@ -78,7 +79,16 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 		>
 			{/* Thumbnail */}
 			<div className="community-card__thumb">
-				<img src={imagePath} alt={boardArticle.articleTitle} className="community-card__thumb-img" />
+				{imagePath ? (
+					<img
+						src={imagePath}
+						alt={boardArticle.articleTitle}
+						className="community-card__thumb-img"
+						onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+					/>
+				) : (
+					<div className="community-card__thumb-placeholder">📝</div>
+				)}
 			</div>
 
 			{/* Body */}
@@ -109,7 +119,7 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 						onClick={handleAuthorClick}
 					>
 						<div className="community-card__author-av">
-							<img src={authorImage} alt={boardArticle.memberData?.memberNick ?? ''} />
+							<UserAvatar src={authorImage} alt={boardArticle.memberData?.memberNick ?? ''} />
 						</div>
 						<span>{boardArticle.memberData?.memberNick}</span>
 					</div>

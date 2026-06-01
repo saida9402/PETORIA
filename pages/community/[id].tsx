@@ -24,6 +24,7 @@ import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { CREATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
 import { GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
 import { API_URL, Messages } from '../../libs/config';
+import UserAvatar from '../../libs/components/common/UserAvatar';
 import {
 	sweetConfirmAlert,
 	sweetMixinErrorAlert,
@@ -283,9 +284,9 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 										<Stack className="content">
 											<Typography className="content-data">{boardArticle?.articleTitle}</Typography>
 											<Stack className="member-info">
-												<img
-													src={memberImage}
-													alt=""
+												<UserAvatar
+													src={memberImage || null}
+													alt={boardArticle?.memberData?.memberNick ?? ''}
 													className="member-img"
 													onClick={() =>
 														goMemberPage(boardArticle?.memberData?._id, boardArticle?.memberData?.memberType)
@@ -383,7 +384,11 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 															)
 														}
 													>
-														<img src={getCommentMemberImage(commentData?.memberData?.memberImage)} alt="" />
+														<UserAvatar
+									src={commentData?.memberData?.memberImage ? `${API_URL}/${commentData.memberData.memberImage}` : null}
+									alt={commentData?.memberData?.memberNick ?? ''}
+									size={40}
+								/>
 														<Stack className="name-date-column">
 															<Typography className="name">{commentData?.memberData?.memberNick}</Typography>
 															<Typography className="date">

@@ -1,4 +1,5 @@
 import React from 'react';
+import UserAvatar from '../common/UserAvatar';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Chip } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
@@ -37,9 +38,9 @@ const MyMenu = () => {
 						<div className="mymenu-store__banner" />
 						<div className="mymenu-store__body">
 							<div className="mymenu-store__avatar-wrap">
-								<img
-									src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
-									alt={user?.memberNick}
+								<UserAvatar
+									src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : null}
+									alt={user?.memberNick ?? ''}
 									className="mymenu-store__avatar"
 								/>
 								<span className="mymenu-store__verified">✓</span>
@@ -69,9 +70,9 @@ const MyMenu = () => {
 				) : (
 					<Stack className={'profile'}>
 						<Box component={'div'} className={'profile-img'}>
-							<img
-								src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
-								alt={'profile'}
+							<UserAvatar
+								src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : null}
+								alt={user?.memberNick ?? ''}
 							/>
 						</Box>
 						<Stack className={'user-info'}>

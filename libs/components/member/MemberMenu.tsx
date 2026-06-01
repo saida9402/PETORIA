@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import UserAvatar from '../common/UserAvatar';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Button } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
@@ -73,9 +74,9 @@ const MemberMenu = (_props: MemberMenuProps) => {
 				{/* Profile */}
 				<Stack className={'profile'}>
 					<Box component={'div'} className={'profile-img'}>
-						<img
-							src={member?.memberImage ? `${API_URL}/${member?.memberImage}` : '/img/profile/defaultUser.svg'}
-							alt={'member-photo'}
+						<UserAvatar
+							src={member?.memberImage ? `${API_URL}/${member?.memberImage}` : null}
+							alt={member?.memberNick ?? ''}
 						/>
 					</Box>
 					<Stack className={'user-info'}>

@@ -11,6 +11,7 @@ import { TabContext } from '@mui/lab';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TablePagination from '@mui/material/TablePagination';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import SearchIcon from '@mui/icons-material/Search';
 import { MembersInquiry } from '../../../libs/types/member/member.input';
 import { Member } from '../../../libs/types/member/member';
 import { MemberStatus, MemberType } from '../../../libs/enums/member.enum';
@@ -217,7 +218,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 												/>
 											)}
 											<InputAdornment position="end" onClick={searchTextHandler}>
-												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
+												<SearchIcon sx={{ color: '#bdbdbd', cursor: 'pointer' }} />
 											</InputAdornment>
 										</>
 									}

@@ -4,6 +4,7 @@ import { Stack, Box, Typography } from '@mui/material';
 import { Comment } from '../../types/comment/comment';
 import Moment from 'react-moment';
 import { API_URL } from '../../config';
+import UserAvatar from '../common/UserAvatar';
 
 interface ReviewCardProps {
 	fromMyPage?: string;
@@ -13,9 +14,9 @@ interface ReviewCardProps {
 const ReviewCard = (props: ReviewCardProps) => {
 	const { fromMyPage, comment } = props;
 	const device = useDeviceDetect();
-	const imagePath: string = comment?.memberData?.memberImage
+	const imagePath: string | null = comment?.memberData?.memberImage
 		? `${API_URL}/${comment?.memberData?.memberImage}`
-		: '/img/profile/defaultUser.svg';
+		: null;
 
 	if (device === 'mobile') {
 		return <div>REVIEW CARD MOBILE</div>;
@@ -24,7 +25,7 @@ const ReviewCard = (props: ReviewCardProps) => {
 			<Box component={'div'} className={'review-card'}>
 				<div className={'info'}>
 					<div className={'left'}>
-						<img src={imagePath} alt="" />
+						<UserAvatar src={imagePath} alt={comment?.memberData?.memberNick ?? ''} />
 						<div>
 							<strong>{comment.memberData?.memberNick}</strong>
 							<span>

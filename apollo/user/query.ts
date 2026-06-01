@@ -56,6 +56,7 @@ export const GET_SELLERS = gql`
 				memberImage
 				memberAddress
 				memberDesc
+				memberProducts
 				memberPoints
 				memberLikes
 				memberViews

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Stack } from '@mui/material';
@@ -34,6 +34,9 @@ const MyPage: NextPage = () => {
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 	const category: any = router.query?.category ?? 'myProfile';
+	// Defer the auth guard by one tick so LayoutBasic's useEffect can run
+	// updateUserInfo() and populate userVar before we decide to redirect.
+	const [authChecked, setAuthChecked] = useState(false);
 
 	/** APOLLO REQUESTS **/
 	const [subscribe] = useMutation(SUBSCRIBE);
@@ -42,8 +45,15 @@ const MyPage: NextPage = () => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (!user._id) router.push('/').then();
-	}, [user]);
+		// Mark auth as settled after one event-loop tick — by then the layout's
+		// synchronous updateUserInfo(jwt) call has already fired and userVar is set.
+		const id = setTimeout(() => setAuthChecked(true), 0);
+		return () => clearTimeout(id);
+	}, []);
+
+	useEffect(() => {
+		if (authChecked && !user._id) router.push('/').then();
+	}, [authChecked, user._id]);
 
 	/** HANDLERS **/
 	const subscribeHandler = async (id: string, refetch: any, query: any) => {

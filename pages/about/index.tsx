@@ -5,6 +5,7 @@ import { Stack, Box } from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { useQuery } from '@apollo/client';
+import Link from 'next/link';
 import { GET_SELLERS } from '../../apollo/user/query';
 import SellerCard from '../../libs/components/common/SellerCard';
 
@@ -45,12 +46,38 @@ const About: NextPage = () => {
 							</p>
 							<Stack className={'boxes'}>
 								<div className={'box'}>
-									<div style={{ fontSize: '32px', width: '77px', height: '70px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#F6F6F6' }}>🌿</div>
+									<div
+										style={{
+											fontSize: '32px',
+											width: '77px',
+											height: '70px',
+											borderRadius: '50%',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											background: '#F6F6F6',
+										}}
+									>
+										🌿
+									</div>
 									<span>Premium Products</span>
 									<p>Only the highest quality products from trusted brands worldwide.</p>
 								</div>
 								<div className={'box'}>
-									<div style={{ fontSize: '32px', width: '77px', height: '70px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#F6F6F6' }}>🔒</div>
+									<div
+										style={{
+											fontSize: '32px',
+											width: '77px',
+											height: '70px',
+											borderRadius: '50%',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											background: '#F6F6F6',
+										}}
+									>
+										🔒
+									</div>
 									<span>Secure Payment</span>
 									<p>Safe and fast checkout with multiple payment options.</p>
 								</div>
@@ -103,21 +130,27 @@ const About: NextPage = () => {
 					<Stack className={'container'}>
 						<strong>Let's find the right products for your pet</strong>
 						<Stack className={'box'}>
-							<div className={'icon-box'} style={{ fontSize: '28px' }}>🐶</div>
+							<div className={'icon-box'} style={{ fontSize: '28px' }}>
+								🐶
+							</div>
 							<div className={'text-box'}>
 								<span>Dog Care</span>
 								<p>From premium dog food to cozy beds — everything your pup needs.</p>
 							</div>
 						</Stack>
 						<Stack className={'box'}>
-							<div className={'icon-box'} style={{ fontSize: '28px' }}>🐱</div>
+							<div className={'icon-box'} style={{ fontSize: '28px' }}>
+								🐱
+							</div>
 							<div className={'text-box'}>
 								<span>Cat Essentials</span>
 								<p>Toys, scratching posts, litter, and gourmet treats for your feline.</p>
 							</div>
 						</Stack>
 						<Stack className={'box'}>
-							<div className={'icon-box'} style={{ fontSize: '28px' }}>🐟</div>
+							<div className={'icon-box'} style={{ fontSize: '28px' }}>
+								🐟
+							</div>
 							<div className={'text-box'}>
 								<span>Aquatic & Birds</span>
 								<p>Aquariums, bird cages, food and accessories for all exotic pets.</p>
@@ -136,20 +169,27 @@ const About: NextPage = () => {
 						<span>Trusted by the world's best pet brands</span>
 						<Stack className={'wrap'}>
 							{['Royal Canin', "Hill's", 'Purina', 'Kong', 'Orijen', 'Acana'].map((brand) => (
-								<div
+								<Link
 									key={brand}
-									style={{
-										padding: '10px 24px',
-										border: '2px solid #4E8A28',
-										borderRadius: '8px',
-										fontWeight: 700,
-										fontSize: '14px',
-										color: '#4E8A28',
-										background: 'white',
-									}}
+									href={`/shop?productBrand=${encodeURIComponent(brand)}`}
+									style={{ textDecoration: 'none' }}
 								>
-									{brand}
-								</div>
+									<div
+										style={{
+											padding: '10px 24px',
+											border: '2px solid #4E8A28',
+											borderRadius: '8px',
+											fontWeight: 700,
+											fontSize: '14px',
+											color: '#4E8A28',
+											background: 'white',
+											cursor: 'pointer',
+											transition: 'background 0.15s',
+										}}
+									>
+										{brand}
+									</div>
+								</Link>
 							))}
 						</Stack>
 					</Stack>
@@ -169,7 +209,7 @@ const About: NextPage = () => {
 							</div>
 							<div className={'black'}>
 								<img src="/img/icons/call.svg" alt="" />
-								920 851 9087
+								+8210 2122 0102
 							</div>
 						</Box>
 					</Stack>

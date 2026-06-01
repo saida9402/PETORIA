@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import UserAvatar from '../common/UserAvatar';
 import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useRouter } from 'next/router';
@@ -85,14 +86,14 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 					)}
 
 					{memberFollowers.map((follower: Follower) => {
-						const imagePath: string = follower?.followerData?.memberImage
+						const imagePath: string | null = follower?.followerData?.memberImage
 							? `${API_URL}/${follower?.followerData?.memberImage}`
-							: '/img/profile/defaultUser.svg';
+							: null;
 						return (
 							<Stack className="follows-card-box" key={follower._id}>
 								<Stack className={'info'} onClick={() => redirectToMemberPageHandler(follower?.followerData?._id, follower?.followerData?.memberType)}>
 									<Stack className="image-box">
-										<img src={imagePath} alt="" />
+										<UserAvatar src={imagePath} alt={follower?.followerData?.memberNick ?? ''} size={40} />
 									</Stack>
 									<Stack className="information-box">
 										<Typography className="name">{follower?.followerData?.memberNick}</Typography>

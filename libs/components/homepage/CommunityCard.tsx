@@ -79,7 +79,12 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 			{/* Thumb */}
 			<div className="community-card__thumb">
 				{imgSrc ? (
-					<img src={imgSrc} alt={a.articleTitle} className="community-card__thumb-img" />
+					<img
+						src={imgSrc}
+						alt={a.articleTitle}
+						className="community-card__thumb-img"
+						onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+					/>
 				) : (
 					<span className="community-card__thumb-icon">{cfg.icon}</span>
 				)}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useReactiveVar, useMutation } from '@apollo/client';
 import { userVar } from '../../apollo/store';
@@ -9,6 +10,7 @@ import { sweetConfirmAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { CartItem as SharedCartItem, getCart as readCart, saveCart as writeCart, subscribeCart } from '../../libs/cart';
 import { updateStorage, updateUserInfo } from '../../libs/auth';
+import { API_URL } from '../../libs/config';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -21,6 +23,13 @@ const getCart = readCart;
 const saveCart = writeCart;
 
 const TYPE_EMOJI: Record<string, string> = { DOG: '🐶', CAT: '🐱', BIRD: '🦜', FISH: '🐟' };
+
+/** Strip any leading "uploads/" segments so stale and fresh localStorage data
+ *  both resolve correctly, then prepend the backend base URL exactly once. */
+function productImageUrl(raw: string): string {
+	const clean = raw.replace(/^(uploads\/)+/, '');
+	return `${API_URL}/uploads/${clean}`;
+}
 
 /* ── Address validation ───────────────────────────────────────────────────── */
 function isValidAddress(addr: string): boolean {
@@ -60,6 +69,7 @@ function loadDaumPostcode(): Promise<void> {
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 const CartPage: NextPage = () => {
+	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [items, setItems] = useState<CartItem[]>([]);
 	const [address, setAddress] = useState('');
@@ -136,7 +146,7 @@ const CartPage: NextPage = () => {
 	const addressValid = isValidAddress(address);
 
 	const handleCheckout = async () => {
-		if (!user._id) { window.location.href = '/account/join'; return; }
+		if (!user._id) { router.push('/account/join'); return; }
 		if (items.length === 0) return;
 		if (!addressValid) {
 			setAddrError('Please enter a valid delivery address.');
@@ -178,7 +188,7 @@ const CartPage: NextPage = () => {
 			});
 			clearCart();
 			await sweetTopSmallSuccessAlert('Order placed! Check My Orders.', 2000);
-			window.location.href = '/mypage?category=myOrders';
+			router.push('/mypage?category=myOrders');
 		} catch (err) {
 			sweetErrorHandling(err).then();
 		} finally {
@@ -222,7 +232,7 @@ const CartPage: NextPage = () => {
 									<div className="cart-row__thumb">
 										{item.productImage ? (
 											<img
-												src={`/uploads/${item.productImage}`}
+												src={productImageUrl(item.productImage)}
 												alt={item.productName}
 												onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 											/>

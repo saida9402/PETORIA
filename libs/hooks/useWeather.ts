@@ -12,11 +12,16 @@ export interface WeatherData {
 	humidity: number;
 	windSpeed: number;
 	visibility: number;
-	isFallback: boolean; // true when using default location
+	isFallback: boolean;
 }
 
-// Fallback: Hanam-si, Gyeonggi-do, KR
-const FALLBACK = { lat: 37.5392, lon: 127.2149 };
+// Hard fallback — only used when GPS AND IP geolocation both fail.
+// Override via env vars so this never needs a code change.
+const FALLBACK = {
+	lat:  parseFloat(process.env.NEXT_PUBLIC_WEATHER_FALLBACK_LAT  ?? '37.5392'),
+	lon:  parseFloat(process.env.NEXT_PUBLIC_WEATHER_FALLBACK_LNG  ?? '127.2149'),
+	city: process.env.NEXT_PUBLIC_WEATHER_FALLBACK_CITY ?? '',
+};
 
 // Module-level cache — all components share one fetch per session
 let _cache: WeatherData | null = null;
@@ -32,33 +37,81 @@ function mapCondition(id: number): WeatherCondition {
 	return 'cloudy';
 }
 
-function getCoords(): Promise<{ lat: number; lon: number; isFallback: boolean }> {
+// Step 2: IP geolocation — used when GPS is denied or unavailable.
+// ipapi.co free tier: 1 000 req/day, no key required.
+async function getCoordsFromIP(): Promise<{ lat: number; lon: number; city: string; country: string } | null> {
+	try {
+		const res = await fetch('https://ipapi.co/json/');
+		if (!res.ok) return null;
+		const d = await res.json();
+		if (!d.latitude || !d.longitude) return null;
+		return {
+			lat: d.latitude,
+			lon: d.longitude,
+			city: d.city ?? '',
+			country: d.country_name ?? d.country ?? '',
+		};
+	} catch {
+		return null;
+	}
+}
+
+interface Coords {
+	lat: number;
+	lon: number;
+	isFallback: boolean;
+	/** City name from IP geolocation — use this when GPS was unavailable */
+	cityHint?: string;
+	countryHint?: string;
+}
+
+// Step 1: GPS → Step 2: IP geolocation → Step 3: env/hardcoded fallback
+function getCoords(): Promise<Coords> {
 	// SSR guard
 	if (typeof window === 'undefined' || !navigator?.geolocation) {
-		return Promise.resolve({ ...FALLBACK, isFallback: true });
+		return getCoordsFromIP().then((ip) => {
+			if (ip) return { lat: ip.lat, lon: ip.lon, isFallback: false, cityHint: ip.city, countryHint: ip.country };
+			return { lat: FALLBACK.lat, lon: FALLBACK.lon, isFallback: true, cityHint: FALLBACK.city };
+		});
 	}
 
 	return new Promise((resolve) => {
+		// Safety net: if the error callback somehow never fires, fall through after 8 s
 		const timer = setTimeout(() => {
-			// Timeout — use fallback immediately
-			resolve({ ...FALLBACK, isFallback: true });
+			getCoordsFromIP().then((ip) => {
+				if (ip) resolve({ lat: ip.lat, lon: ip.lon, isFallback: false, cityHint: ip.city, countryHint: ip.country });
+				else resolve({ lat: FALLBACK.lat, lon: FALLBACK.lon, isFallback: true, cityHint: FALLBACK.city });
+			});
 		}, 8000);
 
 		navigator.geolocation.getCurrentPosition(
 			(pos) => {
+				// GPS granted — use real coordinates; OpenWeather will return the city name
 				clearTimeout(timer);
 				resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, isFallback: false });
 			},
-			() => {
+			async () => {
+				// GPS denied or unavailable — try IP geolocation before giving up
 				clearTimeout(timer);
-				resolve({ ...FALLBACK, isFallback: true });
+				const ip = await getCoordsFromIP();
+				if (ip) {
+					resolve({ lat: ip.lat, lon: ip.lon, isFallback: false, cityHint: ip.city, countryHint: ip.country });
+				} else {
+					resolve({ lat: FALLBACK.lat, lon: FALLBACK.lon, isFallback: true, cityHint: FALLBACK.city });
+				}
 			},
 			{ enableHighAccuracy: false, timeout: 7000, maximumAge: 300_000 },
 		);
 	});
 }
 
-async function fetchWeatherData(lat: number, lon: number, isFallback: boolean): Promise<WeatherData> {
+async function fetchWeatherData(
+	lat: number,
+	lon: number,
+	isFallback: boolean,
+	cityHint?: string,
+	countryHint?: string,
+): Promise<WeatherData> {
 	const key = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY ?? '';
 
 	const res = await fetch(
@@ -70,18 +123,21 @@ async function fetchWeatherData(lat: number, lon: number, isFallback: boolean): 
 	const d = await res.json();
 
 	return {
-		temp: Math.round(d.main.temp),
-		feelsLike: Math.round(d.main.feels_like),
-		condition: mapCondition(d.weather[0].id),
+		temp:        Math.round(d.main.temp),
+		feelsLike:   Math.round(d.main.feels_like),
+		condition:   mapCondition(d.weather[0].id),
 		description: (d.weather[0].description as string)
 			.split(' ')
 			.map((w: string) => w[0].toUpperCase() + w.slice(1))
 			.join(' '),
-		city: d.name,
-		country: d.sys.country,
-		humidity: d.main.humidity,
-		windSpeed: Math.round(d.wind.speed),
-		visibility: Math.round((d.visibility ?? 10000) / 1000),
+		// When GPS is available OpenWeather's own city name is accurate.
+		// When GPS was denied, prefer the city the IP provider returned because
+		// OpenWeather may map the same coordinates to a nearby suburb name.
+		city:        cityHint ? cityHint : d.name,
+		country:     countryHint ? countryHint : d.sys.country,
+		humidity:    d.main.humidity,
+		windSpeed:   Math.round(d.wind.speed),
+		visibility:  Math.round((d.visibility ?? 10000) / 1000),
 		isFallback,
 	};
 }
@@ -89,23 +145,23 @@ async function fetchWeatherData(lat: number, lon: number, isFallback: boolean): 
 async function loadWeather(): Promise<WeatherData> {
 	if (_cache && Date.now() - _cacheTime < CACHE_TTL) return _cache;
 
-	const { lat, lon, isFallback } = await getCoords();
+	const { lat, lon, isFallback, cityHint, countryHint } = await getCoords();
 
 	try {
-		const data = await fetchWeatherData(lat, lon, isFallback);
+		const data = await fetchWeatherData(lat, lon, isFallback, cityHint, countryHint);
 		_cache = data;
 		_cacheTime = Date.now();
 		return data;
 	} catch {
-		// API failed — try one more time with fallback coordinates
+		// OpenWeather API failed — retry with the hard fallback coordinates
 		if (!isFallback) {
 			try {
-				const data = await fetchWeatherData(FALLBACK.lat, FALLBACK.lon, true);
+				const data = await fetchWeatherData(FALLBACK.lat, FALLBACK.lon, true, FALLBACK.city);
 				_cache = data;
 				_cacheTime = Date.now();
 				return data;
 			} catch {
-				// nothing to do — will use null
+				// nothing to do
 			}
 		}
 		throw new Error('Weather fetch failed');
@@ -130,7 +186,7 @@ export function useWeather() {
 				setWeather(data);
 			})
 			.catch(() => {
-				// Even on total failure, stop loading — UI shows graceful fallback
+				// Total failure — stop loading; UI shows graceful fallback
 			})
 			.finally(() => {
 				setLoading(false);

@@ -58,7 +58,9 @@ const Footer = () => {
 						<p className={'footer-tagline'}>Your pet's happy place 🐾</p>
 						<div className={'social-icons'}>
 							{SOCIAL_ICONS.map((s) => (
-								<span key={s.label} className={'social-icon'}>{s.icon}</span>
+								<span key={s.label} className={'social-icon'}>
+									{s.icon}
+								</span>
 							))}
 						</div>
 					</Stack>
@@ -72,89 +74,95 @@ const Footer = () => {
 
 	return (
 		<footer id="footer">
-		<Stack className={'footer-container'}>
-			{/* Newsletter banner */}
-			<div className={'footer-newsletter'}>
-				<div className={'newsletter-text'}>
-					<strong>Stay up to date with Petoria</strong>
-					<span>Get pet care tips, exclusive deals and new arrivals straight to your inbox.</span>
-				</div>
-				<div className={'newsletter-form'}>
-					<input
-						type="email"
-						placeholder={'Enter your email address'}
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
-					/>
-					<button onClick={handleSubscribe}>Subscribe</button>
-				</div>
-			</div>
-
-			{/* Main footer body */}
-			<div className={'footer-body'}>
-				{/* Brand column */}
-				<div className={'footer-brand-col'}>
-					<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'footer-logo'} />
-					<p className={'footer-tagline'}>Your pet's happy place 🐾</p>
-					<div className={'footer-contact'}>
-						<span className={'contact-label'}>Customer Care (24/7)</span>
-						<a href="tel:+821048672909" className={'contact-value'}>+82 10 4867 2909</a>
-						<span className={'contact-label'}>Email Support</span>
-						<a href="mailto:hello@petoria.com" className={'contact-value'}>hello@petoria.com</a>
+			<Stack className={'footer-container'}>
+				{/* Newsletter banner */}
+				<div className={'footer-newsletter'}>
+					<div className={'newsletter-text'}>
+						<strong>Stay up to date with Petoria</strong>
+						<span>Get pet care tips, exclusive deals and new arrivals straight to your inbox.</span>
 					</div>
-					<div className={'social-icons'}>
-						{SOCIAL_ICONS.map((s) => (
-							<span key={s.label} className={'social-icon'} title={s.label}>{s.icon}</span>
+					<div className={'newsletter-form'}>
+						<input
+							type="email"
+							placeholder={'Enter your email address'}
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
+						/>
+						<button onClick={handleSubscribe}>Subscribe</button>
+					</div>
+				</div>
+
+				{/* Main footer body */}
+				<div className={'footer-body'}>
+					{/* Brand column */}
+					<div className={'footer-brand-col'}>
+						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'footer-logo'} />
+						<p className={'footer-tagline'}>Your pet's happy place 🐾</p>
+						<div className={'footer-contact'}>
+							<span className={'contact-label'}>Customer Care (24/7)</span>
+							<a href="tel:+821048672909" className={'contact-value'}>
+								+82 10 2122 0202
+							</a>
+							<span className={'contact-label'}>Email Support</span>
+							<a href="mailto:hello@petoria.com" className={'contact-value'}>
+								hello@petoria.com
+							</a>
+						</div>
+						<div className={'social-icons'}>
+							{SOCIAL_ICONS.map((s) => (
+								<span key={s.label} className={'social-icon'} title={s.label}>
+									{s.icon}
+								</span>
+							))}
+						</div>
+					</div>
+
+					{/* Shop links */}
+					<div className={'footer-links-col'}>
+						<strong className={'col-title'}>Shop</strong>
+						{SHOP_LINKS.map((link) => (
+							<Link href={link.href} key={link.href}>
+								<span className={'footer-link'}>{link.label}</span>
+							</Link>
+						))}
+					</div>
+
+					{/* Quick links */}
+					<div className={'footer-links-col'}>
+						<strong className={'col-title'}>Quick Links</strong>
+						{QUICK_LINKS.map((link) => (
+							<Link href={link.href} key={link.href}>
+								<span className={'footer-link'}>{link.label}</span>
+							</Link>
+						))}
+						<span className={'footer-link muted'}>Terms of Use</span>
+						<span className={'footer-link muted'}>Privacy Policy</span>
+					</div>
+
+					{/* Community links */}
+					<div className={'footer-links-col'}>
+						<strong className={'col-title'}>Community</strong>
+						{COMMUNITY_LINKS.map((link) => (
+							<Link href={link.href} key={link.href}>
+								<span className={'footer-link'}>{link.label}</span>
+							</Link>
 						))}
 					</div>
 				</div>
 
-				{/* Shop links */}
-				<div className={'footer-links-col'}>
-					<strong className={'col-title'}>Shop</strong>
-					{SHOP_LINKS.map((link) => (
-						<Link href={link.href} key={link.href}>
-							<span className={'footer-link'}>{link.label}</span>
-						</Link>
-					))}
+				{/* Copyright bar */}
+				<div className={'footer-copyright'}>
+					<span>© Petoria {moment().year()}. All rights reserved.</span>
+					<div className={'footer-legal'}>
+						<span>Privacy</span>
+						<span>·</span>
+						<span>Terms</span>
+						<span>·</span>
+						<span>Sitemap</span>
+					</div>
 				</div>
-
-				{/* Quick links */}
-				<div className={'footer-links-col'}>
-					<strong className={'col-title'}>Quick Links</strong>
-					{QUICK_LINKS.map((link) => (
-						<Link href={link.href} key={link.href}>
-							<span className={'footer-link'}>{link.label}</span>
-						</Link>
-					))}
-					<span className={'footer-link muted'}>Terms of Use</span>
-					<span className={'footer-link muted'}>Privacy Policy</span>
-				</div>
-
-				{/* Community links */}
-				<div className={'footer-links-col'}>
-					<strong className={'col-title'}>Community</strong>
-					{COMMUNITY_LINKS.map((link) => (
-						<Link href={link.href} key={link.href}>
-							<span className={'footer-link'}>{link.label}</span>
-						</Link>
-					))}
-				</div>
-			</div>
-
-			{/* Copyright bar */}
-			<div className={'footer-copyright'}>
-				<span>© Petoria {moment().year()}. All rights reserved.</span>
-				<div className={'footer-legal'}>
-					<span>Privacy</span>
-					<span>·</span>
-					<span>Terms</span>
-					<span>·</span>
-					<span>Sitemap</span>
-				</div>
-			</div>
-		</Stack>
+			</Stack>
 		</footer>
 	);
 };
