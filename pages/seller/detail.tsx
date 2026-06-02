@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 
 import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
@@ -30,7 +29,6 @@ export const getServerSideProps = async ({ locale }: any) => ({
 });
 
 const SellerDetail: NextPage = ({ initialInput, initialComment, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [sellerId, setSellerId] = useState<string | null>(null);
@@ -163,11 +161,8 @@ const SellerDetail: NextPage = ({ initialInput, initialComment, ...props }: any)
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>SELLER DETAIL PAGE MOBILE</div>;
-	} else {
-		return (
-			<Stack className={'seller-detail-page'}>
+	return (
+		<Stack className={'seller-detail-page'}>
 				<Stack className={'container'}>
 					{/* Seller Info */}
 					<Stack className={'agent-info'}>
@@ -292,8 +287,7 @@ const SellerDetail: NextPage = ({ initialInput, initialComment, ...props }: any)
 					</Stack>
 				</Stack>
 			</Stack>
-		);
-	}
+	);
 };
 
 SellerDetail.defaultProps = {

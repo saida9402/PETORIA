@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Typography, Button } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
@@ -22,7 +21,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const SellerSettings: NextPage = ({ initialValues }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
@@ -80,10 +78,6 @@ const SellerSettings: NextPage = ({ initialValues }: any) => {
 	}, [updateData]);
 
 	const isDisabled = !updateData.memberNick || !updateData.memberPhone;
-
-	if (device === 'mobile') {
-		return <div>SELLER SETTINGS MOBILE</div>;
-	}
 
 	return (
 		<div id="seller-settings-page">

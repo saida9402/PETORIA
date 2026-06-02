@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Checkbox, FormControlLabel, FormGroup, Stack } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -23,7 +22,6 @@ interface JoinInput {
 
 const Join: NextPage = () => {
 	const router = useRouter();
-	const device = useDeviceDetect();
 	const [input, setInput] = useState<JoinInput>({ nick: '', password: '', phone: '', type: 'USER' });
 	const [loginView, setLoginView] = useState<boolean>(true);
 	const isSeller = input.type === 'SELLER';
@@ -61,10 +59,6 @@ const Join: NextPage = () => {
 			await sweetMixinErrorAlert(err.message);
 		}
 	}, [input]);
-
-	if (device === 'mobile') {
-		return <div>LOGIN MOBILE</div>;
-	}
 
 	return (
 		<Stack className={'join-page'}>

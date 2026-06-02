@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack, Typography, Pagination, Box, Chip, Avatar, Button } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -45,7 +44,6 @@ export const getStaticPaths = async () => ({
 });
 
 const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { sellerId } = router.query;
 	const user = useReactiveVar(userVar);
@@ -179,10 +177,6 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 
 	const avatarSrc = seller?.memberImage ? `${API_URL}/${seller.memberImage}` : '/img/profile/defaultUser.svg';
 	const isFollowing = seller?.meFollowed?.[0]?.myFollowing ?? false;
-
-	if (device === 'mobile') {
-		return <div>SELLER STORE MOBILE</div>;
-	}
 
 	return (
 		<div id="seller-store-page">

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useRouter } from 'next/router';
 import CommunityCard from '../common/CommunityCard';
 import { T } from '../../types/common';
@@ -14,7 +13,6 @@ import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { Messages } from '../../config';
 
 const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const [total, setTotal] = useState<number>(0);
 	const { memberId } = router.query;
@@ -63,11 +61,8 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>MEMBER ARTICLES MOBILE</div>;
-	} else {
-		return (
-			<div id="member-articles-page">
+	return (
+		<div id="member-articles-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
 						<Typography className="main-title">Articles 📰</Typography>
@@ -107,9 +102,8 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 						</Stack>
 					</Stack>
 				)}
-			</div>
-		);
-	}
+		</div>
+	);
 };
 
 MemberArticles.defaultProps = {

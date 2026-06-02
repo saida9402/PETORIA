@@ -199,3 +199,50 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE — Member profile page
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap #member-page {
+    .container .member-page {
+      padding-top: 0;
+
+      .back-frame {
+        width: 100%;
+        flex-direction: column;
+        margin: 12px 0 40px;
+        border-radius: 8px;
+
+        .left-config {
+          width: 100%;
+          height: auto;
+          margin: 0;
+          border-radius: 0;
+          border-left: none;
+          border-right: none;
+
+          .profile {
+            padding: 16px;
+            .profile-img img { width: 60px; height: 60px; }
+          }
+
+          .follow-button-box { padding: 0 16px 12px; }
+
+          .sections {
+            margin-top: 8px;
+            .section .sub-section { width: 100%; }
+          }
+        }
+
+        .main-config {
+          width: 100%;
+          margin-top: 0;
+          padding: 16px;
+
+          .list-config { justify-content: center; }
+        }
+      }
+    }
+  }
+}

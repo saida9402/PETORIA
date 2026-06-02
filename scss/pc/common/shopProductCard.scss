@@ -25,17 +25,21 @@
 	&__img-wrap {
 		position: relative;
 		width: 100%;
-		aspect-ratio: 4 / 5;
+		height: 240px;
 		overflow: hidden;
 		border-radius: 12px 12px 0 0;
-		background: var(--nbg, #EAF3DE);
+		background: #f8f9fa;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		flex-shrink: 0;
 	}
 
 	&__img {
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
+		object-fit: contain;
+		padding: 8px;
 		display: block;
 	}
 

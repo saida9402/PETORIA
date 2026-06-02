@@ -2,7 +2,6 @@ import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
 
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 
 import { useRouter } from 'next/router';
@@ -27,7 +26,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const ShopList: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
@@ -120,11 +118,8 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 		setAnchorEl(null);
 	};
 
-	if (device === 'mobile') {
-		return <h1>SHOP PAGE MOBILE</h1>;
-	} else {
-		return (
-			<div id="shop-list-page" style={{ position: 'relative' }}>
+	return (
+		<div id="shop-list-page" style={{ position: 'relative' }}>
 				<div className="container">
 					{/* Sort bar */}
 					<Box component={'div'} className={'right'}>
@@ -215,8 +210,7 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 					</Stack>
 				</div>
 			</div>
-		);
-	}
+	);
 };
 
 ShopList.defaultProps = {

@@ -218,3 +218,28 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE — Member products
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap #member-products-page {
+    .product-list-box .tab-name-box {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 8px;
+      gap: 4px;
+    }
+
+    .list-box {
+      .listing-title-box { display: none; }
+
+      .product-card-box {
+        flex-wrap: wrap;
+        gap: 8px;
+        .date-box, .views-box { display: none; }
+        .action-box { width: 100%; justify-content: flex-end; }
+      }
+    }
+  }
+}

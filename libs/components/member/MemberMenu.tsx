@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import UserAvatar from '../common/UserAvatar';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Button } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { Member } from '../../types/member/member';
 import { API_URL, Messages } from '../../config';
@@ -16,7 +15,6 @@ import { sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../sweetAlert'
 interface MemberMenuProps {}
 
 const MemberMenu = (_props: MemberMenuProps) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const category: any = router.query?.category;
 	const user = useReactiveVar(userVar);
@@ -66,11 +64,8 @@ const MemberMenu = (_props: MemberMenuProps) => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>MEMBER MENU MOBILE</div>;
-	} else {
-		return (
-			<Stack width={'100%'} padding={'30px 24px'}>
+	return (
+		<Stack width={'100%'} padding={'30px 24px'}>
 				{/* Profile */}
 				<Stack className={'profile'}>
 					<Box component={'div'} className={'profile-img'}>
@@ -238,9 +233,8 @@ const MemberMenu = (_props: MemberMenuProps) => {
 						</List>
 					</Stack>
 				</Stack>
-			</Stack>
-		);
-	}
+		</Stack>
+	);
 };
 
 export default MemberMenu;

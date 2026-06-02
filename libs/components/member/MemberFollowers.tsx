@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import UserAvatar from '../common/UserAvatar';
 import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
 import { useQuery, useReactiveVar } from '@apollo/client';
@@ -23,7 +22,6 @@ interface MemberFollowsProps {
 
 const MemberFollowers = (props: MemberFollowsProps) => {
 	const { initialInput, subscribeHandler, unsubscribeHandler, likeMemberHandler, redirectToMemberPageHandler } = props;
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const [total, setTotal] = useState<number>(0);
 	const [followInquiry, setFollowInquiry] = useState<FollowInquiry>(initialInput);
@@ -60,11 +58,8 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 		setFollowInquiry({ ...followInquiry });
 	};
 
-	if (device === 'mobile') {
-		return <div>PETORIA FOLLOWERS MOBILE</div>;
-	} else {
-		return (
-			<div id="member-follows-page">
+	return (
+		<div id="member-follows-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
 						<Typography className="main-title">Followers 🐾</Typography>
@@ -177,9 +172,8 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 						</Stack>
 					</Stack>
 				)}
-			</div>
-		);
-	}
+		</div>
+	);
 };
 
 MemberFollowers.defaultProps = {

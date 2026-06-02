@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Comment } from '../../types/comment/comment';
 import { API_URL } from '../../config';
 import Moment from 'react-moment';
@@ -14,7 +13,6 @@ interface ReviewProps {
 
 const Review = (props: ReviewProps) => {
 	const { comment } = props;
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const imagePath: string = comment?.memberData?.memberImage
@@ -27,33 +25,29 @@ const Review = (props: ReviewProps) => {
 		else router.push(`/member?memberId=${id}`);
 	};
 
-	if (device === 'mobile') {
-		return <div>REVIEW MOBILE</div>;
-	} else {
-		return (
-			<Stack className={'review-config'}>
-				<Stack className={'review-mb-info'}>
-					<Stack className={'img-name-box'}>
-						<img src={imagePath} alt="" className={'img-box'} />
-						<Stack>
-							<Typography
-								className={'name'}
-								onClick={() => goMemberPage(comment?.memberData?._id as string)}
-							>
-								{comment.memberData?.memberNick}
-							</Typography>
-							<Typography className={'date'}>
-								<Moment format={'DD MMMM, YYYY'}>{comment.createdAt}</Moment>
-							</Typography>
-						</Stack>
+	return (
+		<Stack className={'review-config'}>
+			<Stack className={'review-mb-info'}>
+				<Stack className={'img-name-box'}>
+					<img src={imagePath} alt="" className={'img-box'} />
+					<Stack>
+						<Typography
+							className={'name'}
+							onClick={() => goMemberPage(comment?.memberData?._id as string)}
+						>
+							{comment.memberData?.memberNick}
+						</Typography>
+						<Typography className={'date'}>
+							<Moment format={'DD MMMM, YYYY'}>{comment.createdAt}</Moment>
+						</Typography>
 					</Stack>
 				</Stack>
-				<Stack className={'desc-box'}>
-					<Typography className={'description'}>{comment.commentContent}</Typography>
-				</Stack>
 			</Stack>
-		);
-	}
+			<Stack className={'desc-box'}>
+				<Typography className={'description'}>{comment.commentContent}</Typography>
+			</Stack>
+		</Stack>
+	);
 };
 
 export default Review;

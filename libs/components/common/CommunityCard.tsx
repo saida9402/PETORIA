@@ -1,6 +1,5 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { BoardArticle } from '../../types/board-article/board-article';
 import Moment from 'react-moment';
 import { useReactiveVar } from '@apollo/client';
@@ -29,7 +28,6 @@ function stripHtml(html: string): string {
 }
 
 const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: CommunityCardProps) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 
@@ -64,10 +62,6 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 			router.push(`/member?memberId=${memberId}`);
 		}
 	};
-
-	if (device === 'mobile') {
-		return <div>COMMUNITY CARD MOBILE</div>;
-	}
 
 	return (
 		<div

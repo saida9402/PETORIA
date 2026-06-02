@@ -335,6 +335,34 @@ body::-webkit-scrollbar {
 		}
 	}
 
+	/* ── Mobile: prevent desktop navbar overflow ─────────────────────────────
+	   useDeviceDetect is UA-based so real mobile browsers get the Drawer nav.
+	   This media query is a safety-net for narrow desktop viewports (devtools
+	   responsive mode, tablets, SSR before hydration). It hides the items that
+	   cause the overflow without touching the mobile Drawer branch. ──────── */
+	@media (max-width: 768px) {
+		.top .navbar {
+			.nav-inner {
+				padding: 0 16px;
+				gap: 8px;
+
+				/* Hide text nav links — covered by the mobile Drawer */
+				.nav-links { display: none; }
+
+				/* Hide search bar — takes too much horizontal space */
+				.search-bar { display: none; }
+
+				.nav-actions {
+					/* Language switcher is large on mobile — hide it */
+					.lang-btn { display: none; }
+
+					/* Keep the login icon but drop the "Login" text label */
+					.login-btn span { display: none; }
+				}
+			}
+		}
+	}
+
 	.header-main {
 		position: relative;
 		width: 100%;

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack } from '@mui/material';
 import MemberMenu from '../../libs/components/member/MemberMenu';
@@ -23,7 +22,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const MemberPage: NextPage = () => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { category, memberId } = router.query;
 	const user = useReactiveVar(userVar);
@@ -93,11 +91,8 @@ const MemberPage: NextPage = () => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <>MEMBER PAGE MOBILE</>;
-	} else {
-		return (
-			<div id="member-page" style={{ position: 'relative' }}>
+	return (
+		<div id="member-page" style={{ position: 'relative' }}>
 				<div className="container">
 					<Stack className={'member-page'}>
 						<Stack className={'back-frame'}>
@@ -129,8 +124,7 @@ const MemberPage: NextPage = () => {
 					</Stack>
 				</div>
 			</div>
-		);
-	}
+	);
 };
 
 export default withLayoutBasic(MemberPage);

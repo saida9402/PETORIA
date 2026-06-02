@@ -396,3 +396,36 @@
     }
   }
 }
+/* ══════════════════════════════════════════════
+   MOBILE — Login / Register page
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap .join-page {
+    padding: 16px 0 40px;
+
+    .container .main {
+      width: 100%;
+      height: auto;
+      flex-direction: column;
+      border-radius: 12px;
+
+      .left {
+        width: 100%;
+        padding: 28px 20px 32px;
+
+        .input-wrap { width: 100%; margin-top: 24px; }
+        .register   { width: 100%; margin-top: 20px; }
+
+        .ask-info {
+          margin-top: 32px;
+          p { font-size: 16px; b { font-size: 20px; } }
+        }
+      }
+
+      /* Hide decorative right panel on mobile — it adds no value */
+      .right, .right--seller { display: none; }
+    }
+
+    .seller-store-perks { width: 100%; }
+  }
+}

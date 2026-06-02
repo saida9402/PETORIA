@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Product } from '../../types/product/product';
@@ -16,7 +15,6 @@ import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
 import ProductCard from '../common/ProductCard';
 
 const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const [searchFilter, setSearchFilter] = useState<SellerProductsInquiry>(initialInput);
 	const [sellerProducts, setAgentProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -84,11 +82,8 @@ const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 		router.back();
 	}
 
-	if (device === 'mobile') {
-		return <div>PETORIA MY PRODUCTS MOBILE</div>;
-	} else {
-		return (
-			<div id="my-products-page">
+	return (
+		<div id="my-products-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
 						<Typography className="main-title">My Products</Typography>
@@ -166,9 +161,8 @@ const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 						)}
 					</Stack>
 				</Stack>
-			</div>
-		);
-	}
+		</div>
+	);
 };
 
 MyProducts.defaultProps = {

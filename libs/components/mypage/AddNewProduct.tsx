@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Card, CardContent, Chip, CircularProgress, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -34,7 +33,6 @@ const PET_TYPES = [
 ];
 
 const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [productInput, setProductInput] = useState<ProductInput>(initialInput);
@@ -211,10 +209,6 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 			!productInput.productPrice
 		);
 	};
-
-	if (device === 'mobile') {
-		return <>ADD PRODUCT MOBILE</>;
-	}
 
 	return (
 		<div id="add-product-page">

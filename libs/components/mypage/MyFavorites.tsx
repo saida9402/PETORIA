@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
 
 import { Product } from '../../types/product/product';
@@ -14,7 +13,6 @@ import { Messages } from '../../config';
 import ShopProductCard from '../common/ShopProductCard';
 
 const MyFavorites: NextPage = () => {
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [myFavorites, setMyFavorites] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -55,10 +53,7 @@ const MyFavorites: NextPage = () => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>PETORIA MY FAVORITES MOBILE</div>;
-	} else {
-		return (
+	return (
 			<div id="my-favorites-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
@@ -104,8 +99,7 @@ const MyFavorites: NextPage = () => {
 					</Stack>
 				) : null}
 			</div>
-		);
-	}
+	);
 };
 
 export default MyFavorites;

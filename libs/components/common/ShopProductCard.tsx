@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -27,7 +26,6 @@ const formatNum = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : Stri
 
 const ShopProductCard = (props: ShopProductCardProps) => {
 	const { product, likeProductHandler, addToCartHandler, memberPage, myFavorites, recentlyViewed } = props;
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [cartAdded, setCartAdded] = useState(false);
@@ -64,10 +62,6 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 	};
 
 	const discountPercent = product.productSale && product.productSalePercent ? product.productSalePercent : null;
-
-	if (device === 'mobile') {
-		return <div>SHOP PRODUCT CARD MOBILE</div>;
-	}
 
 	return (
 		<Stack className="shop-product-card" onClick={pushProductDetail}>

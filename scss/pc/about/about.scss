@@ -340,3 +340,75 @@
     }
   }
 }
+/* ══════════════════════════════════════════════
+   MOBILE — About page
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap .about-page {
+    padding: 24px 0 40px;
+
+    .intro .container {
+      flex-direction: column;
+      gap: 24px;
+
+      .left, .right { width: 100%; }
+
+      .right .boxes {
+        margin-top: 24px;
+        flex-direction: column;
+        .box { margin-right: 0; margin-bottom: 20px; }
+      }
+    }
+
+    .statistics {
+      margin-top: 48px;
+      .container .info {
+        flex-wrap: wrap;
+        gap: 20px;
+        div { width: 45%; text-align: center; strong { font-size: 28px; } }
+      }
+    }
+
+    .agents {
+      margin-top: 48px;
+      .container {
+        .title { font-size: 22px; }
+        .wrap { flex-direction: column; align-items: center; gap: 20px; }
+      }
+    }
+
+    .options {
+      margin-top: 32px;
+      height: auto;
+      padding: 32px 20px;
+      border-radius: 12px;
+
+      .container {
+        strong { width: 100%; font-size: 22px; }
+        .box { flex-direction: column; align-items: flex-start; }
+        .text-box p { width: 100%; }
+        .btn { width: 100%; max-width: none; justify-content: center; }
+      }
+    }
+
+    .partners {
+      margin-top: 48px;
+      .container .wrap { flex-wrap: wrap; gap: 16px; justify-content: center; }
+    }
+
+    .help {
+      margin-top: 32px;
+      .container {
+        padding: 24px 20px;
+        flex-direction: column;
+        gap: 20px;
+        .left strong { font-size: 22px; }
+        .right {
+          flex-direction: column;
+          gap: 10px;
+          div { width: 100%; justify-content: center; }
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { Stack } from '@mui/material';
 import Link from 'next/link';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
@@ -164,12 +163,7 @@ function Stars({ rating }: { rating: number }) {
 
 /* ─── Page ──────────────────────────────────────────────────────────────────── */
 const VetPage: NextPage = () => {
-	const device = useDeviceDetect();
 	const [tab, setTab] = useState('clinics');
-
-	if (device === 'mobile') {
-		return <div style={{ padding: 24 }}><h2>Vets &amp; Zoo</h2><p>Mobile view coming soon.</p></div>;
-	}
 
 	return (
 		<Stack className="vet-page">

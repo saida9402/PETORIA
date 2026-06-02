@@ -181,3 +181,45 @@
     }
   }
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE — Community list page
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap #community-list-page {
+    padding: 16px 0 40px;
+
+    /* Collapse two-column layout to single column */
+    .main-box { grid-template-columns: 1fr; gap: 16px; }
+
+    /* Sidebar becomes a horizontal scrollable tab strip */
+    .left-config {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      gap: 6px;
+
+      .image-info {
+        width: 100%;
+        flex-direction: row;
+        padding-bottom: 10px;
+        margin-bottom: 4px;
+      }
+
+      .MuiTab-root, .tab-button {
+        width: auto;
+        flex: 1;
+        min-width: 72px;
+        justify-content: center !important;
+        padding: 0 8px !important;
+      }
+    }
+
+    /* Articles in single column */
+    .panel-config {
+      .title-box { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .list-box  { grid-template-columns: 1fr; }
+    }
+  }
+}

@@ -315,3 +315,31 @@
   width: 100%;
   justify-content: center;
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE — Cart page
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .cart-page {
+    padding: 16px 0 60px;
+  }
+
+  .cart-page__title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .cart-row {
+    padding: 12px 14px;
+    gap: 10px;
+
+    &__name    { font-size: 12px; }
+    &__line-total { width: auto; font-size: 13px; }
+    &__thumb   { width: 52px; height: 52px; }
+  }
+
+  .cart-summary {
+    position: static;
+    padding: 16px;
+  }
+}

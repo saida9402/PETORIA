@@ -13,7 +13,6 @@ import { useReactiveVar } from '@apollo/client';
 import { formatterStr } from '../../utils';
 import { API_URL, topProductRank } from '../../config';
 import { userVar } from '../../../apollo/store';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Product } from '../../types/product/product';
 import { ProductStatus } from '../../enums/product.enum';
 import { addToCart } from '../../cart';
@@ -50,7 +49,6 @@ const ProductCard = (props: ProductCardProps) => {
 		memberPage,
 	} = props;
 
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -92,10 +90,6 @@ const ProductCard = (props: ProductCardProps) => {
 		setAdded(true);
 		setTimeout(() => setAdded(false), 1400);
 	};
-
-	if (device === 'mobile') {
-		return <div>PRODUCT CARD MOBILE</div>;
-	}
 
 	// ── Mypage / seller variant ──────────────────────────────────────────────
 	if (variant === 'mypage') {

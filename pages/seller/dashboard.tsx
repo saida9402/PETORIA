@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack, Typography } from '@mui/material';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
@@ -30,7 +29,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const SellerDashboard: NextPage = ({ initialInput }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [sellerData, setSellerData] = useState<Member | null>(null);
@@ -75,10 +73,6 @@ const SellerDashboard: NextPage = ({ initialInput }: any) => {
 			router.replace('/mypage').then();
 		}
 	}, [user]);
-
-	if (device === 'mobile') {
-		return <div>SELLER DASHBOARD MOBILE</div>;
-	}
 
 	return (
 		<div id="seller-dashboard-page">

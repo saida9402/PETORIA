@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Checkbox, Slider } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCategory, ProductType } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
 
@@ -81,7 +80,6 @@ const CheckRow = ({
 );
 
 const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterProps) => {
-	const device = useDeviceDetect();
 	const [priceRange, setPriceRange] = useState<number[]>([0, 500]);
 	const [showAllBrands, setShowAllBrands] = useState(false);
 	const [selectedSize, setSelectedSize] = useState<string>('');
@@ -131,10 +129,6 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 	};
 
 	const visibleBrands = showAllBrands ? BRANDS : BRANDS.slice(0, VISIBLE_BRANDS);
-
-	if (device === 'mobile') {
-		return <div>SHOP FILTER MOBILE</div>;
-	}
 
 	return (
 		<div className="shop-filter">

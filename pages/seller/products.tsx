@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack, Typography, Pagination, InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -30,7 +29,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [searchQuery, setSearchQuery] = useState<string>('');
@@ -110,10 +108,6 @@ const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	const activeStatus = searchFilter.search.productStatus ?? ProductStatus.ACTIVE;
-
-	if (device === 'mobile') {
-		return <div>SELLER PRODUCTS MOBILE</div>;
-	}
 
 	return (
 		<div id="seller-products-page">

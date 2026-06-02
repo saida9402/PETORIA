@@ -1,6 +1,5 @@
 import React from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import { Stack, Box } from '@mui/material';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -16,19 +15,14 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const About: NextPage = () => {
-	const device = useDeviceDetect();
-
 	const { data: getSellersData } = useQuery(GET_SELLERS, {
 		fetchPolicy: 'network-only',
 		variables: { input: { page: 1, limit: 6, sort: 'createdAt', search: {} } },
 	});
 	const sellers = getSellersData?.getSeller?.list ?? [];
 
-	if (device === 'mobile') {
-		return <div>ABOUT PAGE MOBILE</div>;
-	} else {
-		return (
-			<Stack className={'about-page'}>
+	return (
+		<Stack className={'about-page'}>
 				{/* Intro */}
 				<Stack className={'intro'}>
 					<Stack className={'container'}>
@@ -215,8 +209,7 @@ const About: NextPage = () => {
 					</Stack>
 				</Stack>
 			</Stack>
-		);
-	}
+	);
 };
 
 export default withLayoutBasic(About);

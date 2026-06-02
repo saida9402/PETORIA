@@ -1,14 +1,8 @@
 import React from 'react';
 import { Stack, Typography, Box } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 const PetArticle = () => {
-	const device = useDeviceDetect();
-
-	if (device === 'mobile') {
-		return <div>PET ARTICLE CARD MOBILE</div>;
-	} else {
-		return (
+	return (
 			<Stack className="card-config">
 				<Stack className="top">
 					<img src="/img/banner/community.svg" alt="" />
@@ -31,8 +25,7 @@ const PetArticle = () => {
 					</Stack>
 				</Stack>
 			</Stack>
-		);
-	}
+	);
 };
 
 export default PetArticle;

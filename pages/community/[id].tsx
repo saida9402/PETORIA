@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Stack, Typography, Tab, Tabs, IconButton, Backdrop, Pagination } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -41,7 +40,6 @@ export const getServerSideProps = async ({ locale }: any) => ({
 });
 
 const CommunityDetail: NextPage = ({ initialInput }: T) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
 
@@ -214,11 +212,8 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
-	if (device === 'mobile') {
-		return <div>COMMUNITY DETAIL PAGE MOBILE</div>;
-	} else {
-		return (
-			<div id="community-detail-page">
+	return (
+		<div id="community-detail-page">
 				<div className="container">
 					<Stack className="main-box">
 						<Stack className="left-config">
@@ -509,8 +504,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 					</Stack>
 				</div>
 			</div>
-		);
-	}
+	);
 };
 
 CommunityDetail.defaultProps = {

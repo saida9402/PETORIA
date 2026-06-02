@@ -170,3 +170,30 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE — Followers / Following list
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap #member-follows-page {
+    .main-title-box .right-box { width: 100%; .main-title { font-size: 22px; } }
+
+    .follows-list-box {
+      margin-top: 20px;
+      gap: 10px;
+
+      /* Hide desktop table header on mobile */
+      .listing-title-box { display: none; }
+
+      .follows-card-box {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px 0;
+
+        .info         { width: 100%; }
+        .details-box  { width: 100%; }
+        .action-box   { width: 100%; justify-content: flex-start; gap: 10px; }
+      }
+    }
+  }
+}

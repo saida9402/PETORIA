@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
 
 import { Product } from '../../types/product/product';
@@ -14,7 +13,6 @@ import { sweetMixinErrorAlert } from '../../sweetAlert';
 import ShopProductCard from '../common/ShopProductCard';
 
 const RecentlyViewed: NextPage = () => {
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [recentlyViewed, setRecentlyViewed] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -72,10 +70,7 @@ const RecentlyViewed: NextPage = () => {
 		setSearchVisited({ ...searchVisited, page: value });
 	};
 
-	if (device === 'mobile') {
-		return <div>PETORIA RECENTLY VIEWED MOBILE</div>;
-	} else {
-		return (
+	return (
 			<div id="recently-viewed-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
@@ -123,8 +118,7 @@ const RecentlyViewed: NextPage = () => {
 					</Stack>
 				) : null}
 			</div>
-		);
-	}
+	);
 };
 
 export default RecentlyViewed;

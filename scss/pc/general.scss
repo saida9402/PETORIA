@@ -341,3 +341,39 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   GLOBAL MOBILE — container, typography, touch
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #pc-wrap {
+    .container {
+      padding: 0 16px;
+      max-width: 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .header-basic {
+      min-height: 120px;
+      padding: 20px 0;
+
+      .container strong { font-size: 28px; }
+      .container span  { font-size: 13px; }
+    }
+  }
+
+  /* Global touch-target sizing */
+  button, [role="button"], a.btn {
+    min-height: 44px;
+  }
+
+  /* Prevent iOS font-size zoom on inputs */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  .community-general-card-config {
+    width: 100% !important;
+  }
+}

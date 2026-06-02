@@ -18,7 +18,6 @@ function loadDaumPostcode(): Promise<void> {
 	});
 }
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import { API_URL, Messages } from '../../config';
 import { updateStorage, updateUserInfo } from '../../auth';
@@ -29,7 +28,6 @@ import { UPDATE_MEMBER, IMAGE_UPLOADER } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../sweetAlert';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
 
@@ -142,10 +140,6 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const doDisabledCheck = () => {
 		return !updateData.memberNick || !updateData.memberPhone || !updateData.memberAddress || !updateData.memberImage;
 	};
-
-	if (device === 'mobile') {
-		return <>MY PROFILE MOBILE</>;
-	}
 
 	return (
 		<div id="my-profile-page">

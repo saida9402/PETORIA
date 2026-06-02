@@ -1651,3 +1651,101 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE — All seller pages
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Seller store (public) ── */
+  #pc-wrap #seller-store-page {
+    padding: 16px 0 40px;
+
+    .container { padding: 0 14px; gap: 16px; }
+
+    .ssp-banner { height: 120px; }
+
+    .ssp-identity {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 14px 16px;
+      gap: 10px;
+    }
+
+    .ssp-stats   { flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .ssp-actions { flex-direction: column; gap: 8px; button { width: 100%; } }
+
+    .ssp-products-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px;
+    }
+  }
+
+  /* ── Seller dashboard ── */
+  #pc-wrap #seller-dashboard-page {
+    padding: 16px 0 40px;
+
+    .container { padding: 0 14px; gap: 16px; }
+
+    .sdc-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    .sdc-stats {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px;
+    }
+
+    .sdc-card { padding: 16px; }
+  }
+
+  /* ── Seller products management ── */
+  #pc-wrap #seller-products-page {
+    padding: 16px 0 40px;
+
+    .container { padding: 0 14px; gap: 16px; }
+
+    .spp-toolbar {
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+      button { width: 100%; }
+    }
+
+    .spp-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px;
+    }
+  }
+
+  /* ── Seller settings ── */
+  #pc-wrap #seller-settings-page {
+    padding: 16px 0 40px;
+    .container { padding: 0 14px; }
+
+    .sss-form { max-width: 100%; }
+    .sss-row  { flex-direction: column; gap: 12px; > * { width: 100%; } }
+  }
+
+  /* ── Seller detail (public profile) ── */
+  #pc-wrap .seller-detail-page {
+    .container { padding: 0 14px; gap: 20px; }
+
+    .agent-info {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px 16px;
+      margin-top: 20px;
+      gap: 12px;
+
+      img { width: 80px; height: 80px; }
+    }
+
+    .agent-home-list .card-wrap {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px;
+    }
+  }
+}
