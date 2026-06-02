@@ -319,3 +319,231 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   SAVED CARDS SECTION  (in MyProfile)
+══════════════════════════════════════════════ */
+#pc-wrap {
+	#my-page {
+		#my-profile-page {
+			.saved-cards-box {
+				gap: 12px;
+
+				.title {
+					color: #181a20;
+					font-family: $font;
+					font-size: 17px;
+					font-weight: 600;
+					line-height: normal;
+				}
+
+				.saved-cards-empty {
+					font-size: 13px;
+					color: var(--t3, #6B8A4E);
+					margin: 0;
+				}
+			}
+
+			.saved-card-row {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 12px 14px;
+				border: 1.5px solid var(--bd, #C8E6A0);
+				border-radius: 10px;
+				background: var(--pb, #F4FAF0);
+
+				&--default { border-color: var(--np, #4E8A28); background: var(--nbg, #EAF3DE); }
+
+				&__info {
+					display: flex;
+					align-items: center;
+					gap: 10px;
+					flex: 1;
+					flex-wrap: wrap;
+				}
+
+				&__brand { font-size: 13px; font-weight: 700; color: var(--t1, #1A2E0A); }
+				&__num   { font-size: 13px; color: var(--t2, #3A5020); font-family: monospace; }
+				&__holder { font-size: 12px; color: var(--t3, #6B8A4E); }
+				&__exp   { font-size: 12px; color: var(--t3, #6B8A4E); }
+
+				&__actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+				&__badge {
+					font-size: 10px;
+					font-weight: 700;
+					color: var(--np, #4E8A28);
+					background: var(--nbg, #EAF3DE);
+					border: 1px solid var(--np, #4E8A28);
+					border-radius: 10px;
+					padding: 2px 8px;
+				}
+			}
+
+			.sc-link-btn {
+				font-size: 12px;
+				color: var(--np, #4E8A28);
+				background: none;
+				border: none;
+				cursor: pointer;
+				padding: 4px 6px;
+				border-radius: 4px;
+				min-height: 32px;
+
+				&:hover { background: var(--nbg, #EAF3DE); }
+				&--danger { color: #e11d48; &:hover { background: #fee2e2; } }
+			}
+
+			.sc-add-btn {
+				align-self: flex-start;
+				font-size: 13px;
+				font-weight: 600;
+				color: var(--np, #4E8A28);
+				background: none;
+				border: 1.5px dashed var(--bd, #C8E6A0);
+				border-radius: 8px;
+				padding: 8px 18px;
+				cursor: pointer;
+				transition: border-color 0.15s, background 0.15s;
+				min-height: 40px;
+
+				&:hover { border-color: var(--np, #4E8A28); background: var(--nbg, #EAF3DE); }
+			}
+
+			.saved-card-form {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+				padding: 16px;
+				background: var(--nbg, #EAF3DE);
+				border-radius: 10px;
+				border: 1px solid var(--bd, #C8E6A0);
+			}
+
+			.sc-field-row {
+				display: flex;
+				gap: 12px;
+
+				&--half { }
+			}
+
+			.sc-field {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+				flex: 1;
+
+				label {
+					font-size: 11px;
+					font-weight: 600;
+					color: var(--t2, #3A5020);
+				}
+
+				input {
+					height: 42px;
+					border: 1px solid var(--bd, #C8E6A0);
+					border-radius: 8px;
+					padding: 0 12px;
+					font-size: 13px;
+					background: var(--cb, #fff);
+					outline: none;
+
+					&:focus { border-color: var(--np, #4E8A28); }
+					&::placeholder { color: var(--t3, #6B8A4E); }
+				}
+			}
+
+			.sc-form-actions {
+				display: flex;
+				gap: 10px;
+			}
+
+			.sc-save-btn {
+				padding: 9px 20px;
+				background: var(--np, #4E8A28);
+				color: #fff;
+				border: none;
+				border-radius: 8px;
+				font-size: 13px;
+				font-weight: 600;
+				cursor: pointer;
+				min-height: 40px;
+
+				&:hover { background: var(--nm, #3A6B1E); }
+			}
+
+			.sc-cancel-btn {
+				padding: 9px 20px;
+				background: transparent;
+				color: var(--t2, #3A5020);
+				border: 1px solid var(--bd, #C8E6A0);
+				border-radius: 8px;
+				font-size: 13px;
+				cursor: pointer;
+				min-height: 40px;
+
+				&:hover { background: var(--nbg, #EAF3DE); }
+			}
+		}
+	}
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE RESPONSIVE — myProfile
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+	#pc-wrap #my-page #my-profile-page {
+		.main-title-box .right-box {
+			width: 100%;
+			.main-title { font-size: 20px; }
+		}
+
+		.top-box {
+			padding: 16px;
+			margin-top: 0;
+			gap: 18px;
+
+			.photo-box .image-big-box {
+				flex-direction: column;
+				gap: 16px;
+
+				.image-box { width: 100%; height: 160px; }
+				.upload-big-box { align-self: stretch; gap: 12px; .labeler { width: 100%; } }
+			}
+
+			.small-input-box {
+				flex-direction: column;
+				gap: 14px;
+				.input-box { width: 100%; input { height: 48px; } }
+			}
+
+			.address-box input { height: 48px; }
+
+			.about-me-box .update-button { width: 100%; height: 44px; }
+		}
+
+		.bottom-box {
+			padding: 16px;
+			gap: 16px;
+
+			.top-inner-box .old-password-box input { width: 100%; height: 48px; }
+			.bottom-inner-box {
+				flex-direction: column;
+				gap: 14px;
+				.new-password-box input { height: 48px; }
+			}
+			.change-password { width: 100%; height: 44px; }
+		}
+
+		.saved-card-row {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 8px;
+
+			&__actions { width: 100%; justify-content: flex-start; }
+		}
+
+		.sc-field-row { flex-direction: column; }
+	}
+}

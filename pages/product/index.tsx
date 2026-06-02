@@ -83,7 +83,6 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 			await getProductsRefetch({ input: searchFilter });
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR, likeProductHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};

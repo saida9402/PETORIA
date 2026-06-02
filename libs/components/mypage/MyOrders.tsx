@@ -6,6 +6,7 @@ import { CANCEL_ORDER } from '../../../apollo/user/mutation';
 import { Order, OrderItem } from '../../types/order/order';
 import { OrderStatus } from '../../enums/order.enum';
 import { sweetConfirmAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../sweetAlert';
+import PaymentModal from './PaymentModal';
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string; bg: string }> = {
 	[OrderStatus.PENDING]:   { label: 'Pending',   color: '#92400e', bg: '#fef3c7' },
@@ -46,9 +47,9 @@ export default function MyOrders() {
 	const user = useReactiveVar(userVar);
 	const [filter, setFilter] = useState<string>('');
 	const [cancellingId, setCancellingId] = useState<string | null>(null);
+	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
 	const { data, loading, refetch } = useQuery(GET_MY_ORDERS, {
-		variables: { memberId: user._id },
 		skip: !user._id,
 		fetchPolicy: 'cache-and-network',
 	});
@@ -183,6 +184,14 @@ export default function MyOrders() {
 										<strong>${order.orderTotal.toFixed(2)}</strong>
 									</div>
 									<div className="order-card__actions">
+										{order.orderStatus === OrderStatus.PENDING && (
+											<button
+												className="btn btn--pay btn--sm"
+												onClick={() => setSelectedOrder(order)}
+											>
+												💳 Pay Now
+											</button>
+										)}
 										{isActive && (
 											<button
 												className="btn btn--danger btn--sm"
@@ -201,6 +210,14 @@ export default function MyOrders() {
 						);
 					})}
 				</div>
+			)}
+		{selectedOrder && (
+				<PaymentModal
+					order={selectedOrder}
+					open={!!selectedOrder}
+					onClose={() => setSelectedOrder(null)}
+					onComplete={() => { setSelectedOrder(null); refetch(); }}
+				/>
 			)}
 		</div>
 	);

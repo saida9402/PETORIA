@@ -113,7 +113,6 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 				setCommunityInquiry({ ...communityInquiry });
 			}
 		} catch (err: any) {
-			console.log('searchTypeHandler: ', err.message);
 		}
 	};
 

@@ -379,8 +379,8 @@ export const GET_MEMBER_FOLLOWERS = gql`
  *************************/
 
 export const GET_MY_ORDERS = gql`
-	query GetMyOrders($memberId: ID!) {
-		getMyOrders(memberId: $memberId) {
+	query GetMyOrders {
+		getMyOrders {
 			_id
 			memberId
 			orderItems {

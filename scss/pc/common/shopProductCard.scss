@@ -3,6 +3,7 @@
 // Light theme + design tokens from CLAUDE.md.
 
 .shop-product-card {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	background: var(--cb, #ffffff);
@@ -67,7 +68,8 @@
 		top: 10px;
 	}
 
-	// ── Like button (top-right of image) ──
+	// ── Like button — positioned relative to .shop-product-card, NOT __img-wrap
+	//    so overflow:hidden on the image container cannot block pointer events
 	&__fav {
 		position: absolute;
 		top: 10px;
@@ -81,7 +83,7 @@
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
-		z-index: 2;
+		z-index: 3;
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 		transition: transform 0.15s ease;
 		padding: 0;

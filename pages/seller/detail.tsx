@@ -159,7 +159,6 @@ const SellerDetail: NextPage = ({ initialInput, initialComment, ...props }: any)
 			await getProductsRefetch({ input: searchFilter });
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR, likeProductHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};

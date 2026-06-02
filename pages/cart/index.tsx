@@ -173,7 +173,6 @@ const CartPage: NextPage = () => {
 
 			await createOrder({
 				variables: {
-					memberId: user._id,
 					input: {
 						orderItems: items.map((it) => ({
 							productId: it.productId,

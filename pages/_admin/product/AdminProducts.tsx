@@ -112,7 +112,6 @@ const AdminProducts: NextPage = ({ initialInquiry, ...props }: any) => {
 				setProductsInquiry({ ...productsInquiry });
 			}
 		} catch (err: any) {
-			console.log('searchTypeHandler: ', err.message);
 		}
 	};
 

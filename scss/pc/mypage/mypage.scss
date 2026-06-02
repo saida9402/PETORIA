@@ -400,6 +400,129 @@
 	}
 }
 
+/* ══════════════════════════════════════════════
+   MOBILE MENU TAB BAR
+══════════════════════════════════════════════ */
+.mobile-menu-tabs {
+	display: flex;
+	flex-direction: row;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 8px 10px 6px;
+	gap: 4px;
+	background: var(--cb, #fff);
+	border-bottom: 1px solid var(--bd, #C8E6A0);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+
+	&::-webkit-scrollbar { display: none; }
+	scrollbar-width: none;
+}
+
+.mobile-tab {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	padding: 8px 12px;
+	min-width: 58px;
+	border: none;
+	border-radius: 10px;
+	background: transparent;
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: background 0.15s;
+
+	&:hover { background: var(--nbg, #EAF3DE); }
+
+	&--active {
+		background: var(--np, #4E8A28);
+		.mobile-tab__label { color: #fff; }
+	}
+
+	&--logout {
+		.mobile-tab__icon { filter: grayscale(0.3); }
+		.mobile-tab__label { color: #e11d48; }
+		&:hover { background: #fee2e2; }
+	}
+
+	&__icon { font-size: 18px; line-height: 1; }
+
+	&__label {
+		font-size: 9px;
+		font-weight: 600;
+		color: var(--t2, #3A5020);
+		white-space: nowrap;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
+	}
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE PAGE LAYOUT (my-page--mobile)
+══════════════════════════════════════════════ */
+#my-page.my-page--mobile {
+	background: #f6f6f6;
+	min-height: 100vh;
+
+	.mobile-page-content {
+		padding: 16px 14px 80px;
+		max-width: 100%;
+	}
+}
+
+/* ══════════════════════════════════════════════
+   MYPAGE DESKTOP → MOBILE RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+	#pc-wrap #my-page {
+		.container {
+			padding: 0;
+		}
+
+		.my-page {
+			padding-top: 0;
+			gap: 0;
+		}
+
+		.back-frame {
+			flex-direction: column;
+			width: 100%;
+			margin: 0;
+			border-radius: 0;
+			border: none;
+			box-shadow: none;
+			min-height: 100vh;
+
+			.left-config {
+				position: static !important;
+				width: 100% !important;
+				max-height: none !important;
+				min-height: auto !important;
+				border-radius: 0 !important;
+				border: none !important;
+				border-bottom: 1px solid var(--bd, #C8E6A0) !important;
+				margin: 0 !important;
+				box-shadow: none !important;
+				overflow-x: auto !important;
+				overflow-y: hidden !important;
+			}
+
+			.main-config {
+				width: 100% !important;
+				margin-top: 0 !important;
+				padding: 16px 14px 80px !important;
+				gap: 0 !important;
+
+				.list-config {
+					gap: 0 !important;
+				}
+			}
+		}
+	}
+}
+
 /* ── MUI overrides for MyMenu sidebar ─────────────────────── */
 #my-page {
 	/* Remove MUI List default padding */

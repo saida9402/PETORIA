@@ -89,7 +89,6 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 
 	const ingestFiles = async (rawFiles: FileList | File[]) => {
 		const filesArr = Array.from(rawFiles);
-		console.log('FILE_SELECTED', filesArr.map((f) => ({ name: f.name, type: f.type, size: f.size })));
 		if (filesArr.length === 0) return;
 
 		const currentCount = productImages.length;
@@ -115,25 +114,16 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 		setUploadCount({ done: 0, total: queued.length });
 
 		try {
-			console.log('UPLOAD_START', {
-				count: queued.length,
-				files: queued.map((f) => f.name),
-				target: 'product',
-			});
 			const { data } = await imagesUploader({
 				variables: { files: queued, target: 'product' },
 				context: { headers: { 'apollo-require-preflight': 'true' } },
 			});
-			console.log('UPLOAD_RESPONSE', data);
-
 			const paths: string[] = (data?.imagesUploader ?? []).filter(Boolean);
 			if (paths.length === 0) {
 				console.error('UPLOAD_ERROR', 'empty response', data);
 				await sweetErrorAlert('Upload failed: server returned no paths.');
 				return;
 			}
-			console.log('UPLOAD_SUCCESS', paths);
-
 			setProductImages((prev) => {
 				const combined = [...prev, ...paths].slice(0, MAX_IMAGES);
 				setProductInput((prevInput) => ({ ...prevInput, productImages: combined }));

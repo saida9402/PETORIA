@@ -293,8 +293,8 @@ export const UNSUBSCRIBE = gql`
  *************************/
 
 export const CREATE_ORDER = gql`
-	mutation CreateOrder($memberId: ID!, $input: OrderInput!) {
-		createOrder(memberId: $memberId, input: $input) {
+	mutation CreateOrder($input: OrderInput!) {
+		createOrder(input: $input) {
 			_id
 			memberId
 			orderItems {
@@ -325,6 +325,25 @@ export const UPDATE_ORDER = gql`
 				itemStatus
 			}
 			updatedAt
+		}
+	}
+`;
+
+export const UPDATE_MY_ORDER_STATUS = gql`
+	mutation UpdateMyOrderStatus($input: OrderUpdateInput!) {
+		updateMyOrderStatus(input: $input) {
+			_id
+			orderStatus
+			memberId
+			orderTotal
+			orderItems {
+				_id
+				itemQuantity
+				itemPrice
+			}
+			paymentMethod
+			orderAddress
+			createdAt
 		}
 	}
 `;

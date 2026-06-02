@@ -11,7 +11,7 @@ const PetArticle = () => {
 		return (
 			<Stack className="card-config">
 				<Stack className="top">
-					<img src="/img/community/petMain.png" alt="" />
+					<img src="/img/banner/community.svg" alt="" />
 					<Box component={'div'} className={'date'}>
 						<Typography>July 28</Typography>
 					</Box>

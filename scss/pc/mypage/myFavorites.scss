@@ -1,6 +1,6 @@
 #pc-wrap {
 	#my-page {
-		#my-favorites-page {
+		#my-favorites-page, #recently-viewed-page {
 			width: 100%;
 			height: auto;
 			display: flex;
@@ -66,6 +66,42 @@
 					font-weight: 400;
 				}
 			}
+		}
+
+		// Recently Viewed only — cap image height so tall images don't stretch the card
+		#recently-viewed-page {
+			.shop-product-card__img-wrap {
+				aspect-ratio: unset;
+				height: 220px;
+			}
+		}
+	}
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE RESPONSIVE — myFavorites / recentlyViewed
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+	#pc-wrap #my-page {
+		#my-favorites-page, #recently-viewed-page {
+			gap: 16px;
+
+			.main-title-box .right-box .main-title { font-size: 18px; }
+
+			.favorites-list-box {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 10px;
+			}
+		}
+
+		#recently-viewed-page .shop-product-card__img-wrap { height: 160px; }
+	}
+}
+
+@media (max-width: 380px) {
+	#pc-wrap #my-page {
+		#my-favorites-page, #recently-viewed-page {
+			.favorites-list-box { grid-template-columns: 1fr; }
 		}
 	}
 }

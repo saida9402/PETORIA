@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Chip } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useApolloClient } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { API_URL } from '../../config';
 import { logOut } from '../../auth';
@@ -18,17 +18,50 @@ const MyMenu = () => {
 	const pathname = router.query.category ?? 'myProfile';
 	const category: any = router.query?.category ?? 'myProfile';
 	const user = useReactiveVar(userVar);
+	const client = useApolloClient();
 
 	const logoutHandler = async () => {
 		try {
-			if (await sweetConfirmAlert('Do you want to logout?')) logOut();
+			if (await sweetConfirmAlert('Do you want to logout?')) await logOut(client, router);
 		} catch (err: any) {
-			console.log('ERROR, logoutHandler:', err.message);
 		}
 	};
 
 	if (device === 'mobile') {
-		return <div>MY MENU MOBILE</div>;
+		const BASE_TABS = [
+			{ key: 'myProfile',       icon: '👤', label: 'Profile' },
+			{ key: 'myOrders',        icon: '📦', label: 'Orders' },
+			{ key: 'myFavorites',     icon: '❤️', label: 'Favorites' },
+			{ key: 'recentlyViewed',  icon: '👁', label: 'Viewed' },
+			{ key: 'myArticles',      icon: '✍️', label: 'Articles' },
+			{ key: 'writeArticle',    icon: '📝', label: 'Write' },
+			{ key: 'followers',       icon: '👥', label: 'Followers' },
+			{ key: 'followings',      icon: '🔔', label: 'Following' },
+		];
+		const SELLER_TABS = [
+			{ key: 'addProduct',  icon: '➕', label: 'Add' },
+			{ key: 'myProducts',  icon: '🛍', label: 'Products' },
+		];
+		const tabs = user.memberType === 'SELLER' ? [...SELLER_TABS, ...BASE_TABS] : BASE_TABS;
+
+		return (
+			<div className="mobile-menu-tabs">
+				{tabs.map((tab) => (
+					<button
+						key={tab.key}
+						className={`mobile-tab${category === tab.key ? ' mobile-tab--active' : ''}`}
+						onClick={() => router.push({ pathname: '/mypage', query: { category: tab.key } }, undefined, { scroll: false })}
+					>
+						<span className="mobile-tab__icon">{tab.icon}</span>
+						<span className="mobile-tab__label">{tab.label}</span>
+					</button>
+				))}
+				<button className="mobile-tab mobile-tab--logout" onClick={logoutHandler}>
+					<span className="mobile-tab__icon">🚪</span>
+					<span className="mobile-tab__label">Logout</span>
+				</button>
+			</div>
+		);
 	} else {
 		return (
 			<Stack width={'100%'}>

@@ -55,7 +55,6 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 			await boardArticlesRefetch({ input: searchCommunity });
 			await sweetTopSmallSuccessAlert('Success!', 750);
 		} catch (err: any) {
-			console.log('ERROR, likeBoArticleHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};

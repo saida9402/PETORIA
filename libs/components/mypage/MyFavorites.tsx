@@ -5,15 +5,17 @@ import { Pagination, Stack, Typography } from '@mui/material';
 
 import { Product } from '../../types/product/product';
 import { T } from '../../types/common';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { GET_FAVORITES } from '../../../apollo/user/query';
+import { userVar } from '../../../apollo/store';
 import { sweetMixinErrorAlert } from '../../sweetAlert';
 import { Messages } from '../../config';
 import ShopProductCard from '../common/ShopProductCard';
 
 const MyFavorites: NextPage = () => {
 	const device = useDeviceDetect();
+	const user = useReactiveVar(userVar);
 	const [myFavorites, setMyFavorites] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchFavorites, setSearchFavorites] = useState<T>({ page: 1, limit: 6 });
@@ -41,15 +43,14 @@ const MyFavorites: NextPage = () => {
 		setSearchFavorites({ ...searchFavorites, page: value });
 	};
 
-	const likeProductHandler = async (user: any, id: string) => {
+	const likeProductHandler = async (id: string) => {
 		try {
 			if (!id) return;
-			if (!user?._id) throw new Error(Messages.error2);
+			if (!user._id) throw new Error(Messages.error2);
 
 			await likeTargetProduct({ variables: { input: id } });
 			await getFavoritesRefetch({ input: searchFavorites });
 		} catch (err: any) {
-			console.log('ERROR, likeProductHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};

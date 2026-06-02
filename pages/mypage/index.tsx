@@ -91,7 +91,6 @@ const MyPage: NextPage = () => {
 			await sweetTopSmallSuccessAlert('Success!', 800);
 			await refetch({ input: query });
 		} catch (err: any) {
-			console.log('ERROR, likeMemberHandler: ', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
@@ -106,54 +105,67 @@ const MyPage: NextPage = () => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>MY PAGE MOBILE</div>;
-	} else {
-		return (
-			<div id="my-page" style={{ position: 'relative' }}>
-				<div className="container">
-					<Stack className={'my-page'}>
-						<Stack className={'back-frame'}>
-							{/* Sidebar menu */}
-							<Stack className={'left-config'}>
-								<MyMenu />
-							</Stack>
+	const content = (
+		<>
+			{category === 'myOrders' && <MyOrders />}
+			{category === 'addProduct' && <AddNewProduct />}
+			{category === 'myProducts' && <MyProducts />}
+			{category === 'myFavorites' && <MyFavorites />}
+			{category === 'recentlyViewed' && <RecentlyViewed />}
+			{category === 'myArticles' && <MyArticles />}
+			{category === 'writeArticle' && <WriteArticle />}
+			{category === 'myProfile' && <MyProfile />}
+			{category === 'followers' && (
+				<MemberFollowers
+					subscribeHandler={subscribeHandler}
+					unsubscribeHandler={unsubscribeHandler}
+					likeMemberHandler={likeMemberHandler}
+					redirectToMemberPageHandler={redirectToMemberPageHandler}
+				/>
+			)}
+			{category === 'followings' && (
+				<MemberFollowings
+					subscribeHandler={subscribeHandler}
+					unsubscribeHandler={unsubscribeHandler}
+					likeMemberHandler={likeMemberHandler}
+					redirectToMemberPageHandler={redirectToMemberPageHandler}
+				/>
+			)}
+		</>
+	);
 
-							{/* Main content */}
-							<Stack className="main-config" mb={'76px'}>
-								<Stack className={'list-config'}>
-									{category === 'myOrders' && <MyOrders />}
-									{category === 'addProduct' && <AddNewProduct />}
-									{category === 'myProducts' && <MyProducts />}
-									{category === 'myFavorites' && <MyFavorites />}
-									{category === 'recentlyViewed' && <RecentlyViewed />}
-									{category === 'myArticles' && <MyArticles />}
-									{category === 'writeArticle' && <WriteArticle />}
-									{category === 'myProfile' && <MyProfile />}
-									{category === 'followers' && (
-										<MemberFollowers
-											subscribeHandler={subscribeHandler}
-											unsubscribeHandler={unsubscribeHandler}
-											likeMemberHandler={likeMemberHandler}
-											redirectToMemberPageHandler={redirectToMemberPageHandler}
-										/>
-									)}
-									{category === 'followings' && (
-										<MemberFollowings
-											subscribeHandler={subscribeHandler}
-											unsubscribeHandler={unsubscribeHandler}
-											likeMemberHandler={likeMemberHandler}
-											redirectToMemberPageHandler={redirectToMemberPageHandler}
-										/>
-									)}
-								</Stack>
-							</Stack>
-						</Stack>
-					</Stack>
+	if (device === 'mobile') {
+		return (
+			<div id="my-page" className="my-page--mobile">
+				<MyMenu />
+				<div className="mobile-page-content">
+					{content}
 				</div>
 			</div>
 		);
 	}
+
+	return (
+		<div id="my-page" style={{ position: 'relative' }}>
+			<div className="container">
+				<Stack className={'my-page'}>
+					<Stack className={'back-frame'}>
+						{/* Sidebar menu */}
+						<Stack className={'left-config'}>
+							<MyMenu />
+						</Stack>
+
+						{/* Main content */}
+						<Stack className="main-config" mb={'76px'}>
+							<Stack className={'list-config'}>
+								{content}
+							</Stack>
+						</Stack>
+					</Stack>
+				</Stack>
+			</div>
+		</div>
+	);
 };
 
 export default withLayoutBasic(MyPage);

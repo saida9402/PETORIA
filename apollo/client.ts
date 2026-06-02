@@ -14,10 +14,6 @@ const GRAPHQL_URI =
 	`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/graphql`;
 const WS_URI = process.env.NEXT_PUBLIC_API_WS || 'ws://localhost:3002';
 
-if (typeof window !== 'undefined') {
-	console.log('[Apollo] GraphQL URI:', GRAPHQL_URI);
-	console.log('[Apollo] WebSocket URI:', WS_URI);
-}
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -155,19 +151,3 @@ export function useApollo(initialState: any) {
 	return useMemo(() => initializeApollo(initialState), [initialState]);
 }
 
-/**
-import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
-
-// No Subscription required for develop process
-
-const httpLink = createHttpLink({
-  uri: "http://localhost:3007/graphql",
-});
-
-const client = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache(),
-});
-
-export default client;
-*/

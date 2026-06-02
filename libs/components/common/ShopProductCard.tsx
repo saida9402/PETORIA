@@ -16,7 +16,7 @@ import { addToCart as addToCartStore } from '../../cart';
 
 interface ShopProductCardProps {
 	product: Product;
-	likeProductHandler?: (user: any, id: string) => void;
+	likeProductHandler?: (id: string) => void;
 	addToCartHandler?: (id: string) => void;
 	memberPage?: boolean;
 	myFavorites?: boolean;
@@ -57,8 +57,10 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 	};
 
 	const handleLike = (e: React.MouseEvent) => {
+		console.log('handleLike fired', product._id);
 		e.stopPropagation();
-		if (likeProductHandler) likeProductHandler(user, product._id);
+		e.preventDefault();
+		if (likeProductHandler) likeProductHandler(product._id);
 	};
 
 	const discountPercent = product.productSale && product.productSalePercent ? product.productSalePercent : null;
@@ -87,17 +89,16 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 					alt={product.productName}
 					className="shop-product-card__img"
 				/>
-
-				{/* Like button */}
-				<button className="shop-product-card__fav" onClick={handleLike} aria-label="Like product">
-					{product.meLiked && product.meLiked[0]?.myFavorite ? (
-						<FavoriteIcon sx={{ color: '#e53935', fontSize: 18 }} />
-					) : (
-						<FavoriteBorderIcon sx={{ color: '#666', fontSize: 18 }} />
-					)}
-				</button>
-
 			</Stack>
+
+			{/* Like button — outside overflow:hidden img-wrap so it always receives clicks */}
+			<button type="button" className="shop-product-card__fav" onClick={handleLike} aria-label="Like product">
+				{product.meLiked && product.meLiked[0]?.myFavorite ? (
+					<FavoriteIcon sx={{ color: '#e53935', fontSize: 18 }} />
+				) : (
+					<FavoriteBorderIcon sx={{ color: '#666', fontSize: 18 }} />
+				)}
+			</button>
 
 			{/* ── Body ── */}
 			<Stack className="shop-product-card__body">

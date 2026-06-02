@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { loadSavedCards, persistSavedCards, SavedCard } from './PaymentModal';
 
 /* ── Daum Postcode loader ─────────────────────────────────────────────────── */
 declare global {
@@ -31,6 +32,51 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
+
+	// ── Saved Cards state ──
+	const [cards, setCards] = useState<SavedCard[]>([]);
+	const [showAddCard, setShowAddCard] = useState(false);
+	const [newCardNum, setNewCardNum] = useState('');
+	const [newHolder, setNewHolder] = useState('');
+	const [newExpiry, setNewExpiry] = useState('');
+	const [newCvv, setNewCvv] = useState('');
+
+	useEffect(() => {
+		setCards(loadSavedCards());
+	}, []);
+
+	const syncCards = (next: SavedCard[]) => {
+		persistSavedCards(next);
+		setCards(next);
+	};
+
+	const setDefaultCard = (id: string) => {
+		syncCards(cards.map((c) => ({ ...c, isDefault: c.id === id })));
+	};
+
+	const deleteCard = (id: string) => {
+		let next = cards.filter((c) => c.id !== id);
+		if (next.length && !next.some((c) => c.isDefault)) next[0] = { ...next[0], isDefault: true };
+		syncCards(next);
+	};
+
+	const addCard = () => {
+		if (!newCardNum.replace(/\s/g, '') || !newHolder || !newExpiry) return;
+		const last4 = newCardNum.replace(/\s/g, '').slice(-4);
+		const d = newCardNum.replace(/\s/g, '');
+		const brand = /^4/.test(d) ? 'Visa' : /^5[1-5]/.test(d) ? 'Mastercard' : /^3[47]/.test(d) ? 'Amex' : 'Card';
+		const newCard: SavedCard = {
+			id: Date.now().toString(),
+			last4, brand, holderName: newHolder, expiry: newExpiry,
+			isDefault: cards.length === 0,
+		};
+		syncCards([...cards, newCard]);
+		setNewCardNum(''); setNewHolder(''); setNewExpiry(''); setNewCvv('');
+		setShowAddCard(false);
+	};
+
+	const fmtNum = (v: string) => v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+	const fmtExp = (v: string) => { let d = v.replace(/\D/g, '').slice(0, 4); if (d.length >= 3) d = d.slice(0,2)+'/'+d.slice(2); return d; };
 
 	/** APOLLO REQUESTS **/
 	const [updateMember] = useMutation(UPDATE_MEMBER);
@@ -191,6 +237,70 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberDesc: value })}
 						style={{ resize: 'vertical' }}
 					/>
+				</Stack>
+
+				{/* ── Saved Cards ── */}
+				<Stack className="saved-cards-box">
+					<Typography className="title">Saved Cards 💳</Typography>
+					{cards.length === 0 && !showAddCard && (
+						<p className="saved-cards-empty">No saved cards yet.</p>
+					)}
+					{cards.map((card) => (
+						<div key={card.id} className={`saved-card-row${card.isDefault ? ' saved-card-row--default' : ''}`}>
+							<div className="saved-card-row__info">
+								<span className="saved-card-row__brand">{card.brand}</span>
+								<span className="saved-card-row__num">•••• {card.last4}</span>
+								<span className="saved-card-row__holder">{card.holderName}</span>
+								<span className="saved-card-row__exp">{card.expiry}</span>
+							</div>
+							<div className="saved-card-row__actions">
+								{card.isDefault && <span className="saved-card-row__badge">Default</span>}
+								{!card.isDefault && (
+									<button className="sc-link-btn" onClick={() => setDefaultCard(card.id)}>
+										Set default
+									</button>
+								)}
+								<button className="sc-link-btn sc-link-btn--danger" onClick={() => deleteCard(card.id)}>
+									Remove
+								</button>
+							</div>
+						</div>
+					))}
+
+					{showAddCard ? (
+						<div className="saved-card-form">
+							<div className="sc-field-row">
+								<div className="sc-field">
+									<label>Card Number</label>
+									<input placeholder="XXXX XXXX XXXX XXXX" value={newCardNum} maxLength={19} onChange={e => setNewCardNum(fmtNum(e.target.value))} />
+								</div>
+							</div>
+							<div className="sc-field-row">
+								<div className="sc-field">
+									<label>Cardholder Name</label>
+									<input placeholder="Full name on card" value={newHolder} onChange={e => setNewHolder(e.target.value)} />
+								</div>
+							</div>
+							<div className="sc-field-row sc-field-row--half">
+								<div className="sc-field">
+									<label>Expiry</label>
+									<input placeholder="MM/YY" value={newExpiry} maxLength={5} onChange={e => setNewExpiry(fmtExp(e.target.value))} />
+								</div>
+								<div className="sc-field">
+									<label>CVV</label>
+									<input placeholder="•••" type="password" value={newCvv} maxLength={4} onChange={e => setNewCvv(e.target.value.replace(/\D/g,'').slice(0,4))} />
+								</div>
+							</div>
+							<div className="sc-form-actions">
+								<button className="sc-save-btn" onClick={addCard}>Save Card</button>
+								<button className="sc-cancel-btn" onClick={() => setShowAddCard(false)}>Cancel</button>
+							</div>
+						</div>
+					) : (
+						<button className="sc-add-btn" onClick={() => setShowAddCard(true)}>
+							+ Add new card
+						</button>
+					)}
 				</Stack>
 
 				<Stack className="about-me-box">

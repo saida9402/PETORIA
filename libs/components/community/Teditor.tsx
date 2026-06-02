@@ -73,13 +73,6 @@ const TuiEditor = () => {
 				throw new Error('Content is too short');
 			}
 
-			console.log('[ARTICLE SUBMIT]', {
-				articleCategory,
-				articleTitle: trimmedTitle,
-				contentLength: trimmedContent.length,
-				articleImage,
-			});
-
 			await createBoardArticle({
 				variables: {
 					input: {

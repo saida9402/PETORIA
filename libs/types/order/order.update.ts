@@ -5,6 +5,7 @@ export interface OrderUpdateInput {
 	orderStatus: OrderStatus;
 }
 
+
 export interface OrderCancelInput {
 	orderId: string;
 	cancelReason?: string;

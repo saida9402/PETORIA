@@ -134,7 +134,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 		const wasFollowing = seller.meFollowed?.[0]?.myFollowing ?? false;
 		// Optimistic update — instant UI feedback
 		setSeller((prev) =>
-			prev ? { ...prev, meFollowed: [{ myFollowing: !wasFollowing }] } : prev,
+			prev ? { ...prev, meFollowed: [{ followingId: prev._id, followerId: user._id, myFollowing: !wasFollowing }] } : prev,
 		);
 		try {
 			if (wasFollowing) {
@@ -147,13 +147,13 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 		} catch (err: any) {
 			// Revert optimistic update on failure
 			setSeller((prev) =>
-				prev ? { ...prev, meFollowed: [{ myFollowing: wasFollowing }] } : prev,
+				prev ? { ...prev, meFollowed: [{ followingId: prev._id, followerId: user._id, myFollowing: wasFollowing }] } : prev,
 			);
 			sweetErrorHandling(err).then();
 		}
 	};
 
-	const likeProductHandler = async (_user: any, id: string) => {
+	const likeProductHandler = async (id: string) => {
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);

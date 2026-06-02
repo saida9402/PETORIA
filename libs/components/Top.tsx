@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
+import { useApolloClient } from '@apollo/client';
 import { Stack, Badge, InputBase, IconButton, Drawer, List, ListItemButton } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
@@ -71,6 +72,7 @@ const Top = () => {
 	const onlineCount = useReactiveVar(onlineUsersVar);
 	const { t } = useTranslation('common');
 	const router = useRouter();
+	const client = useApolloClient();
 
 	const toggleTheme = () => {
 		const next = currentTheme === 'dark' ? 'light' : 'dark';
@@ -181,7 +183,7 @@ const Top = () => {
 						</List>
 						<div className={'drawer-auth'}>
 							{user?._id ? (
-								<Button onClick={() => { logOut(); setMobileOpen(false); }} fullWidth variant="outlined" color="error">
+								<Button onClick={() => { logOut(client, router); setMobileOpen(false); }} fullWidth variant="outlined" color="error">
 									Logout
 								</Button>
 							) : (
@@ -306,7 +308,7 @@ const Top = () => {
 									<MenuItem onClick={() => { router.push('/mypage'); setLogoutAnchor(null); }}>
 										🐾 My Page
 									</MenuItem>
-									<MenuItem onClick={() => { logOut(); setLogoutAnchor(null); }}>
+									<MenuItem onClick={() => { logOut(client, router); setLogoutAnchor(null); }}>
 										<Logout fontSize="small" sx={{ color: '#4E8A28', mr: 1 }} />
 										Logout
 									</MenuItem>

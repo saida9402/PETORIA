@@ -1,6 +1,8 @@
 import decodeJWT from 'jwt-decode';
+import { ApolloClient } from '@apollo/client';
+import { NextRouter } from 'next/router';
 import { initializeApollo } from '../../apollo/client';
-import { userVar } from '../../apollo/store';
+import { userVar, initDomain } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
 import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
@@ -24,9 +26,8 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
 			updateUserInfo(jwtToken);
 		}
 	} catch (err) {
-		console.warn('login err', err);
-		logOut();
-		// throw new Error('Login Err');
+		deleteStorage();
+		userVar(initDomain);
 	}
 };
 
@@ -46,12 +47,10 @@ const requestJwtToken = async ({
 			fetchPolicy: 'network-only',
 		});
 
-		console.log('---------- login ----------');
 		const { accessToken } = result?.data?.login;
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
 		switch (err.graphQLErrors[0].message) {
 			case 'Definer: login and password do not match':
 				await sweetMixinErrorAlert('Please check your password again');
@@ -73,9 +72,8 @@ export const signUp = async (nick: string, password: string, phone: string, type
 			updateUserInfo(jwtToken);
 		}
 	} catch (err) {
-		console.warn('login err', err);
-		logOut();
-		// throw new Error('Login Err');
+		deleteStorage();
+		userVar(initDomain);
 	}
 };
 
@@ -101,12 +99,10 @@ const requestSignUpJwtToken = async ({
 			fetchPolicy: 'network-only',
 		});
 
-		console.log('---------- login ----------');
 		const { accessToken } = result?.data?.signup;
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
 		switch (err.graphQLErrors[0].message) {
 			case 'Definer: login and password do not match':
 				await sweetMixinErrorAlert('Please check your password again');
@@ -152,10 +148,15 @@ export const updateUserInfo = (jwtToken: any) => {
 	});
 };
 
-export const logOut = () => {
+export const logOut = async (
+	client: ApolloClient<any>,
+	router: NextRouter,
+): Promise<void> => {
+	client.stop();
 	deleteStorage();
-	deleteUserInfo();
-	window.location.reload();
+	userVar(initDomain);
+	await client.clearStore();
+	router.push('/');
 };
 
 const deleteStorage = () => {
@@ -163,24 +164,3 @@ const deleteStorage = () => {
 	window.localStorage.setItem('logout', Date.now().toString());
 };
 
-const deleteUserInfo = () => {
-	userVar({
-		_id: '',
-		memberType: '',
-		memberStatus: '',
-		memberAuthType: '',
-		memberPhone: '',
-		memberNick: '',
-		memberFullName: '',
-		memberImage: '',
-		memberAddress: '',
-		memberDesc: '',
-		memberRank: 0,
-		memberArticles: 0,
-		memberPoints: 0,
-		memberLikes: 0,
-		memberViews: 0,
-		memberWarnings: 0,
-		memberBlocks: 0,
-	});
-};

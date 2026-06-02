@@ -5,7 +5,7 @@ export { themeVar } from '../libs/store/themeStore';
 export const chatOpenVar = makeVar(false);
 export const onlineUsersVar = makeVar(0);
 
-export const userVar = makeVar<CustomJwtPayload>({
+export const initDomain: CustomJwtPayload = {
 	_id: '',
 	memberType: '',
 	memberStatus: '',
@@ -23,7 +23,9 @@ export const userVar = makeVar<CustomJwtPayload>({
 	memberViews: 0,
 	memberWarnings: 0,
 	memberBlocks: 0,
-});
+};
+
+export const userVar = makeVar<CustomJwtPayload>(initDomain);
 
 //@ts-ignore
 export const socketVar = makeVar<WebSocket>();
