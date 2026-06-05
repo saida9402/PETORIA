@@ -513,13 +513,171 @@
 				width: 100% !important;
 				margin-top: 0 !important;
 				padding: 16px 14px 80px !important;
-				gap: 0 !important;
+				gap: 16px !important;
 
+				/* Single-column product cards on mobile */
 				.list-config {
-					gap: 0 !important;
+					display: grid !important;
+					grid-template-columns: 1fr !important;
+					gap: 12px !important;
+
+					.card-config {
+						width: 100% !important;
+						height: auto !important;
+
+						.top {
+							height: 200px !important;
+						}
+
+						.bottom {
+							height: auto !important;
+						}
+					}
 				}
 			}
 		}
+	}
+}
+
+/* 2-column product cards at 480-768px (e.g. large phones, small tablets) */
+@media (min-width: 480px) and (max-width: 768px) {
+	#pc-wrap #my-page {
+		.back-frame .main-config .list-config {
+			grid-template-columns: repeat(2, 1fr) !important;
+		}
+	}
+}
+
+/* ══════════════════════════════════════════════
+   MYMENU SELLER STORE HEADER
+   (used in MyMenu.tsx when memberType === 'SELLER')
+══════════════════════════════════════════════ */
+.mymenu-store {
+	border-bottom: 1px solid var(--bd, #C8E6A0);
+
+	&__banner {
+		width: 100%;
+		height: 60px;
+		background: linear-gradient(135deg, var(--nb, #2D5016) 0%, var(--np, #4E8A28) 100%);
+		border-radius: 11px 11px 0 0;
+		position: relative;
+		overflow: hidden;
+
+		&::after {
+			content: '🐾';
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 28px;
+			opacity: 0.18;
+		}
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 0 16px 16px;
+		gap: 6px;
+	}
+
+	&__avatar-wrap {
+		position: relative;
+		margin-top: -28px;
+	}
+
+	&__avatar {
+		border: 3px solid #fff;
+		box-shadow: 0 2px 8px rgba(45, 80, 22, 0.18);
+	}
+
+	&__verified {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		width: 18px;
+		height: 18px;
+		background: var(--np, #4E8A28);
+		color: #fff;
+		border-radius: 50%;
+		font-size: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 2px solid #fff;
+	}
+
+	&__name {
+		font-size: 14px !important;
+		font-weight: 700 !important;
+		color: var(--t1, #1A2E0A) !important;
+		text-align: center;
+		line-height: 1.2 !important;
+	}
+
+	&__chip {
+		background: var(--nbg, #EAF3DE) !important;
+		color: var(--np, #4E8A28) !important;
+		font-size: 10px !important;
+		font-weight: 700 !important;
+		height: 20px !important;
+		border: 1px solid var(--bd, #C8E6A0) !important;
+	}
+
+	&__stats {
+		display: flex;
+		flex-direction: row;
+		gap: 16px;
+		margin: 4px 0;
+	}
+
+	&__stat {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1px;
+
+		strong {
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--t1, #1A2E0A);
+			line-height: 1;
+		}
+
+		span {
+			font-size: 10px;
+			color: var(--t3, #6B8A4E);
+		}
+	}
+
+	&__view-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		font-size: 11px;
+		font-weight: 600;
+		color: var(--np, #4E8A28);
+		text-decoration: none;
+		padding: 5px 10px;
+		border: 1px solid var(--bd, #C8E6A0);
+		border-radius: 20px;
+		margin-top: 4px;
+		transition: background 0.15s, border-color 0.15s;
+
+		&:hover {
+			background: var(--nbg, #EAF3DE);
+			border-color: var(--np, #4E8A28);
+		}
+	}
+}
+
+/* Dashboard link in MyMenu sidebar */
+.mymenu-dashboard-link {
+	color: var(--t1, #1A2E0A);
+
+	.MuiSvgIcon-root {
+		color: var(--np, #4E8A28);
 	}
 }
 

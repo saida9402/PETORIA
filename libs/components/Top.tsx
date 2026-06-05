@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
@@ -88,6 +88,8 @@ const Top = () => {
 	const [logoutAnchor, setLogoutAnchor] = useState<null | HTMLElement>(null);
 	const [lang, setLang] = useState<string>('en');
 	const [mobileOpen, setMobileOpen] = useState(false);
+	const [searchOpen, setSearchOpen] = useState(false);
+	const mobileSearchRef = useRef<HTMLInputElement>(null);
 	const [cartCount, setCartCount] = useState(0);
 
 	useEffect(() => {
@@ -140,26 +142,79 @@ const Top = () => {
 		}
 	};
 
+	const handleMobileSubmit = (e: React.FormEvent) => {
+		handleSearch(e);
+		if (searchQuery.trim()) setSearchOpen(false);
+	};
+
+	const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === 'Escape') {
+			setSearchOpen(false);
+			setSearchQuery('');
+		}
+	};
+
+	useEffect(() => {
+		if (searchOpen && mobileSearchRef.current) {
+			mobileSearchRef.current.focus();
+		}
+	}, [searchOpen]);
+
 	if (device === 'mobile') {
 		return (
 			<>
-				<Stack className={'top mobile-top'}>
-					{/* Logo */}
-					<Link href={'/'}>
-						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'mobile-logo'} />
-					</Link>
-
-					<div className={'mobile-actions'}>
-						<Link href={'/cart'}>
-							<Badge badgeContent={cartCount} color="error" className={'cart-badge'}>
-								<ShoppingCartOutlinedIcon sx={{ color: '#fff' }} />
-							</Badge>
+				<div className={'mobile-nav-wrapper'}>
+					<Stack className={'top mobile-top'}>
+						{/* Logo */}
+						<Link href={'/'}>
+							<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'mobile-logo'} />
 						</Link>
-						<IconButton onClick={() => setMobileOpen(true)} sx={{ color: '#fff' }}>
-							<MenuIcon />
-						</IconButton>
-					</div>
-				</Stack>
+
+						<div className={'mobile-actions'}>
+							<IconButton
+								onClick={() => setSearchOpen((prev) => !prev)}
+								sx={{ color: '#fff' }}
+								aria-label="Open search"
+							>
+								<SearchIcon />
+							</IconButton>
+							<Link href={'/cart'}>
+								<Badge badgeContent={cartCount} color="error" className={'cart-badge'}>
+									<ShoppingCartOutlinedIcon sx={{ color: '#fff' }} />
+								</Badge>
+							</Link>
+							<IconButton onClick={() => setMobileOpen(true)} sx={{ color: '#fff' }} aria-label="Open menu">
+								<MenuIcon />
+							</IconButton>
+						</div>
+					</Stack>
+
+					{searchOpen && (
+						<div className={'mobile-search-bar'}>
+							<form className={'mobile-search-form'} onSubmit={handleMobileSubmit}>
+								<InputBase
+									inputRef={mobileSearchRef}
+									className={'mobile-search-input'}
+									placeholder={t('Search products...')}
+									value={searchQuery}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+									onKeyDown={handleSearchKeyDown}
+									inputProps={{ 'aria-label': 'Search products' }}
+								/>
+								<IconButton type="submit" className={'mobile-search-btn'} aria-label="Submit search">
+									<SearchIcon />
+								</IconButton>
+								<IconButton
+									onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+									className={'mobile-search-close'}
+									aria-label="Close search"
+								>
+									<CloseIcon />
+								</IconButton>
+							</form>
+						</div>
+					)}
+				</div>
 
 				<Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)}>
 					<div className={'mobile-drawer'}>
@@ -329,9 +384,49 @@ const Top = () => {
 						<IconButton className={'icon-btn theme-btn'} onClick={toggleTheme}>
 							{currentTheme === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
 						</IconButton>
+
+						{/* Hamburger — only visible at ≤768px via CSS */}
+						<IconButton className={'icon-btn hamburger-btn'} onClick={() => setMobileOpen(true)}>
+							<MenuIcon />
+						</IconButton>
 					</div>
 				</Stack>
 			</Stack>
+
+			{/* Desktop-path Drawer (reuses same mobileOpen state) */}
+			<Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)}>
+				<div className={'mobile-drawer'}>
+					<div className={'drawer-header'}>
+						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" />
+						<IconButton onClick={() => setMobileOpen(false)}>
+							<CloseIcon />
+						</IconButton>
+					</div>
+					<List>
+						{NAV_LINKS.map((link) => (
+							<ListItemButton key={link.href} onClick={() => { router.push(link.href); setMobileOpen(false); }}>
+								{t(link.label)}
+							</ListItemButton>
+						))}
+						{user?._id && (
+							<ListItemButton onClick={() => { router.push('/mypage'); setMobileOpen(false); }}>
+								{t('My Page')}
+							</ListItemButton>
+						)}
+					</List>
+					<div className={'drawer-auth'}>
+						{user?._id ? (
+							<Button onClick={() => { logOut(client, router); setMobileOpen(false); }} fullWidth variant="outlined" color="error">
+								Logout
+							</Button>
+						) : (
+							<Button onClick={() => { router.push('/account/join'); setMobileOpen(false); }} fullWidth variant="contained">
+								{t('Login')} / {t('Register')}
+							</Button>
+						)}
+					</div>
+				</div>
+			</Drawer>
 		</Stack>
 	);
 };

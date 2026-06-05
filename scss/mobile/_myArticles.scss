@@ -1,0 +1,20 @@
+// ─── MY ARTICLES PAGE MOBILE ─────────────────────────────────────────────────
+// Extracted from scss/pc/mypage/myArticles.scss @media block.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    #my-articles-page {
+      .main-title-box .right-box {
+        width: 100%;
+        .main-title { font-size: 20px; }
+      }
+
+      .article-list-box {
+        flex-direction: column;
+        margin-top: 24px;
+        margin-bottom: 40px;
+        gap: 14px;
+      }
+    }
+  }
+}

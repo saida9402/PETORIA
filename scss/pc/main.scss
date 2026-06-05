@@ -340,13 +340,16 @@ body::-webkit-scrollbar {
 	   This media query is a safety-net for narrow desktop viewports (devtools
 	   responsive mode, tablets, SSR before hydration). It hides the items that
 	   cause the overflow without touching the mobile Drawer branch. ──────── */
+	/* Hamburger button: hidden on desktop, shown at ≤768px */
+	.hamburger-btn { display: none !important; }
+
 	@media (max-width: 768px) {
 		.top .navbar {
 			.nav-inner {
 				padding: 0 16px;
 				gap: 8px;
 
-				/* Hide text nav links — covered by the mobile Drawer */
+				/* Hide text nav links — covered by the Drawer */
 				.nav-links { display: none; }
 
 				/* Hide search bar — takes too much horizontal space */
@@ -358,6 +361,9 @@ body::-webkit-scrollbar {
 
 					/* Keep the login icon but drop the "Login" text label */
 					.login-btn span { display: none; }
+
+					/* Show hamburger at ≤768px */
+					.hamburger-btn { display: flex !important; }
 				}
 			}
 		}
@@ -750,7 +756,9 @@ body::-webkit-scrollbar {
 			position: fixed;
 			right: -380px;
 			transition: right 0.7s ease-in-out;
-			width: 380px;
+			/* Cap at viewport width minus 20px margin so frame never overflows
+			   left edge on narrow desktop/devtools viewports */
+			width: min(380px, calc(100vw - 20px));
 			height: 500px;
 			display: flex;
 			flex-direction: column;
@@ -759,7 +767,6 @@ body::-webkit-scrollbar {
 			box-shadow: 0px 0px 15px 0px rgba(50, 50, 50, 0.3);
 			z-index: 100;
 			bottom: 150px;
-			transition: right 0.7s ease-in-out;
 			&.open {
 				right: 10px;
 			}
@@ -1331,4 +1338,71 @@ body::-webkit-scrollbar {
 	height: 17px;
 	border-radius: 2px;
 	margin-right: 8px;
+}
+
+/* ══════════════════════════════════════════════
+   GLOBAL MOBILE OVERRIDES — pc/main.scss
+   Footer, header-basic, and shared elements
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+	#pc-wrap {
+		/* ── Footer mobile ── */
+		#footer {
+			.footer-container {
+				.footer-newsletter {
+					flex-direction: column;
+					padding: 28px 16px;
+					gap: 16px;
+
+					.newsletter-form {
+						width: 100%;
+
+						input { width: 100%; }
+					}
+				}
+
+				.footer-body {
+					padding: 32px 16px 24px;
+					flex-direction: column;
+					gap: 28px;
+				}
+
+				.footer-copyright {
+					padding: 16px;
+					flex-direction: column;
+					gap: 8px;
+					text-align: center;
+					align-items: center;
+				}
+			}
+		}
+
+		/* ── Header basic (banner used in most pages) ── */
+		.header-basic {
+			min-height: 100px;
+			padding: 20px 16px;
+
+			.container {
+				strong { font-size: 26px; }
+				span { font-size: 13px; }
+			}
+		}
+
+		/* ── Legacy header-main (hero with search box) ── */
+		.header-main {
+			height: auto;
+			min-height: 200px;
+
+			.container {
+				.search-box {
+					width: 100%;
+					height: auto;
+					flex-direction: column;
+					padding: 12px;
+
+					.select-box { width: 100%; flex-direction: column; gap: 8px; }
+				}
+			}
+		}
+	}
 }

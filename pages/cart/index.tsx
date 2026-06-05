@@ -6,7 +6,7 @@ import { useReactiveVar, useMutation } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { CREATE_ORDER, UPDATE_MEMBER } from '../../apollo/user/mutation';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { sweetConfirmAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetConfirmAlert, sweetErrorHandling } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { CartItem as SharedCartItem, getCart as readCart, saveCart as writeCart, subscribeCart } from '../../libs/cart';
 import { updateStorage, updateUserInfo } from '../../libs/auth';
@@ -185,9 +185,8 @@ const CartPage: NextPage = () => {
 					},
 				},
 			});
+			router.push('/mypage?category=myOrders&pay=latest');
 			clearCart();
-			await sweetTopSmallSuccessAlert('Order placed! Check My Orders.', 2000);
-			router.push('/mypage?category=myOrders');
 		} catch (err) {
 			sweetErrorHandling(err).then();
 		} finally {
@@ -291,20 +290,18 @@ const CartPage: NextPage = () => {
 							{/* Delivery address */}
 							<div className="cart-summary__field">
 								<label>Delivery address *</label>
-								<div style={{ display: 'flex', gap: 6 }}>
+								<div className="cart-addr-row">
 									<input
 										type="text"
 										placeholder="Enter your address"
 										value={address}
 										onChange={(e) => handleAddressChange(e.target.value)}
 										className={`cart-input${addrError ? ' cart-input--error' : ''}`}
-										style={{ flex: 1 }}
 									/>
 									<button
 										type="button"
-										className="btn btn--outline btn--sm"
+										className="btn btn--outline btn--sm cart-addr-row__btn"
 										onClick={openPostcode}
-										style={{ whiteSpace: 'nowrap' }}
 									>
 										Search address
 									</button>

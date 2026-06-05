@@ -1,4 +1,4 @@
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
 	#community-detail-page {
 		position: relative;
 		padding: 40px 0 80px;
@@ -419,7 +419,7 @@
    MOBILE — Community detail page
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #pc-wrap #community-detail-page {
+  #community-detail-page {
     padding: 16px 0 40px;
 
     .container { padding: 0 14px; }

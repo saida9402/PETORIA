@@ -100,8 +100,15 @@ const TuiEditor = () => {
 
 	return (
 		<Stack>
-			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly">
-				<Box component={'div'} className={'form_row'} style={{ width: '300px' }}>
+			{/* Category + Title — responsive flex row that wraps on mobile */}
+			<Stack
+				direction="row"
+				flexWrap="wrap"
+				gap={2}
+				sx={{ padding: { xs: '16px', sm: '24px', md: '40px' } }}
+				justifyContent="space-evenly"
+			>
+				<Box component={'div'} className={'form_row'} sx={{ width: { xs: '100%', sm: '300px' } }}>
 					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
 						Category
 					</Typography>
@@ -121,7 +128,7 @@ const TuiEditor = () => {
 						</Select>
 					</FormControl>
 				</Box>
-				<Box component={'div'} style={{ width: '300px', flexDirection: 'column' }}>
+				<Box component={'div'} sx={{ width: { xs: '100%', sm: '300px' }, flexDirection: 'column' }}>
 					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
 						Title
 					</Typography>
@@ -130,7 +137,7 @@ const TuiEditor = () => {
 						onChange={articleTitleHandler}
 						id="filled-basic"
 						label="Type Title (3-50 chars)"
-						style={{ width: '300px', background: 'white' }}
+						sx={{ width: '100%', background: 'white' }}
 						inputProps={{ maxLength: 50 }}
 					/>
 				</Box>
@@ -139,8 +146,8 @@ const TuiEditor = () => {
 			<Editor
 				initialValue={''}
 				placeholder={'Write your article here...'}
-				previewStyle={'vertical'}
-				height={'640px'}
+				previewStyle={'tab'}
+				height={'400px'}
 				// @ts-ignore
 				initialEditType={'WYSIWYG'}
 				toolbarItems={[
@@ -165,7 +172,7 @@ const TuiEditor = () => {
 				<Button
 					variant="contained"
 					color="primary"
-					style={{ margin: '30px', width: '250px', height: '45px' }}
+					sx={{ margin: '24px auto', width: { xs: '100%', sm: '250px' }, maxWidth: '400px', height: '48px' }}
 					onClick={handleRegisterButton}
 					disabled={submitting}
 				>

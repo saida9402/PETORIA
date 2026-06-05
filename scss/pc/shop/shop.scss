@@ -322,7 +322,10 @@
 
   @media (max-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
   @media (max-width: 900px)  { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 600px)  { grid-template-columns: 1fr; }
+  /* Keep 2 columns on all phones — 1 col makes cards too large and wastes
+     vertical space. Only drop to 1 col on the very smallest screens. */
+  @media (max-width: 600px)  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (max-width: 320px)  { grid-template-columns: 1fr; }
 }
 
 /* ── Skeleton loading ──────────────────────────────────────────── */
@@ -341,7 +344,8 @@
   }
 
   @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 800px)  { grid-template-columns: 1fr; }
+  @media (max-width: 600px)  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (max-width: 320px)  { grid-template-columns: 1fr; }
 }
 
 @keyframes shimmer {
@@ -411,16 +415,22 @@
   background: var(--cb, #fff);
   border: 1px solid var(--bd, #C8E6A0);
   border-radius: 14px;
-  overflow: hidden;
+  /* overflow: visible so Add-to-Cart button at bottom is never clipped by
+     grid row height constraints. overflow:hidden stays on .top (image only). */
+  overflow: visible;
   display: flex !important;
   flex-direction: column !important;
   cursor: pointer;
   transition: box-shadow 0.22s, transform 0.22s;
   height: 100%;
+  position: relative;
 
   &:hover {
     box-shadow: 0 8px 28px rgba(78, 138, 40, 0.15);
     transform: translateY(-4px);
+    /* Raise hovered card above neighbors so its shadow/content
+       is never obscured by an adjacent card's paint layer. */
+    z-index: 2;
   }
 
   /* ── Image section */
@@ -429,8 +439,11 @@
     width: 100%;
     height: 210px;
     overflow: hidden;
-    background: var(--nbg, #EAF3DE);
+    background: #f8f9fa;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     a {
       display: block;
@@ -441,7 +454,8 @@
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 8px;
       display: block;
       transition: transform 0.3s ease;
     }
@@ -667,6 +681,42 @@
   }
 }
 
+/* ── Store identity row (inside .card-config .bottom) ─────────── */
+
+.store-id-row {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  margin-top: 4px;
+
+  &__avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  &__name {
+    font-size: 11px;
+    color: var(--t2, #3A5020);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  &__badge {
+    font-size: 10px;
+    color: var(--np, #4E8A28);
+    flex-shrink: 0;
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════
    PRODUCT CARD — mypage variant  (.product-card-box)
    Table-row style with status badge + edit actions
@@ -781,30 +831,121 @@
 }
 
 @media (max-width: 768px) {
+  /* Collapse two-column layout to single column on mobile */
   .shop-layout {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
+  /* Hide sticky sidebar on mobile — filters accessed via separate drawer/button if needed */
   .shop-sidebar {
-    position: static;
+    display: none;
+  }
+
+  .shop-sort-bar {
+    padding: 8px 12px;
+    &__count { font-size: 12px; }
   }
 
   .shop-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .shop-skeleton {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .shop-page-mobile {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  /* Mypage-variant product card: stack vertically on mobile */
+  .product-card-box {
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .date-box { display: none; }  /* date takes too much space */
+    .views-box { display: none; }
+
+    .information-box {
+      min-width: calc(100% - 88px);  /* fill rest of row after image */
+    }
+
+    .status-box, .action-box {
+      flex: 1;
+    }
   }
 }
 
 @media (max-width: 480px) {
   .shop-wrap {
-    padding: 16px 12px 60px;
+    padding: 16px 10px 60px;
   }
 
+  /* Keep 2 columns even on 375px phones — 1 col is too large */
   .shop-grid,
   .shop-skeleton {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+/* ── Product card compact layout on mobile ── */
+@media (max-width: 768px) {
+  .card-config {
+    /* Image: shorter + contain instead of cover (no cropping) */
+    .top {
+      height: 160px;
+
+      img {
+        object-fit: contain;
+        padding: 6px;
+        background: #f8f9fa;
+      }
+    }
+
+    /* Body: tighter padding, smaller text */
+    .bottom {
+      padding: 8px 10px 10px;
+      gap: 4px;
+
+      .name-address {
+        .name a p,
+        .name p { font-size: 12px; }
+
+        /* Hide address/category line to save space */
+        .address { display: none; }
+      }
+
+      /* Hide category/stock/size rows on mobile — too verbose */
+      .options { display: none !important; }
+
+      /* Price overlay at bottom of image stays, hide bottom price repeat */
+      .divider { margin: 4px 0; }
+
+      .type-buttons {
+        .type { display: none; }      /* hide Sale/In Stock tags */
+        .buttons { gap: 0; }          /* tighten like/view buttons */
+      }
+
+      /* Store identity row: compact */
+      .store-id-row {
+        gap: 4px;
+        &__name { font-size: 10px; }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .card-config .bottom {
+    padding: 6px 8px 8px;
+    .name-address .name a p,
+    .name-address .name p { font-size: 11px; }
   }
 }

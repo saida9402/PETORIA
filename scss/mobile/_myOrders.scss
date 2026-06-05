@@ -1,0 +1,79 @@
+// ─── MY ORDERS PAGE MOBILE ───────────────────────────────────────────────────
+// Extracted from scss/pc/mypage/myOrders.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    .my-orders {
+      padding: 16px 0;
+
+      &__filters { gap: 6px; }
+      &__title   { font-size: 18px; }
+    }
+
+    .order-card {
+      &__head { padding: 12px 14px; }
+      &__meta { flex-direction: column; gap: 4px; padding: 8px 14px; font-size: 11px; }
+      &__items { padding: 12px 14px; }
+      &__tracking { padding: 12px 14px; }
+
+      &__foot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 14px;
+      }
+
+      &__actions { flex-wrap: wrap; gap: 6px; }
+      &__total strong { font-size: 15px; }
+    }
+
+    .track-bar       { gap: 0; }
+    .track-step__label { font-size: 9px; }
+
+    // Payment modal: slides up from bottom on mobile
+    .pm-overlay       { align-items: flex-end; padding: 0; }
+    .pm-modal         { max-width: 100%; border-radius: 16px 16px 0 0; max-height: 90vh; }
+    .pm-method-btn    { padding: 12px; }
+    .pm-method-btn__label { font-size: 13px; }
+    .pm-field__input  { height: 38px; font-size: 13px; }
+    .pm-pay-btn       { height: 48px; font-size: 14px; }
+    .pm-complete__emoji { font-size: 44px; }
+    .pm-progress-screen { padding: 20px 16px 24px; }
+    .pm-card-footer   { flex-direction: column-reverse; .pm-back-method-btn { width: 100%; } }
+  }
+
+  @media (max-width: 480px) {
+    // Filter chips: horizontal scroll instead of wrapping
+    .my-orders__filters {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .order-card {
+      &__item      { flex-direction: column; gap: 6px; }
+      &__item-img  { width: 48px; height: 48px; }
+      &__item-name { font-size: 12px; }
+      &__actions   { gap: 4px; button { font-size: 11px; padding: 6px 10px; min-height: 36px; } }
+    }
+
+    .track-step {
+      &__label { font-size: 8px; }
+      &__dot   { width: 10px; height: 10px; }
+    }
+  }
+
+  @media (max-width: 375px) {
+    .order-card {
+      &__head  { padding: 10px 12px; }
+      &__items { padding: 10px 12px; }
+      &__foot  { padding: 10px 12px; }
+
+      // Only 2 action buttons on very small screens
+      &__actions button:nth-child(n+3) { display: none; }
+    }
+  }
+}

@@ -49,9 +49,9 @@
   gap: 24px;
   align-items: start;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
+  /* Stack to single column on tablets and phones */
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+  @media (max-width: 768px) { gap: 16px; }
 }
 
 /* Items panel */
@@ -316,6 +316,22 @@
   justify-content: center;
 }
 
+/* Address field: input + search button inline on desktop, stacked on mobile */
+.cart-addr-row {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: stretch;
+
+  /* Input takes all remaining space */
+  .cart-input { flex: 1; }
+
+  &__btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
 /* ══════════════════════════════════════════════
    MOBILE — Cart page
 ══════════════════════════════════════════════ */
@@ -341,5 +357,26 @@
   .cart-summary {
     position: static;
     padding: 16px;
+  }
+
+  /* Stack address input + search button vertically on phones */
+  .cart-addr-row {
+    flex-direction: column;
+    gap: 8px;
+
+    &__btn { width: 100%; justify-content: center; }
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-row {
+    /* Stack thumb + info + actions vertically on very narrow screens */
+    flex-wrap: wrap;
+    gap: 8px;
+
+    &__thumb { width: 44px; height: 44px; }
+
+    /* Qty and total on same row */
+    &__qty-cell, &__line-total { min-width: 0; }
   }
 }

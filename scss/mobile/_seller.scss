@@ -1,0 +1,139 @@
+// ─── SELLER PAGES MOBILE ─────────────────────────────────────────────────────
+// Extracted from scss/pc/seller/seller.scss @media block.
+// #pc-wrap prefix removed.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+
+    // ── Seller public store profile ───────────────────────────────────────────
+    #seller-store-page {
+      padding: 16px 0 40px;
+
+      .container { padding: 0 14px; gap: 16px; }
+
+      // Avatar overlaps banner — must not be clipped
+      .ssp-header { overflow: visible; }
+
+      .ssp-banner { height: 120px; }
+
+      // Current JSX class: .ssp-profile-row (old: .ssp-identity)
+      .ssp-profile-row,
+      .ssp-identity {
+        flex-direction: column !important;
+        align-items: center;
+        text-align: center;
+        padding: 0 14px 16px;
+        gap: 12px;
+      }
+
+      .ssp-avatar-wrap { margin-top: -50px; }
+
+      .ssp-avatar {
+        width: 80px !important;
+        height: 80px !important;
+      }
+
+      .ssp-meta { padding-top: 0; align-items: center; }
+
+      .ssp-name { font-size: 18px !important; }
+      .ssp-desc { max-width: 100%; text-align: center; }
+
+      .ssp-right {
+        width: 100%;
+        align-items: center;
+        padding-top: 0;
+      }
+
+      // CRITICAL FIX: stats wrap on mobile
+      .ssp-stats {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 12px;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .ssp-follow-btn { width: 100%; }
+
+      .ssp-actions { flex-direction: column; gap: 8px; button { width: 100%; } }
+
+      .ssp-products-grid,
+      .ssp-product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+      }
+    }
+
+    // ── Seller dashboard ──────────────────────────────────────────────────────
+    #seller-dashboard-page {
+      padding: 16px 0 40px;
+
+      .container { padding: 0 14px; gap: 16px; }
+
+      .sdp-cards          { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+      .sdp-actions__grid  { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+
+      .sdp-welcome {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 16px;
+
+        &__view-store { width: 100%; justify-content: center; }
+      }
+
+      .sdc-grid   { grid-template-columns: 1fr !important; }
+      .sdc-stats  { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+      .sdc-card   { padding: 16px; }
+    }
+
+    // ── Seller products management ────────────────────────────────────────────
+    #seller-products-page {
+      padding: 16px 0 40px;
+
+      .container { padding: 0 14px; gap: 16px; }
+
+      .spp-toolbar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+        button { width: 100%; }
+      }
+
+      .spp-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+      }
+    }
+
+    // ── Seller settings ───────────────────────────────────────────────────────
+    #seller-settings-page {
+      padding: 16px 0 40px;
+      .container { padding: 0 14px; }
+
+      .sss-form { max-width: 100%; }
+      .sss-row  { flex-direction: column; gap: 12px; > * { width: 100%; } }
+    }
+
+    // ── Seller detail (public profile, /seller/detail.tsx) ────────────────────
+    .seller-detail-page {
+      .container { padding: 0 14px; gap: 20px; }
+
+      .agent-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px 16px;
+        margin-top: 20px;
+        gap: 12px;
+
+        img { width: 80px; height: 80px; }
+      }
+
+      .agent-home-list .card-wrap {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
 	#member-follows-page {
 		width: 100%;
 		display: flex;
@@ -174,25 +174,62 @@
 /* ══════════════════════════════════════════════
    MOBILE — Followers / Following list
 ══════════════════════════════════════════════ */
+/*
+  Scope: #member-follows-page only (NOT #pc-wrap prefix) so these rules
+  fire whether the page renders in #pc-wrap or #mobile-wrap.
+  The @media query is the scope limiter.
+*/
 @media (max-width: 768px) {
-  #pc-wrap #member-follows-page {
-    .main-title-box .right-box { width: 100%; .main-title { font-size: 22px; } }
+  #member-follows-page {
+    .main-title-box .right-box {
+      width: 100%;
+      .main-title { font-size: 20px; letter-spacing: 0; }
+    }
 
     .follows-list-box {
-      margin-top: 20px;
-      gap: 10px;
+      margin-top: 16px;
+      gap: 8px;
 
-      /* Hide desktop table header on mobile */
-      .listing-title-box { display: none; }
+      /* Table header: plain text labels — hidden on mobile */
+      .listing-title-box { display: none !important; }
 
+      /* Each member row becomes a vertical card */
       .follows-card-box {
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 12px 0;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px;
+        padding: 14px 0;
+        border-bottom: 1px solid #eee;
 
-        .info         { width: 100%; }
-        .details-box  { width: 100%; }
-        .action-box   { width: 100%; justify-content: flex-start; gap: 10px; }
+        /* Avatar + name: stay horizontal */
+        .info {
+          width: 100%;
+          flex-direction: row !important;
+
+          .image-box {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+          }
+
+          .information-box { flex: 1; min-width: 0; }
+        }
+
+        /* Stats row */
+        .details-box {
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 10px;
+          .info-box { flex-shrink: 0; }
+        }
+
+        /* Action buttons: full width, left-aligned */
+        .action-box {
+          width: 100%;
+          justify-content: flex-start !important;
+          gap: 10px;
+          button { min-height: 40px; }
+        }
       }
     }
   }

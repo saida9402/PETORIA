@@ -1,4 +1,4 @@
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
 	#member-articles-page {
 		width: 100%;
 		display: flex;
@@ -60,7 +60,7 @@
    MOBILE — Member articles
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #pc-wrap #member-articles-page {
+  #member-articles-page {
     .main-title-box .right-box { width: 100%; .main-title { font-size: 22px; } }
 
     .article-list-box {

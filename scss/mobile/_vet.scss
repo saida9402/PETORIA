@@ -1,0 +1,26 @@
+// ─── VET & ZOO PAGE MOBILE ───────────────────────────────────────────────────
+// Extracted from scss/pc/vet/vet.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 900px) {
+    .vet-grid--3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .vet-grid     { grid-template-columns: repeat(2, 1fr); }
+    .vet-grid--2  { grid-template-columns: 1fr; }
+    .vet-grid--3  { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .vet-section-cta {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .vet-grid--3 { grid-template-columns: 1fr; }
+  }
+}

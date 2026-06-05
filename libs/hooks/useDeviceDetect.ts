@@ -7,7 +7,7 @@ const useDeviceDetect = (): string => {
 		const userAgent = navigator.userAgent;
 		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		setDevice(isMobile ? 'mobile' : 'desktop');
-	}, [device]);
+	}, []); // empty dep array — run once on mount, not on every device state change
 
 	return device;
 };

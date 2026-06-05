@@ -33,6 +33,8 @@ const ProductDetail: NextPage = () => {
 	const [qty, setQty] = useState(1);
 	const [activeImg, setActiveImg] = useState(0);
 	const [mainImgFailed, setMainImgFailed] = useState(false);
+	const [descExpanded, setDescExpanded] = useState(false);
+	const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
 	useEffect(() => {
 		setMainImgFailed(false);
@@ -160,30 +162,178 @@ const ProductDetail: NextPage = () => {
 			<div className="product-detail-page product-detail-page--mobile">
 				<div className="wrap">
 					<Link href="/shop" className="product-detail__back">← Back to shop</Link>
-					<div className="product-detail__main-img">
+					<div
+						className="product-detail__main-img"
+						onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+						onTouchEnd={(e) => {
+							if (touchStartX === null || images.length <= 1) return;
+							const delta = touchStartX - e.changedTouches[0].clientX;
+							if (Math.abs(delta) >= 50) {
+								setActiveImg((i) => Math.min(Math.max(i + (delta > 0 ? 1 : -1), 0), images.length - 1));
+							}
+							setTouchStartX(null);
+						}}
+					>
 						{mainImg && !mainImgFailed
 							? <img src={mainImg} alt={product.productName} onError={() => setMainImgFailed(true)} />
 							: <div className="product-detail__img-placeholder"><span>{catCfg.icon}</span></div>}
+						{(isSold || isOutOfStock) && (
+							<div className="product-detail__unavailable-badge">
+								{isSold ? 'SOLD OUT' : 'OUT OF STOCK'}
+							</div>
+						)}
 					</div>
+					{images.length > 1 && (
+						<>
+							<div className="product-detail__thumbs">
+								{images.slice(0, 5).map((img, i) => (
+									<button
+										key={img + i}
+										type="button"
+										className={`product-detail__thumb${i === activeImg ? ' product-detail__thumb--active' : ''}`}
+										onClick={() => setActiveImg(i)}
+										aria-label={`View image ${i + 1}`}
+									>
+										<img
+											src={img.startsWith('http') ? img : `${API_URL}/${img}`}
+											alt=""
+											onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+										/>
+									</button>
+								))}
+							</div>
+							<span className="product-detail__sr-only" aria-live="polite" aria-atomic="true">
+								{`Showing image ${activeImg + 1} of ${images.length}`}
+							</span>
+						</>
+					)}
 					<div className="product-detail__body">
+						{product.productBrand && (
+							<p className="product-detail__brand">{product.productBrand}</p>
+						)}
+						<div className="product-detail__tags">
+							<span className="product-detail__type-pill">{typeCfg.icon} {typeCfg.label}</span>
+							<span className="product-detail__cat-pill">{catCfg.icon} {catCfg.label}</span>
+						</div>
 						<h1 className="product-detail__name">{product.productName}</h1>
 						<div className="product-detail__price-row">
 							<strong className="product-detail__price">${product.productPrice.toLocaleString()}</strong>
 							{oldPrice && <s className="product-detail__old-price">${oldPrice.toLocaleString()}</s>}
+							{product.productSalePercent && (
+								<span className="badge badge--sale">-{product.productSalePercent}%</span>
+							)}
 						</div>
-						{product.productDesc && <p className="product-detail__desc">{product.productDesc}</p>}
+						<div className="product-detail__stats">
+							<span>❤️ {likes} likes</span>
+							<span>👁 {product.productViews} views</span>
+						</div>
+						{likes > 0 && (
+							<p className="product-detail__social-proof">Liked by {likes} users</p>
+						)}
+						{isLowStock && (
+							<p className="product-detail__low-stock">⚠ Only {product.productStock} left!</p>
+						)}
+						{seller && (
+							<Link href={`/seller/${seller._id}`} className="product-detail__seller-card">
+								<img
+									src={sellerAvatar}
+									alt={seller.memberNick}
+									className="product-detail__seller-avatar"
+									onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/img/profile/defaultUser.svg'; }}
+								/>
+								<div className="product-detail__seller-info">
+									<p className="product-detail__seller-name">
+										{seller.memberNick}
+										{seller.memberType === 'SELLER' && (
+											<span className="product-detail__seller-badge" aria-label="Verified seller">✓</span>
+										)}
+									</p>
+									<p className="product-detail__seller-link">View store →</p>
+								</div>
+							</Link>
+						)}
+						<div className="product-detail__delivery">
+							🚚 Free delivery on orders over $50
+						</div>
+						{product.productDesc && (
+							<>
+								<p className={`product-detail__desc${product.productDesc.length > 200 && !descExpanded ? ' product-detail__desc--clamped' : ''}`}>
+									{product.productDesc}
+								</p>
+								{product.productDesc.length > 200 && (
+									<button
+										type="button"
+										className="product-detail__desc-toggle"
+										onClick={() => setDescExpanded((v) => !v)}
+									>
+										{descExpanded ? 'Show less ▴' : 'Read more ▾'}
+									</button>
+								)}
+							</>
+						)}
+						<div className="product-detail__specs">
+							<p className="product-detail__section-title">Product Details</p>
+							{product.productBrand && (
+								<div className="product-detail__spec-row">
+									<span className="product-detail__spec-label">Brand</span>
+									<span className="product-detail__spec-value">{product.productBrand}</span>
+								</div>
+							)}
+							<div className="product-detail__spec-row">
+								<span className="product-detail__spec-label">Pet Type</span>
+								<span className="product-detail__spec-value">{typeCfg.icon} {typeCfg.label}</span>
+							</div>
+							<div className="product-detail__spec-row">
+								<span className="product-detail__spec-label">Category</span>
+								<span className="product-detail__spec-value">{catCfg.icon} {catCfg.label}</span>
+							</div>
+							<div className="product-detail__spec-row">
+								<span className="product-detail__spec-label">Price</span>
+								<span className="product-detail__spec-value">${product.productPrice.toLocaleString()}</span>
+							</div>
+							{product.productStock !== undefined && (
+								<div className="product-detail__spec-row">
+									<span className="product-detail__spec-label">Stock</span>
+									<span className="product-detail__spec-value">
+										{product.productStock > 0 ? `${product.productStock} in stock` : 'Out of stock'}
+									</span>
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
-				{canPurchase && (
+				{canPurchase ? (
 					<div className="product-detail__mobile-bar">
 						<div className="product-detail__qty product-detail__qty--compact">
 							<button className="product-detail__qty-btn" onClick={decQty} disabled={qty <= 1} aria-label="Decrease quantity">−</button>
 							<span className="product-detail__qty-val">{qty}</span>
 							<button className="product-detail__qty-btn" onClick={incQty} aria-label="Increase quantity">+</button>
 						</div>
+						<button
+							type="button"
+							className={`product-detail__like-btn${liked ? ' product-detail__like-btn--on' : ''}`}
+							onClick={handleLike}
+							aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
+						>
+							{liked ? '❤️' : '🤍'}
+						</button>
 						<button type="button" className="btn btn--primary btn--lg product-detail__cart-btn" onClick={handleAddToCart}>
 							🛒 Add to cart
 						</button>
+					</div>
+				) : (
+					<div className="product-detail__mobile-bar product-detail__mobile-bar--unavailable">
+						<button
+							type="button"
+							className={`product-detail__like-btn${liked ? ' product-detail__like-btn--on' : ''}`}
+							onClick={handleLike}
+							aria-label={liked ? 'Remove from wishlist' : 'Save for later'}
+						>
+							{liked ? '❤️' : '🤍'}
+						</button>
+						<p className="product-detail__unavailable-msg">
+							{isSold ? '❌ Sold Out' : '❌ Out of Stock'}
+						</p>
 					</div>
 				)}
 			</div>

@@ -1,0 +1,55 @@
+// ─── CART PAGE MOBILE ────────────────────────────────────────────────────────
+// Extracted from scss/pc/cart/cart.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  // Summary panel: single column on tablets before 768px
+  .cart-layout {
+    @media (max-width: 900px) { grid-template-columns: 1fr; }
+    @media (max-width: 768px) { gap: 16px; }
+  }
+
+  @media (max-width: 768px) {
+    .cart-page {
+      padding: 16px 0 60px;
+    }
+
+    .cart-page__title {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .cart-row {
+      padding: 12px 14px;
+      gap: 10px;
+
+      &__name       { font-size: 12px; }
+      &__line-total { width: auto; font-size: 13px; }
+      &__thumb      { width: 52px; height: 52px; }
+    }
+
+    .cart-summary {
+      position: static;
+      padding: 16px;
+    }
+
+    // Address row: stack input + button vertically on phones
+    .cart-addr-row {
+      flex-direction: column;
+      gap: 8px;
+
+      &__btn { width: 100%; justify-content: center; }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cart-row {
+      flex-wrap: wrap;
+      gap: 8px;
+
+      &__thumb { width: 44px; height: 44px; }
+
+      &__qty-cell,
+      &__line-total { min-width: 0; }
+    }
+  }
+}

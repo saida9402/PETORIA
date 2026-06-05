@@ -2,7 +2,7 @@
 // SELLER PAGES — all scoped inside #pc-wrap
 // ============================================================
 
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
 
 	// ================================================================
 	// SHARED: Seller Dashboard Card (.sdc-card)
@@ -1658,50 +1658,97 @@
 @media (max-width: 768px) {
 
   /* ── Seller store (public) ── */
-  #pc-wrap #seller-store-page {
+  #seller-store-page {
     padding: 16px 0 40px;
 
     .container { padding: 0 14px; gap: 16px; }
 
+    /* Allow avatar (margin-top: -44px) to overlap banner without being clipped */
+    .ssp-header { overflow: visible; }
+
     .ssp-banner { height: 120px; }
 
+    /* .ssp-profile-row is the current JSX class name (replaced old .ssp-identity) */
+    .ssp-profile-row,
     .ssp-identity {
-      flex-direction: column;
+      flex-direction: column !important;
       align-items: center;
       text-align: center;
       padding: 0 14px 16px;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .ssp-stats   { flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .ssp-avatar-wrap { margin-top: -50px; }
+
+    .ssp-avatar {
+      width: 80px !important;
+      height: 80px !important;
+    }
+
+    .ssp-meta { padding-top: 0; align-items: center; }
+
+    .ssp-name  { font-size: 18px !important; }
+    .ssp-desc  { max-width: 100%; text-align: center; }
+
+    .ssp-right {
+      width: 100%;
+      align-items: center;
+      padding-top: 0;
+    }
+
+    .ssp-stats {
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .ssp-follow-btn { width: 100%; }
+
     .ssp-actions { flex-direction: column; gap: 8px; button { width: 100%; } }
 
-    .ssp-products-grid {
+    .ssp-products-grid,
+    .ssp-product-grid {
       grid-template-columns: repeat(2, 1fr) !important;
       gap: 12px;
     }
   }
 
   /* ── Seller dashboard ── */
-  #pc-wrap #seller-dashboard-page {
+  #seller-dashboard-page {
     padding: 16px 0 40px;
 
     .container { padding: 0 14px; gap: 16px; }
 
-    .sdc-grid {
-      grid-template-columns: 1fr !important;
-    }
-
-    .sdc-stats {
+    /* sdp-cards: 5-col → 2-col on mobile */
+    .sdp-cards {
       grid-template-columns: repeat(2, 1fr) !important;
       gap: 10px;
     }
 
+    /* sdp-actions: 4-col → 2-col on mobile */
+    .sdp-actions__grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px;
+    }
+
+    .sdp-welcome {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px 16px;
+
+      &__view-store { width: 100%; justify-content: center; }
+    }
+
+    /* Legacy class names (in case some pages still use them) */
+    .sdc-grid { grid-template-columns: 1fr !important; }
+    .sdc-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
     .sdc-card { padding: 16px; }
   }
 
   /* ── Seller products management ── */
-  #pc-wrap #seller-products-page {
+  #seller-products-page {
     padding: 16px 0 40px;
 
     .container { padding: 0 14px; gap: 16px; }
@@ -1720,7 +1767,7 @@
   }
 
   /* ── Seller settings ── */
-  #pc-wrap #seller-settings-page {
+  #seller-settings-page {
     padding: 16px 0 40px;
     .container { padding: 0 14px; }
 
@@ -1729,7 +1776,7 @@
   }
 
   /* ── Seller detail (public profile) ── */
-  #pc-wrap .seller-detail-page {
+  .seller-detail-page {
     .container { padding: 0 14px; gap: 20px; }
 
     .agent-info {

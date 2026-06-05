@@ -1,0 +1,59 @@
+// ─── GLOBAL MOBILE BASE ─────────────────────────────────────────────────────
+// Extracted from: scss/pc/app.scss and scss/pc/general.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    // Prevent horizontal scroll on all mobile viewports
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    // Images never exceed their container
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    // MUI Avatar never overflows container
+    .MuiAvatar-root {
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+
+    // Container goes full-width on mobile — .container scope provided by wrapper
+    .container {
+      width: 100%;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+
+    // Prevent iOS font-size zoom on input focus
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+
+    // Tap targets meet 44px minimum
+    button, [role="button"] {
+      min-height: 44px;
+    }
+
+    * { box-sizing: border-box; }
+
+    // Header-basic (banner used in most pages except homepage)
+    .header-basic {
+      min-height: 100px;
+      padding: 20px 16px;
+
+      .container {
+        strong { font-size: 26px; }
+        span   { font-size: 13px; }
+      }
+    }
+
+    // Community generic card full-width on mobile
+    .community-general-card-config {
+      width: 100% !important;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+// ─── MY FAVORITES / RECENTLY VIEWED MOBILE ───────────────────────────────────
+// Extracted from scss/pc/mypage/myFavorites.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    #my-favorites-page,
+    #recently-viewed-page {
+      gap: 16px;
+
+      .main-title-box .right-box .main-title { font-size: 18px; }
+
+      .favorites-list-box {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+    }
+
+    // Recently viewed: shorter image, full object-fit contain so nothing crops
+    #recently-viewed-page .shop-product-card__img-wrap {
+      height: 160px;
+
+      img {
+        object-fit: contain !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+  }
+
+  @media (max-width: 380px) {
+    #my-favorites-page,
+    #recently-viewed-page {
+      .favorites-list-box { grid-template-columns: 1fr; }
+    }
+  }
+}

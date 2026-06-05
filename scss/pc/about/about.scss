@@ -1,4 +1,4 @@
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
   .about-page {
     position: relative;
     padding: 40px 0px 60px;
@@ -344,7 +344,7 @@
    MOBILE — About page
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #pc-wrap .about-page {
+  .about-page {
     padding: 24px 0 40px;
 
     .intro .container {

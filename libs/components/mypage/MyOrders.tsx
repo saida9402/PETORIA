@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useQuery, useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { GET_MY_ORDERS } from '../../../apollo/user/query';
@@ -45,6 +46,7 @@ const PAYMENT_LABELS: Record<string, string> = {
 
 export default function MyOrders() {
 	const user = useReactiveVar(userVar);
+	const router = useRouter();
 	const [filter, setFilter] = useState<string>('');
 	const [cancellingId, setCancellingId] = useState<string | null>(null);
 	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -55,6 +57,17 @@ export default function MyOrders() {
 	});
 
 	const [cancelOrder] = useMutation(CANCEL_ORDER);
+
+	// Auto-open PaymentModal for the newest PENDING order when arriving from checkout
+	useEffect(() => {
+		if (loading || router.query.pay !== 'latest') return;
+		const orders: Order[] = data?.getMyOrders ?? [];
+		const firstPending = orders.find((o) => o.orderStatus === OrderStatus.PENDING);
+		if (firstPending) {
+			setSelectedOrder(firstPending);
+			router.replace('/mypage?category=myOrders', undefined, { shallow: true });
+		}
+	}, [loading, data, router.query.pay]);
 
 	const orders: Order[] = data?.getMyOrders ?? [];
 	const filtered = filter ? orders.filter((o) => o.orderStatus === filter) : orders;

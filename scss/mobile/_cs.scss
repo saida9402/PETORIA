@@ -1,0 +1,52 @@
+// ─── CS (CUSTOMER SERVICE) PAGE MOBILE ───────────────────────────────────────
+// Extracted from scss/pc/cs/cs.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    .cs-page {
+      padding: 20px 0 48px;
+    }
+
+    .cs-banner {
+      padding: 32px 20px;
+      text-align: center;
+
+      h1, .cs-banner__title { font-size: 22px; }
+      p,  .cs-banner__sub   { font-size: 14px; }
+
+      .cs-banner__actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+        button, a { width: 100%; justify-content: center; }
+      }
+    }
+
+    .cs-tabs {
+      flex-direction: row;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .cs-notice-filters,
+    .cs-faq-filters {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .cs-notice-item,
+    .cs-faq-item {
+      padding: 14px 16px;
+    }
+
+    .cs-contacts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cs-contacts {
+      grid-template-columns: 1fr;
+    }
+  }
+}

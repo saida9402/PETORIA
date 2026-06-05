@@ -75,6 +75,7 @@ const MyMenu = () => {
 									src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : null}
 									alt={user?.memberNick ?? ''}
 									className="mymenu-store__avatar"
+									size={60}
 								/>
 								<span className="mymenu-store__verified">✓</span>
 							</div>
@@ -106,6 +107,7 @@ const MyMenu = () => {
 							<UserAvatar
 								src={user?.memberImage ? `${API_URL}/${user?.memberImage}` : null}
 								alt={user?.memberNick ?? ''}
+								size={60}
 							/>
 						</Box>
 						<Stack className={'user-info'}>

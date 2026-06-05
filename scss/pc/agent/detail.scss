@@ -1,4 +1,4 @@
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
 	.agent-detail-page {
 		position: relative;
 		padding: 133px 0 75px;
@@ -340,4 +340,60 @@
 			}
 		}
 	}
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE — Agent/Seller detail page
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Target both desktop (#pc-wrap) and mobile (#mobile-wrap) paths */
+  #pc-wrap .agent-detail-page,
+  #mobile-wrap .agent-detail-page {
+    padding: 24px 0 40px;
+
+    .container .agent-info {
+      margin-left: 0;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+
+      /* 135px avatar → compact 80px circle */
+      img:first-child {
+        width: 80px !important;
+        height: 80px !important;
+        margin-right: 0;
+      }
+
+      .info {
+        align-items: center;
+
+        strong { font-size: 18px; }
+
+        div {
+          justify-content: center;
+          img { width: 14px !important; height: 14px !important; }
+          span { font-size: 14px; }
+        }
+      }
+    }
+
+    .container .agent-home-list .card-wrap {
+      flex-direction: row;
+      flex-wrap: wrap;
+      .wrap-main { width: 100%; }
+      /* Agent card: 2-column on mobile */
+      .agent-card {
+        width: calc(50% - 14px);
+        margin-right: 14px;
+
+        /* .agent-img fixed at 233px × 273px desktop → fill card width on mobile */
+        .agent-img {
+          width: 100% !important;
+          height: 160px !important;
+          object-fit: cover;
+        }
+      }
+    }
+  }
 }

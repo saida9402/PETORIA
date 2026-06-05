@@ -72,12 +72,13 @@ const MemberMenu = (_props: MemberMenuProps) => {
 						<UserAvatar
 							src={member?.memberImage ? `${API_URL}/${member?.memberImage}` : null}
 							alt={member?.memberNick ?? ''}
+							size={60}
 						/>
 					</Box>
 					<Stack className={'user-info'}>
 						<Typography className={'user-name'}>{member?.memberNick}</Typography>
 						<Box component={'div'} className={'user-phone'}>
-							<img src={'/img/icons/call.svg'} alt={'icon'} />
+							<img src={'/img/icons/call.svg'} alt={'icon'} style={{ width: 16, height: 16 }} />
 							<Typography className={'p-number'}>{member?.memberPhone}</Typography>
 						</Box>
 						<Typography className={'view-list'}>{member?.memberType}</Typography>

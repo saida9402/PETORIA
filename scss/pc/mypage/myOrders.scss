@@ -873,3 +873,38 @@
   .pm-progress-screen { padding: 20px 16px 24px; }
   .pm-card-footer { flex-direction: column-reverse; .pm-back-method-btn { width: 100%; } }
 }
+
+@media (max-width: 480px) {
+  /* Filter chips scroll horizontally instead of wrapping */
+  .my-orders__filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .order-card {
+    &__item { flex-direction: column; gap: 6px; }
+    &__item-img { width: 48px; height: 48px; }
+    &__item-name { font-size: 12px; }
+    &__actions { gap: 4px; button { font-size: 11px; padding: 6px 10px; min-height: 36px; } }
+  }
+
+  /* Tracking bar: compress labels at 480px */
+  .track-step {
+    &__label { font-size: 8px; }
+    &__dot { width: 10px; height: 10px; }
+  }
+}
+
+@media (max-width: 375px) {
+  .order-card {
+    &__head { padding: 10px 12px; }
+    &__items { padding: 10px 12px; }
+    &__foot { padding: 10px 12px; }
+    /* Only show 2 action buttons on tiny screens */
+    &__actions button:nth-child(n+3) { display: none; }
+  }
+}

@@ -155,10 +155,14 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 				<Stack className="photo-box">
 					<Typography className="title">Profile Photo</Typography>
 					<Stack className="image-big-box">
-						<Stack className="image-box">
+						<Stack
+							className="image-box"
+							sx={{ width: 100, height: 100, maxWidth: 100, maxHeight: 100, borderRadius: '50%', overflow: 'hidden' }}
+						>
 							<img
 								src={updateData?.memberImage ? `${API_URL}/${updateData?.memberImage}` : `/img/profile/defaultUser.svg`}
 								alt="profile"
+								style={{ width: '100%', height: '100%', objectFit: 'cover' }}
 							/>
 						</Stack>
 						<Stack className="upload-big-box">

@@ -2,7 +2,7 @@
 // ADD NEW PRODUCT PAGE  —  #pc-wrap > #my-page > #add-product-page
 // ============================================================
 
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
   #my-page {
 
     // ── Seller store sidebar card ─────────────────────────────
@@ -772,7 +772,7 @@
    MOBILE RESPONSIVE — addNewProduct
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #pc-wrap #my-page #add-product-page {
+  #add-product-page {
     padding-bottom: 24px;
     gap: 14px;
 

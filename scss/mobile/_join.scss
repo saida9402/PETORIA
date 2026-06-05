@@ -1,0 +1,205 @@
+// Mobile render uses #mobile-wrap (NOT #pc-wrap). Confirmed via DevTools.
+#mobile-wrap {
+	.join-page {
+		padding: 16px 0 40px;
+
+		.container {
+			justify-content: center;
+			align-items: stretch;
+		}
+
+		.main,
+		.main--seller {
+			width: 100%;
+			height: auto;
+			min-height: unset;
+			flex-direction: column;
+			border-radius: 12px;
+
+			.left {
+				width: 100%;
+				padding: 28px 20px 32px;
+
+				.logo {
+					flex-direction: row;
+					justify-content: center;
+					gap: 8px;
+
+					img {
+						width: 36px;
+						height: 36px;
+					}
+					span {
+						font-size: 18px;
+					}
+				}
+
+				.info {
+					margin-top: 20px;
+					align-items: center;
+					text-align: center;
+
+					span {
+						font-size: 18px;
+					}
+					p {
+						font-size: 14px;
+						line-height: 1.5;
+					}
+				}
+
+				.seller-heading {
+					font-size: 18px;
+				}
+
+				.seller-store-perks {
+					width: 100%;
+					margin-top: 16px;
+					gap: 8px;
+
+					.ssp-item {
+						width: 100%;
+						padding: 10px 14px;
+						flex-direction: row;
+						align-items: center;
+						gap: 10px;
+
+						.ssp-icon {
+							font-size: 18px;
+							flex-shrink: 0;
+						}
+						span:last-child {
+							font-size: 13px;
+							line-height: 1.4;
+						}
+					}
+				}
+
+				.input-wrap {
+					width: 100%;
+					margin-top: 20px;
+
+					.input-box {
+						width: 100%;
+						margin-top: 16px;
+						display: flex;
+						flex-direction: column;
+						gap: 6px;
+
+						&:first-child {
+							margin-top: 0;
+						}
+
+						span {
+							font-size: 13px;
+							font-weight: 600;
+						}
+
+						input {
+							width: 100%;
+							height: 48px;
+							font-size: 15px;
+							padding: 0 14px;
+							border-radius: 8px;
+							box-sizing: border-box;
+						}
+
+						.store-url-preview {
+							font-size: 11px;
+							line-height: 1.4;
+							word-break: break-all;
+						}
+					}
+				}
+
+				.register {
+					width: 100%;
+					margin-top: 20px;
+
+					.type-option {
+						width: 100%;
+						flex-direction: column;
+						gap: 8px;
+						align-items: flex-start;
+
+						.text {
+							font-size: 14px;
+							font-weight: 600;
+						}
+
+						div {
+							width: 100%;
+							flex-direction: column;
+							gap: 4px;
+							margin-left: 0;
+						}
+					}
+
+					.remember-info {
+						width: 100%;
+						flex-direction: row;
+						justify-content: space-between;
+						align-items: center;
+						flex-wrap: wrap;
+						gap: 8px;
+						margin-top: 12px;
+					}
+
+					.MuiButton-root,
+					button[type='submit'],
+					button.MuiButton-contained {
+						width: 100%;
+						min-height: 48px;
+						font-size: 15px;
+						margin-top: 20px;
+					}
+
+					.seller-signup-btn {
+						width: 100%;
+						min-height: 48px;
+					}
+				}
+
+				.ask-info {
+					margin-top: 24px;
+					text-align: center;
+
+					p {
+						font-size: 14px;
+					}
+					b {
+						font-size: 15px;
+						cursor: pointer;
+					}
+				}
+			}
+
+			.right,
+			.right--seller {
+				display: none;
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	#mobile-wrap .join-page {
+		padding: 8px 0 32px;
+
+		.main .left,
+		.main--seller .left {
+			padding: 20px 16px 28px;
+
+			.info span {
+				font-size: 16px;
+			}
+			.input-wrap .input-box input {
+				height: 44px;
+			}
+			.register .MuiButton-root,
+			.register .seller-signup-btn {
+				min-height: 44px;
+			}
+		}
+	}
+}

@@ -1,0 +1,297 @@
+// ─── SHOP PAGE MOBILE ────────────────────────────────────────────────────────
+// Extracted from scss/pc/shop/shop.scss @media blocks.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 1024px) {
+    .shop-layout {
+      grid-template-columns: 200px 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .shop-layout {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .shop-sidebar {
+      display: none;
+    }
+
+    .shop-sort-bar {
+      padding: 8px 12px;
+      &__count { font-size: 12px; }
+    }
+
+    .shop-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .shop-skeleton {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    // Mobile-path wrapper (device === 'mobile' render)
+    .shop-page-mobile {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 12px;
+    }
+
+    // Mypage-variant product card: stack vertically
+    .product-card-box {
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .date-box   { display: none; }
+      .views-box  { display: none; }
+
+      .information-box {
+        min-width: calc(100% - 88px);
+      }
+
+      .status-box,
+      .action-box { flex: 1; }
+    }
+
+    // Shop card compact layout — full image visible, no crop
+    .card-config {
+      .top {
+        height: 160px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 6px;
+        }
+      }
+
+      .bottom {
+        padding: 8px 10px 10px;
+        gap: 4px;
+
+        .name-address {
+          .name a p,
+          .name p { font-size: 12px; }
+
+          .address { display: none; }
+        }
+
+        .options    { display: none !important; }
+        .divider    { margin: 4px 0; }
+
+        .type-buttons {
+          .type    { display: none; }
+          .buttons { gap: 0; }
+        }
+
+        .store-id-row {
+          gap: 4px;
+          &__name { font-size: 10px; }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .shop-grid    { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .shop-skeleton { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    .shop-wrap {
+      padding: 16px 10px 60px;
+    }
+
+    .shop-grid,
+    .shop-skeleton {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .card-config .bottom {
+      padding: 6px 8px 8px;
+      .name-address .name a p,
+      .name-address .name p { font-size: 11px; }
+    }
+  }
+
+  @media (max-width: 320px) {
+    .shop-grid    { grid-template-columns: 1fr; }
+    .shop-skeleton { grid-template-columns: 1fr; }
+  }
+}
+
+// ── Mobile shop action bar ────────────────────────────────────────────────────
+// Sticky bar below navbar showing product count, sort dropdown, and filter button.
+// Scoped to #mobile-wrap — only rendered in the mobile device branch.
+
+#mobile-wrap {
+  .shop-mobile-bar {
+    position: sticky;
+    top: calc(60px + env(safe-area-inset-top, 0px));
+    z-index: 1000;
+    background: var(--cb, #fff);
+    border-bottom: 1px solid var(--bd, #C8E6A0);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+
+    &__count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--t2, #3A5020);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+  }
+
+  .shop-filter-btn.MuiButton-root {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--t1, #1A2E0A);
+    text-transform: none;
+    border: 1px solid var(--bd, #C8E6A0);
+    border-radius: 8px;
+    padding: 5px 10px;
+    background: var(--cb, #fff);
+    min-width: 0;
+    gap: 4px;
+    min-height: 34px;
+
+    &:hover {
+      background: var(--nbg, #EAF3DE);
+      border-color: var(--np, #4E8A28);
+    }
+
+    &.shop-filter-btn--active {
+      background: var(--nbg, #EAF3DE);
+      border-color: var(--np, #4E8A28);
+      color: var(--np, #4E8A28);
+    }
+  }
+
+  .shop-filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--np, #4E8A28);
+    color: #fff;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 0 5px;
+    margin-left: 4px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  // Override shop-wrap top padding — bar is outside the wrap,
+  // so we don't want double spacing at the top of the product area.
+  #shop-list-page .shop-wrap {
+    padding-top: 12px;
+  }
+}
+
+// ── Bottom sheet filter drawer (MUI portal — must be unscoped) ───────────────
+// MUI Drawer renders in a portal at <body> level, outside #mobile-wrap.
+// These selectors must be top-level to reach the portal DOM.
+
+.shop-filter-drawer {
+  .MuiDrawer-paper {
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0 !important;
+    background: var(--cb, #fff) !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+.shop-filter-drawer__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Handle + close button row at the top of the drawer
+.shop-filter-drawer__top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 12px 6px;
+  flex-shrink: 0;
+}
+
+// Visual drag handle (centered)
+.shop-filter-drawer__handle {
+  display: block;
+  width: 40px;
+  height: 4px;
+  background: var(--bd, #C8E6A0);
+  border-radius: 2px;
+}
+
+// Close button — absolute-positioned to top-right of the handle row
+.shop-filter-drawer__close.MuiIconButton-root {
+  position: absolute !important;
+  right: 8px;
+  top: 6px;
+  color: var(--t2, #3A5020) !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 10px !important;
+}
+
+// Scrollable filter body
+.shop-filter-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bd, #C8E6A0) transparent;
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: var(--bd, #C8E6A0);
+    border-radius: 2px;
+  }
+
+  // ShopFilter inside drawer: remove its own max-height and scroll
+  // constraints — the drawer body handles scrolling.
+  // Remove border/radius since drawer paper provides the container.
+  .shop-filter {
+    max-height: none !important;
+    overflow-y: visible !important;
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid var(--bd, #C8E6A0);
+  }
+}

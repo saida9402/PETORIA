@@ -304,38 +304,45 @@ const ProductCard = (props: ProductCardProps) => {
 					)}
 				</Stack>
 
-				{/* Add to Cart button */}
-				{product.productStatus !== ProductStatus.SOLD && product.productStock > 0 && (
-					<button
-						type="button"
-						onClick={handleAddToCart}
-						style={{
-							width: '100%',
-							padding: '10px 16px',
-							marginTop: '12px',
-							background: added ? '#22c55e' : '#4ade80',
-							color: '#0b1f10',
-							border: 'none',
-							borderRadius: '8px',
-							fontWeight: 700,
-							fontSize: '14px',
-							cursor: 'pointer',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							gap: '6px',
-							transition: 'background 0.2s ease, transform 0.2s ease',
-						}}
-						onMouseEnter={(e) => {
-							if (!added) e.currentTarget.style.background = '#22c55e';
-						}}
-						onMouseLeave={(e) => {
-							if (!added) e.currentTarget.style.background = '#4ade80';
-						}}
-					>
-						{added ? '✓ Added to cart' : '🛒 Add to Cart'}
-					</button>
-				)}
+				{/* Add to Cart — always rendered so card height stays consistent.
+				    Disabled with a status label when unavailable. */}
+				{(() => {
+					const isSold = product.productStatus === ProductStatus.SOLD;
+					const isOut  = product.productStock === 0;
+					const unavailable = isSold || isOut;
+					return (
+						<button
+							type="button"
+							disabled={unavailable}
+							onClick={unavailable ? undefined : handleAddToCart}
+							style={{
+								width: '100%',
+								padding: '10px 16px',
+								marginTop: '12px',
+								background: unavailable ? '#e5e7eb' : added ? '#22c55e' : '#4ade80',
+								color: unavailable ? '#9ca3af' : '#0b1f10',
+								border: 'none',
+								borderRadius: '8px',
+								fontWeight: 700,
+								fontSize: '14px',
+								cursor: unavailable ? 'not-allowed' : 'pointer',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								gap: '6px',
+								transition: 'background 0.2s ease',
+							}}
+							onMouseEnter={(e) => {
+								if (!unavailable && !added) e.currentTarget.style.background = '#22c55e';
+							}}
+							onMouseLeave={(e) => {
+								if (!unavailable && !added) e.currentTarget.style.background = '#4ade80';
+							}}
+						>
+							{isSold ? '✕ Sold Out' : isOut ? '✕ Out of Stock' : added ? '✓ Added to cart' : '🛒 Add to Cart'}
+						</button>
+					);
+				})()}
 			</Stack>
 		</Stack>
 	);

@@ -1,0 +1,41 @@
+// ─── ADD NEW PRODUCT PAGE MOBILE ─────────────────────────────────────────────
+// Extracted from scss/pc/mypage/addNewProduct.scss @media block.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    #add-product-page {
+      padding-bottom: 24px;
+      gap: 14px;
+
+      .anp-store-banner {
+        flex-direction: column;
+        padding: 16px;
+        gap: 14px;
+        border-radius: 10px;
+
+        &__right  { flex-wrap: wrap; gap: 16px; justify-content: center; }
+        &__link   { padding: 7px 14px; font-size: 11px; }
+      }
+
+      .anp-card .anp-card__content { padding: 16px !important; gap: 14px; }
+
+      .anp-form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+
+        .anp-field--full { grid-column: 1; }
+      }
+
+      .anp-image-grid { gap: 8px; }
+      .anp-image-slot { width: calc(50% - 4px); height: 100px; }
+
+      .anp-submit {
+        align-items: stretch;
+        &__btn { min-width: unset !important; width: 100% !important; height: 48px !important; }
+      }
+
+      .anp-chips { gap: 6px; }
+      .anp-chip  { height: 34px !important; font-size: 12px !important; }
+    }
+  }
+}

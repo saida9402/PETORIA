@@ -1,0 +1,112 @@
+// ─── MEMBER PROFILE PAGE MOBILE ──────────────────────────────────────────────
+// Extracted from scss/pc/member/memberPage.scss, memberArticles.scss,
+// memberProducts.scss @media blocks.
+// #pc-wrap prefix removed.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    // ── Member profile (/member/[id].tsx) ──────────────────────────────────────
+    #member-page {
+      .container .member-page {
+        padding-top: 0;
+
+        .back-frame {
+          width: 100%;
+          flex-direction: column;
+          margin: 12px 0 40px;
+          border-radius: 8px;
+
+          .left-config {
+            width: 100%;
+            height: auto;
+            margin: 0;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+
+            .profile {
+              padding: 16px;
+
+              // CRITICAL FIX: avatar image size
+              .profile-img img {
+                width: 60px !important;
+                height: 60px !important;
+              }
+
+              // CRITICAL FIX: call icon size
+              .user-info .user-phone img {
+                width: 16px !important;
+                height: 16px !important;
+                max-width: 16px !important;
+              }
+            }
+
+            .follow-button-box { padding: 0 16px 12px; }
+
+            .sections {
+              margin-top: 8px;
+              .section .sub-section { width: 100%; }
+            }
+          }
+
+          .main-config {
+            width: 100%;
+            margin-top: 0;
+            padding: 16px;
+
+            .list-config {
+              justify-content: center;
+              display: grid !important;
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 12px !important;
+
+              .card-config {
+                width: 100% !important;
+                height: auto !important;
+                .top    { height: 160px !important; }
+                .bottom { height: auto !important; }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // ── Member articles ────────────────────────────────────────────────────────
+    #member-articles-page {
+      .main-title-box .right-box {
+        width: 100%;
+        .main-title { font-size: 22px; }
+      }
+
+      .article-list-box {
+        flex-direction: column;
+        margin-top: 20px;
+        gap: 14px;
+      }
+    }
+
+    // ── Member products ────────────────────────────────────────────────────────
+    #member-products-page {
+      .product-list-box .tab-name-box {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 8px;
+        gap: 4px;
+      }
+
+      .list-box {
+        .listing-title-box { display: none; }
+
+        .product-card-box {
+          flex-wrap: wrap;
+          gap: 8px;
+
+          .date-box,
+          .views-box  { display: none; }
+          .action-box { width: 100%; justify-content: flex-end; }
+        }
+      }
+    }
+  }
+}

@@ -429,10 +429,12 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 															</IconButton>
 															<Backdrop
 																sx={{
-																	top: '40%',
-																	right: '25%',
-																	left: '25%',
-																	width: '1000px',
+																	top: '50%',
+																	left: '50%',
+																	transform: 'translate(-50%, -50%)',
+																	right: 'unset',
+																	width: { xs: '92vw', sm: '80vw', md: '1000px' },
+																	maxWidth: '1000px',
 																	height: 'fit-content',
 																	borderRadius: '10px',
 																	color: '#ffffff',

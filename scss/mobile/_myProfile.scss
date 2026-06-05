@@ -1,0 +1,88 @@
+// ─── MY PROFILE PAGE MOBILE ──────────────────────────────────────────────────
+// Extracted from scss/pc/mypage/myProfile.scss @media block.
+// #pc-wrap prefix removed.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    #my-profile-page {
+      .main-title-box .right-box {
+        width: 100%;
+        .main-title { font-size: 20px; }
+      }
+
+      .top-box {
+        padding: 16px;
+        margin-top: 0;
+        gap: 18px;
+
+        .photo-box {
+          align-items: center;
+
+          .image-big-box {
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+
+            // CRITICAL FIX: avatar box — !important overrides MUI Stack inline sizing
+            .image-box {
+              width: 100px !important;
+              height: 100px !important;
+              max-width: 100px !important;
+              max-height: 100px !important;
+              border-radius: 50% !important;
+              overflow: hidden !important;
+
+              img {
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 50%;
+                object-fit: cover !important;
+              }
+            }
+
+            .upload-big-box {
+              align-self: stretch;
+              gap: 10px;
+              .labeler { width: 100%; }
+            }
+          }
+        }
+
+        .small-input-box {
+          flex-direction: column;
+          gap: 14px;
+          .input-box { width: 100%; input { height: 48px; } }
+        }
+
+        .address-box input { height: 48px; }
+
+        .about-me-box .update-button { width: 100%; height: 44px; }
+      }
+
+      .bottom-box {
+        padding: 16px;
+        gap: 16px;
+
+        .top-inner-box .old-password-box input { width: 100%; height: 48px; }
+
+        .bottom-inner-box {
+          flex-direction: column;
+          gap: 14px;
+          .new-password-box input { height: 48px; }
+        }
+
+        .change-password { width: 100%; height: 44px; }
+      }
+
+      .saved-card-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+
+        &__actions { width: 100%; justify-content: flex-start; }
+      }
+
+      .sc-field-row { flex-direction: column; }
+    }
+  }
+}

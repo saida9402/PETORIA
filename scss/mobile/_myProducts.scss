@@ -1,0 +1,46 @@
+// ─── MY PRODUCTS PAGE MOBILE ─────────────────────────────────────────────────
+// Extracted from scss/pc/mypage/myProducts.scss @media block.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    #my-products-page {
+      gap: 16px;
+
+      .main-title-box .right-box .main-title { font-size: 18px; }
+
+      .product-list-box .tab-name-box {
+        height: auto;
+        padding: 6px 8px;
+        gap: 2px;
+        flex-wrap: wrap;
+
+        .tab-name,
+        .active-tab-name {
+          padding: 0 10px;
+          font-size: 12px;
+          height: 32px;
+        }
+      }
+
+      .list-box {
+        padding: 12px 12px 20px;
+
+        // Desktop header row: hidden
+        .listing-title-box { display: none; }
+
+        .product-card-box {
+          flex-wrap: wrap;
+          gap: 8px;
+          padding: 12px 10px;
+
+          .image-box       { width: 60px; height: 50px; }
+          .information-box { flex: 1; min-width: 0; }
+          .date-box        { width: auto; }
+          .status-box      { width: auto; }
+          .views-box       { display: none; }
+          .action-box      { width: 100%; justify-content: flex-end; }
+        }
+      }
+    }
+  }
+}

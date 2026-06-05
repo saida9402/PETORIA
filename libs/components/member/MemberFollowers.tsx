@@ -95,7 +95,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 									</Stack>
 								</Stack>
 
-								<Stack className={'details-box'}>
+								<Stack className={'details-box'} sx={{ flexWrap: 'wrap', fontSize: 13 }}>
 									<Box className={'info-box'} component={'div'}>
 										<p>Followers</p>
 										<span>({follower?.followerData?.memberFollowers})</span>

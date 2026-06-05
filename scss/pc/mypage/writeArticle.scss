@@ -1,4 +1,4 @@
-#pc-wrap {
+#pc-wrap, #mobile-wrap {
 	#write-article-page {
 		width: 100%;
 		height: auto;
@@ -84,7 +84,7 @@
    MOBILE RESPONSIVE — writeArticle
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-	#pc-wrap #write-article-page {
+	#write-article-page {
 		.main-title-box .right-box {
 			width: 100%;
 			.main-title { font-size: 20px; }

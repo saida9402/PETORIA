@@ -1,0 +1,60 @@
+// ─── COMMUNITY DETAIL PAGE MOBILE ────────────────────────────────────────────
+// Extracted from scss/pc/community/detail.scss @media block.
+
+#pc-wrap, #mobile-wrap {
+  @media (max-width: 768px) {
+    #community-detail-page {
+      padding: 16px 0 40px;
+
+      .container { padding: 0 14px; }
+
+      .main-box {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 0;
+      }
+
+      .left-config {
+        width: 100%;
+        min-width: unset;
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px;
+
+        .image-info {
+          width: 100%;
+          flex-direction: row;
+          align-items: center;
+          gap: 12px;
+          padding-bottom: 10px;
+        }
+
+        .MuiTab-root,
+        .tab-button {
+          width: auto;
+          flex: 1;
+          min-width: 72px;
+          justify-content: center !important;
+          padding: 0 6px !important;
+        }
+      }
+
+      .community-detail-config {
+        .title-box {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .content-and-info {
+          flex-direction: column;
+          gap: 12px;
+
+          .info { flex-direction: row; flex-wrap: wrap; }
+        }
+      }
+    }
+  }
+}

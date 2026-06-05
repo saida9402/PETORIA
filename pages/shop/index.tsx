@@ -1,9 +1,11 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Button, Menu, MenuItem, Pagination } from '@mui/material';
+import { Button, Drawer, IconButton, Menu, MenuItem, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import CloseIcon from '@mui/icons-material/Close';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import { useMutation, useQuery } from '@apollo/client';
 
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
@@ -55,6 +57,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [filterSortName, setFilterSortName] = useState('Newest');
+	const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
@@ -137,12 +140,136 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 
 	const totalPages = total > 0 ? Math.ceil(total / searchFilter.limit) : 0;
 
+	const activeFilterCount = [
+		(searchFilter.search.typeList?.length ?? 0) > 0,
+		(searchFilter.search.categoryList?.length ?? 0) > 0,
+		(searchFilter.search.brandList?.length ?? 0) > 0,
+		!!searchFilter.search.text,
+		!!(searchFilter.search.pricesRange),
+		!!searchFilter.search.onSale,
+	].filter(Boolean).length;
+
 	if (device === 'mobile') {
 		return (
-			<div className="shop-page-mobile">
-				{products.map((p) => (
-					<ProductCard product={p} likeProductHandler={likeProductHandler} key={p._id} />
-				))}
+			<div id="shop-list-page">
+
+				{/* Sticky sort + filter action bar */}
+				<div className="shop-mobile-bar">
+					<span className="shop-mobile-bar__count">
+						{loading ? 'Loading…' : `${total} product${total !== 1 ? 's' : ''} found`}
+					</span>
+					<div className="shop-mobile-bar__actions">
+						<Button
+							onClick={sortingClickHandler}
+							endIcon={<KeyboardArrowDownRoundedIcon />}
+							className="shop-sort-btn"
+							aria-label={`Sort by ${filterSortName}`}
+						>
+							{filterSortName}
+						</Button>
+						<Menu
+							anchorEl={anchorEl}
+							open={sortingOpen}
+							onClose={sortingCloseHandler}
+							PaperProps={{ elevation: 2, sx: { mt: 1, borderRadius: '10px', minWidth: '160px' } }}
+						>
+							{SORT_OPTIONS.map((item) => (
+								<MenuItem
+									key={item.id}
+									onClick={sortingHandler}
+									id={item.id}
+									disableRipple
+									selected={filterSortName === item.label}
+									sx={{ fontSize: '13px', py: 1 }}
+								>
+									{item.label}
+								</MenuItem>
+							))}
+						</Menu>
+
+						<Button
+							onClick={() => setFilterDrawerOpen(true)}
+							startIcon={<TuneRoundedIcon />}
+							className={`shop-filter-btn${activeFilterCount > 0 ? ' shop-filter-btn--active' : ''}`}
+							aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ''}`}
+						>
+							Filters
+							{activeFilterCount > 0 && (
+								<span className="shop-filter-count" aria-hidden="true">{activeFilterCount}</span>
+							)}
+						</Button>
+					</div>
+				</div>
+
+				{/* Product area */}
+				<div className="shop-wrap">
+					{loading ? (
+						<ProductSkeleton />
+					) : products.length === 0 ? (
+						<div className="shop-empty">
+							<div className="shop-empty__icon">🔍</div>
+							<h3>No products found</h3>
+							<p>Try adjusting your filters or search terms.</p>
+							<button className="btn btn--primary btn--sm" onClick={resetFilters}>
+								Reset filters
+							</button>
+						</div>
+					) : (
+						<div className="shop-grid">
+							{products.map((p) => (
+								<ProductCard product={p} likeProductHandler={likeProductHandler} key={p._id} />
+							))}
+						</div>
+					)}
+
+					{!loading && totalPages > 1 && (
+						<div className="shop-pagination">
+							<Pagination
+								page={currentPage}
+								count={totalPages}
+								onChange={handlePaginationChange}
+								shape="rounded"
+								color="primary"
+								size="small"
+							/>
+							<p className="shop-pagination__total">
+								Showing {Math.min((currentPage - 1) * searchFilter.limit + 1, total)}–
+								{Math.min(currentPage * searchFilter.limit, total)} of {total}
+							</p>
+						</div>
+					)}
+				</div>
+
+				{/* Bottom sheet filter drawer — keepMounted preserves ShopFilter local state */}
+				<Drawer
+					anchor="bottom"
+					open={filterDrawerOpen}
+					onClose={() => setFilterDrawerOpen(false)}
+					className="shop-filter-drawer"
+					ModalProps={{ keepMounted: true }}
+				>
+					<div className="shop-filter-drawer__content">
+						<div className="shop-filter-drawer__top">
+							<span className="shop-filter-drawer__handle" aria-hidden="true" />
+							<IconButton
+								onClick={() => setFilterDrawerOpen(false)}
+								aria-label="Close filters"
+								size="small"
+								className="shop-filter-drawer__close"
+							>
+								<CloseIcon />
+							</IconButton>
+						</div>
+						<div className="shop-filter-drawer__body">
+							<ShopFilter
+								searchFilter={searchFilter}
+								setSearchFilter={setSearchFilter}
+								initialInput={initialInput}
+							/>
+						</div>
+					</div>
+				</Drawer>
+
 			</div>
 		);
 	}
