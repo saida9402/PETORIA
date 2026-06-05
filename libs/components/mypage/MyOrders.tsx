@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useQuery, useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { GET_MY_ORDERS } from '../../../apollo/user/query';
@@ -121,7 +122,7 @@ export default function MyOrders() {
 				<div className="my-orders__empty">
 					<span className="my-orders__empty-icon">📦</span>
 					<p>No orders found</p>
-					<a href="/shop" className="btn btn--primary btn--sm">Start shopping →</a>
+					<Link href="/shop" className="btn btn--primary btn--sm">Start shopping →</Link>
 				</div>
 			) : (
 				<div className="my-orders__list">
@@ -215,7 +216,7 @@ export default function MyOrders() {
 											</button>
 										)}
 										{isDelivered && (
-											<a href={`/shop`} className="btn btn--outline btn--sm">Reorder</a>
+											<Link href="/shop" className="btn btn--outline btn--sm">Reorder</Link>
 										)}
 									</div>
 								</div>

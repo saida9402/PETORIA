@@ -220,6 +220,9 @@ const Top = () => {
 					<div className={'mobile-drawer'}>
 						<div className={'drawer-header'}>
 							<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" />
+							<IconButton onClick={toggleTheme} sx={{ color: 'inherit' }} aria-label="Toggle dark mode">
+								{currentTheme === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+							</IconButton>
 							<IconButton onClick={() => setMobileOpen(false)}>
 								<CloseIcon />
 							</IconButton>

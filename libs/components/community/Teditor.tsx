@@ -148,8 +148,7 @@ const TuiEditor = () => {
 				placeholder={'Write your article here...'}
 				previewStyle={'tab'}
 				height={'400px'}
-				// @ts-ignore
-				initialEditType={'WYSIWYG'}
+				initialEditType={'wysiwyg'}
 				toolbarItems={[
 					['heading', 'bold', 'italic', 'strike'],
 					['image', 'table', 'link'],

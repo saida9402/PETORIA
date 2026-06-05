@@ -125,7 +125,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 
 			await likeTargetBoardArticle({
 				variables: {
-					input: id,
+					articleId: id,
 				},
 			});
 
