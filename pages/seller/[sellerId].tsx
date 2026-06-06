@@ -204,7 +204,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 						</div>
 						<div className="ssp-right">
 							{/* Stats */}
-							<div className="ssp-stats" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+							<div className="ssp-stats">
 								<div className="ssp-stat">
 									<Inventory2Icon className="ssp-stat__icon" />
 									<span className="ssp-stat__value">{seller?.memberProducts ?? 0}</span>
