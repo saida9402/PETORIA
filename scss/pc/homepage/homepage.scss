@@ -904,10 +904,13 @@
 	.hero-filter-section { margin-top: -32px; padding: 0 12px; }
 	.homepage-content { padding-top: 64px; }
 
+	.weather-bar { &__location { display: none; } }
+}
+
+@media (max-width: 360px) {
+	/* Narrow phones (≤360px): chips scroll horizontally instead of wrapping */
 	.filter-card__chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
 	.fchip { flex-shrink: 0; }
-
-	.weather-bar { &__location { display: none; } }
 }
 
 /* ═══════════════════════════════════════════════
@@ -1745,20 +1748,13 @@
 	.popular-product-card__price { font-size: 14px; }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 414px) {
 	.products-grid--4 { grid-template-columns: 1fr; }
 	.wrap { padding: 0 8px; }
 
 	/* Single column — restore larger image */
 	.tpc__img-wrap,
 	.popular-product-card__img-wrap { height: 200px; }
-}
-
-@media (max-width: 320px) {
-	.products-grid--4 {
-		grid-template-columns: 1fr;
-	}
-	.wrap { padding: 0 8px; }
 }
 
 /* Dark mode overrides for product cards */
@@ -3957,6 +3953,10 @@ section:has(.video-banner) {
 	.events__grid { grid-template-columns: 1fr; }
 	.community-boards__grid { grid-template-columns: 1fr; }
 	.advertisement__cards { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 414px) {
+	.cats__grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ═══════════════════════════════════════════════

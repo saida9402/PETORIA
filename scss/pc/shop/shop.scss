@@ -322,10 +322,10 @@
 
   @media (max-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
   @media (max-width: 900px)  { grid-template-columns: repeat(2, 1fr); }
-  /* Keep 2 columns on all phones — 1 col makes cards too large and wastes
-     vertical space. Only drop to 1 col on the very smallest screens. */
+  /* Keep 2 columns on phones ≥415px. Drop to 1 col at 414px and below
+     (covers iPhone SE 375px, older Androids 360px, minimal 320px). */
   @media (max-width: 600px)  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  @media (max-width: 320px)  { grid-template-columns: 1fr; }
+  @media (max-width: 414px)  { grid-template-columns: 1fr; }
 }
 
 /* ── Skeleton loading ──────────────────────────────────────────── */
@@ -345,7 +345,7 @@
 
   @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
   @media (max-width: 600px)  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  @media (max-width: 320px)  { grid-template-columns: 1fr; }
+  @media (max-width: 414px)  { grid-template-columns: 1fr; }
 }
 
 @keyframes shimmer {
