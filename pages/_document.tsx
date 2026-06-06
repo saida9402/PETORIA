@@ -4,6 +4,7 @@ export default function Document() {
 	return (
 		<Html lang="en">
 			<Head>
+				<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 				<meta name="robots" content="index,follow" />
 				<link rel="icon" type="image/svg+xml" href="/img/logo/petoriaLogoIcon.svg" />
 
