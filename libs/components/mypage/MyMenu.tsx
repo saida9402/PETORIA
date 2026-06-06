@@ -11,6 +11,7 @@ import { logOut } from '../../auth';
 import { sweetConfirmAlert } from '../../sweetAlert';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 const MyMenu = () => {
 	const device = useDeviceDetect();
@@ -29,18 +30,96 @@ const MyMenu = () => {
 
 	if (device === 'mobile') {
 		const BASE_TABS = [
-			{ key: 'myProfile',       icon: '👤', label: 'Profile' },
-			{ key: 'myOrders',        icon: '📦', label: 'Orders' },
-			{ key: 'myFavorites',     icon: '❤️', label: 'Favorites' },
-			{ key: 'recentlyViewed',  icon: '👁', label: 'Viewed' },
-			{ key: 'myArticles',      icon: '✍️', label: 'Articles' },
-			{ key: 'writeArticle',    icon: '📝', label: 'Write' },
-			{ key: 'followers',       icon: '👥', label: 'Followers' },
-			{ key: 'followings',      icon: '🔔', label: 'Following' },
+			{
+				key: 'myProfile',
+				icon:       <img src={'/img/icons/user.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/userWhite.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Profile',
+			},
+			{
+				key: 'myOrders',
+				icon:       <ReceiptIcon sx={{ fontSize: 18, color: '#2D5016' }} />,
+				activeIcon: <ReceiptIcon sx={{ fontSize: 18, color: '#ffffff' }} />,
+				label: 'Orders',
+			},
+			{
+				key: 'myFavorites',
+				icon:       <img src={'/img/icons/like.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/likeWhite.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Favorites',
+			},
+			{
+				key: 'recentlyViewed',
+				icon:       <img src={'/img/icons/search.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/searchWhite.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Viewed',
+			},
+			{
+				key: 'myArticles',
+				icon:       <img src={'/img/icons/discovery.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/discoveryWhite.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Articles',
+			},
+			{
+				key: 'writeArticle',
+				icon:       <img src={'/img/icons/newTab.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/whiteTab.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Write',
+			},
+			{
+				key: 'followers',
+				icon: (
+					<svg fill={'#2D5016'} height="18px" width="18px" viewBox="0 0 328 328" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path d="M52.25,64.001c0,34.601,28.149,62.749,62.75,62.749c34.602,0,62.751-28.148,62.751-62.749S149.602,1.25,115,1.25C80.399,1.25,52.25,29.4,52.25,64.001z" />
+							<path d="M15,286.75h125.596c19.246,24.348,49.031,40,82.404,40c57.896,0,105-47.103,105-105c0-57.896-47.104-105-105-105c-34.488,0-65.145,16.716-84.297,42.47c-7.764-1.628-15.695-2.47-23.703-2.47c-63.411,0-115,51.589-115,115C0,280.034,6.716,286.75,15,286.75z" />
+						</g>
+					</svg>
+				),
+				activeIcon: (
+					<svg fill={'#ffffff'} height="18px" width="18px" viewBox="0 0 328 328" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path d="M52.25,64.001c0,34.601,28.149,62.749,62.75,62.749c34.602,0,62.751-28.148,62.751-62.749S149.602,1.25,115,1.25C80.399,1.25,52.25,29.4,52.25,64.001z" />
+							<path d="M15,286.75h125.596c19.246,24.348,49.031,40,82.404,40c57.896,0,105-47.103,105-105c0-57.896-47.104-105-105-105c-34.488,0-65.145,16.716-84.297,42.47c-7.764-1.628-15.695-2.47-23.703-2.47c-63.411,0-115,51.589-115,115C0,280.034,6.716,286.75,15,286.75z" />
+						</g>
+					</svg>
+				),
+				label: 'Followers',
+			},
+			{
+				key: 'followings',
+				icon: (
+					<svg fill={'#2D5016'} height="18px" width="18px" viewBox="0 0 328 328" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path d="M177.75,64.001C177.75,29.4,149.601,1.25,115,1.25c-34.602,0-62.75,28.15-62.75,62.751S80.398,126.75,115,126.75C149.601,126.75,177.75,98.602,177.75,64.001z" />
+							<path d="M223,116.75c-34.488,0-65.145,16.716-84.298,42.47c-7.763-1.628-15.694-2.47-23.702-2.47c-63.412,0-115,51.589-115,115c0,8.284,6.715,15,15,15h125.596c19.246,24.348,49.03,40,82.404,40c57.896,0,105-47.103,105-105C328,163.854,280.896,116.75,223,116.75z" />
+						</g>
+					</svg>
+				),
+				activeIcon: (
+					<svg fill={'#ffffff'} height="18px" width="18px" viewBox="0 0 328 328" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path d="M177.75,64.001C177.75,29.4,149.601,1.25,115,1.25c-34.602,0-62.75,28.15-62.75,62.751S80.398,126.75,115,126.75C149.601,126.75,177.75,98.602,177.75,64.001z" />
+							<path d="M223,116.75c-34.488,0-65.145,16.716-84.298,42.47c-7.763-1.628-15.694-2.47-23.702-2.47c-63.412,0-115,51.589-115,115c0,8.284,6.715,15,15,15h125.596c19.246,24.348,49.03,40,82.404,40c57.896,0,105-47.103,105-105C328,163.854,280.896,116.75,223,116.75z" />
+						</g>
+					</svg>
+				),
+				label: 'Following',
+			},
 		];
 		const SELLER_TABS = [
-			{ key: 'addProduct',  icon: '➕', label: 'Add' },
-			{ key: 'myProducts',  icon: '🛍', label: 'Products' },
+			{
+				key: 'addProduct',
+				icon:       <img src={'/img/icons/newTab.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/whiteTab.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Add',
+			},
+			{
+				key: 'myProducts',
+				icon:       <img src={'/img/icons/home.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				activeIcon: <img src={'/img/icons/homeWhite.svg'} alt={''} style={{ width: 18, height: 18 }} />,
+				label: 'Products',
+			},
 		];
 		const tabs = user.memberType === 'SELLER' ? [...SELLER_TABS, ...BASE_TABS] : BASE_TABS;
 
@@ -52,12 +131,12 @@ const MyMenu = () => {
 						className={`mobile-tab${category === tab.key ? ' mobile-tab--active' : ''}`}
 						onClick={() => router.push({ pathname: '/mypage', query: { category: tab.key } }, undefined, { scroll: false })}
 					>
-						<span className="mobile-tab__icon">{tab.icon}</span>
+						<span className="mobile-tab__icon">{category === tab.key ? tab.activeIcon : tab.icon}</span>
 						<span className="mobile-tab__label">{tab.label}</span>
 					</button>
 				))}
 				<button className="mobile-tab mobile-tab--logout" onClick={logoutHandler}>
-					<span className="mobile-tab__icon">🚪</span>
+					<span className="mobile-tab__icon"><img src={'/img/icons/logout.svg'} alt={''} style={{ width: 18, height: 18 }} /></span>
 					<span className="mobile-tab__label">Logout</span>
 				</button>
 			</div>
@@ -184,11 +263,10 @@ const MyMenu = () => {
 							<ListItem className={pathname === 'myOrders' ? 'focus' : ''}>
 								<Link href={{ pathname: '/mypage', query: { category: 'myOrders' } }} scroll={false}>
 									<div className={'flex-box'}>
-										{category === 'myOrders' ? (
-											<img className={'com-icon'} src={'/img/icons/likeWhite.svg'} alt={''} />
-										) : (
-											<img className={'com-icon'} src={'/img/icons/like.svg'} alt={''} />
-										)}
+										<ReceiptIcon
+											className={'com-icon'}
+											sx={{ fontSize: 16, color: category === 'myOrders' ? 'white' : '#2D5016' }}
+										/>
 										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 											My Orders
 										</Typography>
