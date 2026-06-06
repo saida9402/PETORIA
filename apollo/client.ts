@@ -76,7 +76,6 @@ function createIsomorphicLink() {
 		const link = createUploadLink({
 			uri: GRAPHQL_URI,
 			headers: { 'apollo-require-preflight': 'true' },
-			credentials: 'include',
 			fetch,
 		}) as unknown as ApolloLink;
 
