@@ -79,10 +79,26 @@ hr {
    GLOBAL MOBILE OVERRIDES
    ═══════════════════════════════════════════ */
 @media (max-width: 768px) {
-	/* Prevent any element from causing horizontal scroll */
+	/* Prevent any element from causing horizontal scroll.
+	   overflow-x: clip (not hidden) — clips overflow without creating a BFC,
+	   so position:sticky on descendant elements is not broken. */
 	html, body {
-		overflow-x: hidden;
+		overflow-x: clip;
 		max-width: 100vw;
+	}
+
+	/* Fix position:sticky on mobile.
+	   pc/main.scss sets body { overflow-y: scroll } globally.
+	   html has overflow-x: clip (non-visible), which prevents body's overflow-y
+	   from propagating to the viewport (propagation requires html to be fully visible).
+	   Body therefore retains overflow-y: scroll and becomes the CSS scroll container,
+	   but body.scrollTop stays 0 because body grows to fit its content.
+	   Mobile touch scroll changes window.scrollY (viewport), not body.scrollTop,
+	   so the sticky threshold is never crossed and .shop-mobile-bar never sticks.
+	   Resetting overflow-y to unset (= visible) removes body as scroll container,
+	   making the viewport the scroll container so sticky works correctly. */
+	body {
+		overflow-y: unset;
 	}
 
 	/* All images respect their containers — prevents avatar/icon overflow */
