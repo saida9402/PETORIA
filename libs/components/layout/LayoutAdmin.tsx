@@ -13,8 +13,8 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { getJwtToken, updateUserInfo } from '../../auth';
-import { initDomain, userVar } from '../../../apollo/store';
+import { getJwtToken, logOut, updateUserInfo } from '../../auth';
+import { userVar } from '../../../apollo/store';
 import { useApolloClient, useReactiveVar } from '@apollo/client';
 import { API_URL } from '../../config';
 import { MemberType } from '../../enums/member.enum';
@@ -58,14 +58,7 @@ const withAdminLayout = (Component: ComponentType) => {
 		};
 
 		const client = useApolloClient();
-		const logoutHandler = async () => {
-			client.stop();
-			localStorage.removeItem('accessToken');
-			localStorage.setItem('logout', Date.now().toString());
-			userVar(initDomain);
-			await client.clearStore();
-			router.push('/');
-		};
+		const logoutHandler = () => logOut(client, router);
 
 		if (!user || user?.memberType !== MemberType.ADMIN) return null;
 
