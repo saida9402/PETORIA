@@ -4,6 +4,7 @@ import { CustomJwtPayload } from '../libs/types/customJwtPayload';
 export { themeVar } from '../libs/store/themeStore';
 export const chatOpenVar = makeVar(false);
 export const onlineUsersVar = makeVar(0);
+export const unreadMsgCountVar = makeVar(0);
 
 export const initDomain: CustomJwtPayload = {
 	_id: '',

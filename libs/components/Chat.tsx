@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import ScrollableFeed from 'react-scrollable-feed';
 import { RippleBadge } from '../../scss/MaterialTheme/styled';
 import { useReactiveVar } from '@apollo/client';
-import { socketVar, userVar, chatOpenVar, onlineUsersVar } from '../../apollo/store';
+import { socketVar, userVar, chatOpenVar, onlineUsersVar, unreadMsgCountVar } from '../../apollo/store';
 import { Member } from '../types/member/member';
 import { Messages, API_URL } from '../config';
 import { sweetErrorAlert } from '../sweetAlert';
@@ -56,10 +56,17 @@ const Chat = () => {
 					const newMessage: MessagePayload = data;
 					messagesList.push(newMessage);
 					setMessagesList([...messagesList]);
+					if (!chatOpenVar() && newMessage.memberData?._id !== user?._id) {
+						unreadMsgCountVar(unreadMsgCountVar() + 1);
+					}
 					break;
 			}
 		};
 	}, [socket, messagesList]);
+
+	useEffect(() => {
+		if (open) unreadMsgCountVar(0);
+	}, [open]);
 
 	useEffect(() => {
 		const timeoutId = setTimeout(() => setOpenButton(true), 100);
