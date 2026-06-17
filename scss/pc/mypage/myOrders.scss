@@ -18,6 +18,98 @@
     margin: 0;
   }
 
+  // ── Search + Year + Search Button toolbar ──────────────────────
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;       // wraps on mobile: input on row 1, year+btn on row 2
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &__search-wrap {
+    flex: 1 1 200px;       // grows on desktop, wraps to full row on mobile
+    min-width: 0;
+    position: relative;    // anchor for the absolutely-positioned clear button
+    display: flex;
+    align-items: center;
+  }
+
+  &__search {
+    width: 100%;
+    height: 36px;
+    border: 1px solid var(--bd, #C8E6A0);
+    border-radius: 8px;
+    padding: 0 36px 0 12px; // right padding always reserves space for X button
+    font-size: 13px;
+    background: var(--cb, #fff);
+    color: var(--t1, #1A2E0A);
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus { border-color: var(--np, #4E8A28); }
+    &::placeholder { color: var(--t3, #6B8A4E); }
+  }
+
+  &__search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: var(--t3, #6B8A4E);
+    color: #fff;
+    font-size: 9px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover { background: var(--t2, #3A5020); }
+  }
+
+  &__year-select {
+    flex: 0 0 auto;
+    height: 36px;
+    border: 1px solid var(--bd, #C8E6A0);
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 13px;
+    background: var(--cb, #fff);
+    color: var(--t1, #1A2E0A);
+    outline: none;
+    cursor: pointer;
+    min-width: 110px;
+
+    &:focus { border-color: var(--np, #4E8A28); }
+  }
+
+  &__search-btn {
+    flex: 0 0 auto;
+    height: 36px;
+    padding: 0 18px;
+    background: var(--np, #4E8A28);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+
+    &:hover { background: var(--nm, #3A6B1E); }
+    &:active { background: var(--nb, #2D5016); }
+  }
+  // ───────────────────────────────────────────────────────────────
+
   &__filters {
     display: flex;
     gap: 8px;
@@ -202,9 +294,27 @@
   font-size: 13px;
   color: var(--t2, #3A5020);
 
-  &__icon { font-size: 16px; }
-  &__qty { color: var(--t3, #6B8A4E); }
-  &__price { font-weight: 600; color: var(--t1, #1A2E0A); margin-left: auto; }
+  &__icon { font-size: 16px; flex-shrink: 0; }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--t1, #1A2E0A);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__qty { font-size: 12px; color: var(--t3, #6B8A4E); }
+  &__price { font-weight: 600; color: var(--t1, #1A2E0A); margin-left: auto; flex-shrink: 0; }
 }
 
 /* Tracking bar */

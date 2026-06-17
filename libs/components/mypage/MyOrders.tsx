@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useQuery, useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
@@ -11,7 +10,7 @@ import { sweetConfirmAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from
 import PaymentModal from './PaymentModal';
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string; bg: string }> = {
-	[OrderStatus.PENDING]:   { label: 'Pending',   color: '#92400e', bg: '#fef3c7' },
+	[OrderStatus.PENDING]:   { label: 'Pending',    color: '#92400e', bg: '#fef3c7' },
 	[OrderStatus.PROCESS]:   { label: 'In Transit', color: '#1e40af', bg: '#dbeafe' },
 	[OrderStatus.CONFIRM]:   { label: 'Confirmed',  color: '#065f46', bg: '#d1fae5' },
 	[OrderStatus.DELIVERED]: { label: 'Delivered',  color: '#14532d', bg: '#bbf7d0' },
@@ -47,10 +46,31 @@ const PAYMENT_LABELS: Record<string, string> = {
 
 export default function MyOrders() {
 	const user = useReactiveVar(userVar);
-	const router = useRouter();
-	const [filter, setFilter] = useState<string>('');
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	// Input state (what the user is typing/selecting)
+	const [inputSearch, setInputSearch] = useState('');
+	const [inputYear, setInputYear] = useState<number | ''>('');
+	// Committed state (what's actually applied to the filter — only updates on Search click)
+	const [activeSearch, setActiveSearch] = useState('');
+	const [activeYear, setActiveYear] = useState<number | ''>('');
 	const [cancellingId, setCancellingId] = useState<string | null>(null);
 	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+	const handleSearch = () => {
+		setActiveSearch(inputSearch);
+		setActiveYear(inputYear);
+	};
+
+	// Immediately reset active search when the input is cleared so the full list returns.
+	const handleSearchChange = (val: string) => {
+		setInputSearch(val);
+		if (val === '') setActiveSearch('');
+	};
+
+	const handleClear = () => {
+		setInputSearch('');
+		setActiveSearch('');
+	};
 
 	const { data, loading, refetch } = useQuery(GET_MY_ORDERS, {
 		skip: !user._id,
@@ -59,19 +79,38 @@ export default function MyOrders() {
 
 	const [cancelOrder] = useMutation(CANCEL_ORDER);
 
-	// Auto-open PaymentModal for the newest PENDING order when arriving from checkout
-	useEffect(() => {
-		if (loading || router.query.pay !== 'latest') return;
-		const orders: Order[] = data?.getMyOrders ?? [];
-		const firstPending = orders.find((o) => o.orderStatus === OrderStatus.PENDING);
-		if (firstPending) {
-			setSelectedOrder(firstPending);
-			router.replace('/mypage?category=myOrders', undefined, { shallow: true });
-		}
-	}, [loading, data, router.query.pay]);
-
 	const orders: Order[] = data?.getMyOrders ?? [];
-	const filtered = filter ? orders.filter((o) => o.orderStatus === filter) : orders;
+
+	// Unique years from order history, descending.
+	const years = useMemo(() => {
+		const seen: Record<number, true> = {};
+		for (const o of orders) seen[new Date(o.createdAt).getFullYear()] = true;
+		return Object.keys(seen).map(Number).sort((a, b) => b - a);
+	}, [orders]);
+
+	// Combined filtering: status applies immediately; search + year apply only after Search click.
+	const filtered = useMemo(() => {
+		let result = orders;
+
+		if (statusFilter) {
+			result = result.filter((o) => o.orderStatus === statusFilter);
+		}
+
+		if (activeYear !== '') {
+			result = result.filter((o) => new Date(o.createdAt).getFullYear() === activeYear);
+		}
+
+		if (activeSearch.trim()) {
+			const q = activeSearch.trim().toLowerCase();
+			result = result.filter(
+				(o) =>
+					o._id.slice(-8).toLowerCase().includes(q) ||
+					o.orderItems.some((item) => item.itemName?.toLowerCase().includes(q)),
+			);
+		}
+
+		return result;
+	}, [orders, statusFilter, activeYear, activeSearch]);
 
 	const handleCancel = async (orderId: string) => {
 		const yes = await sweetConfirmAlert('Cancel this order?');
@@ -105,13 +144,52 @@ export default function MyOrders() {
 				<p className="my-orders__sub">{orders.length} order{orders.length !== 1 ? 's' : ''} total</p>
 			</div>
 
-			{/* Filter chips */}
+			{/* ── Search + Year + Search Button ── */}
+			<div className="my-orders__toolbar">
+				<div className="my-orders__search-wrap">
+					<input
+						className="my-orders__search"
+						type="text"
+						placeholder="Search by order ID or product name…"
+						value={inputSearch}
+						onChange={(e) => handleSearchChange(e.target.value)}
+						onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+					/>
+					{inputSearch && (
+						<button
+							className="my-orders__search-clear"
+							type="button"
+							aria-label="Clear search"
+							onClick={handleClear}
+						>
+							✕
+						</button>
+					)}
+				</div>
+
+				<select
+					className="my-orders__year-select"
+					value={inputYear}
+					onChange={(e) => setInputYear(e.target.value === '' ? '' : Number(e.target.value))}
+				>
+					<option value="">All Years</option>
+					{years.map((y) => (
+						<option key={y} value={y}>{y}</option>
+					))}
+				</select>
+
+				<button className="my-orders__search-btn" onClick={handleSearch}>
+					Search
+				</button>
+			</div>
+
+			{/* ── Status filter chips ── */}
 			<div className="my-orders__filters">
 				{STATUS_FILTERS.map((f) => (
 					<button
 						key={f.value}
-						className={`order-filter-chip${filter === f.value ? ' order-filter-chip--active' : ''}`}
-						onClick={() => setFilter(f.value)}
+						className={`order-filter-chip${statusFilter === f.value ? ' order-filter-chip--active' : ''}`}
+						onClick={() => setStatusFilter(f.value)}
 					>
 						{f.label}
 					</button>
@@ -121,8 +199,10 @@ export default function MyOrders() {
 			{filtered.length === 0 ? (
 				<div className="my-orders__empty">
 					<span className="my-orders__empty-icon">📦</span>
-					<p>No orders found</p>
-					<Link href="/shop" className="btn btn--primary btn--sm">Start shopping →</Link>
+					<p>{orders.length === 0 ? 'No orders yet' : 'No orders match your filters'}</p>
+					{orders.length === 0 && (
+						<Link href="/shop" className="btn btn--primary btn--sm">Start shopping →</Link>
+					)}
 				</div>
 			) : (
 				<div className="my-orders__list">
@@ -156,18 +236,23 @@ export default function MyOrders() {
 									{order.orderAddress && <span>📍 {order.orderAddress}</span>}
 								</div>
 
-								{/* Items */}
+								{/* Items — with product name */}
 								<div className="order-card__items">
 									{order.orderItems.map((item: OrderItem) => (
 										<div key={item._id} className="order-item">
 											<span className="order-item__icon">🛍️</span>
-											<span className="order-item__qty">× {item.itemQuantity}</span>
+											<div className="order-item__details">
+												{item.itemName && (
+													<span className="order-item__name">{item.itemName}</span>
+												)}
+												<span className="order-item__qty">Qty: {item.itemQuantity}</span>
+											</div>
 											<span className="order-item__price">${(item.itemPrice * item.itemQuantity).toFixed(2)}</span>
 										</div>
 									))}
 								</div>
 
-								{/* Tracking bar (only for active orders) */}
+								{/* Tracking bar */}
 								{(isActive || isDelivered) && (
 									<div className="order-card__tracking">
 										<div className="track-bar">
@@ -225,7 +310,8 @@ export default function MyOrders() {
 					})}
 				</div>
 			)}
-		{selectedOrder && (
+
+			{selectedOrder && (
 				<PaymentModal
 					order={selectedOrder}
 					open={!!selectedOrder}
