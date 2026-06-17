@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { getJwtToken, logOut, updateUserInfo } from '../auth';
+import { hydrateUserFromStorage, logOut } from '../auth';
 import { useApolloClient } from '@apollo/client';
 import { Stack, Badge, InputBase, IconButton, Drawer, List, ListItemButton } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
@@ -112,8 +112,7 @@ const Top = () => {
 	}, [router.pathname]);
 
 	useEffect(() => {
-		const jwt = getJwtToken();
-		if (jwt) updateUserInfo(jwt);
+		hydrateUserFromStorage();
 	}, []);
 
 	useEffect(() => {

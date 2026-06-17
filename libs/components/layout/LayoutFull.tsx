@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
-import { getJwtToken, updateUserInfo } from '../../auth';
+import { hydrateUserFromStorage } from '../../auth';
 import Chat from '../Chat';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -16,8 +16,7 @@ const withLayoutFull = (Component: any) => {
 		const device = useDeviceDetect();
 
 		useEffect(() => {
-			const jwt = getJwtToken();
-			if (jwt) updateUserInfo(jwt);
+			hydrateUserFromStorage();
 		}, []);
 
 		if (device === 'mobile') {

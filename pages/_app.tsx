@@ -8,7 +8,7 @@ import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
 import { themeVar } from '../libs/store/themeStore';
-import { getJwtToken } from '../libs/auth';
+import { loadUserProfile } from '../libs/auth';
 import { userVar, initDomain } from '../apollo/store';
 import { CART_KEY } from '../libs/cart';
 import '../scss/app.scss';
@@ -22,10 +22,10 @@ const App = ({ Component, pageProps }: AppProps) => {
 	const currentTheme = useReactiveVar(themeVar);
 	const router = useRouter();
 
-	// Fix 4 — startup cleanup: if no auth token is present on load, remove any
-	// stale per-user data so it cannot be inherited by the next account.
+	// Fix 4 — startup cleanup: if no user profile is stored, remove any stale
+	// per-user data so it cannot be inherited by the next account.
 	useEffect(() => {
-		if (!getJwtToken()) {
+		if (!loadUserProfile()) {
 			localStorage.removeItem(CART_KEY);
 		}
 	}, []);

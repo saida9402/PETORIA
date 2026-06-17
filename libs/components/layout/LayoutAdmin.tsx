@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { getJwtToken, logOut, updateUserInfo } from '../../auth';
+import { hydrateUserFromStorage, logOut } from '../../auth';
 import { userVar } from '../../../apollo/store';
 import { useApolloClient, useReactiveVar } from '@apollo/client';
 import { API_URL } from '../../config';
@@ -38,8 +38,7 @@ const withAdminLayout = (Component: ComponentType) => {
 		const [loading, setLoading] = useState(true);
 
 		useEffect(() => {
-			const jwt = getJwtToken();
-			if (jwt) updateUserInfo(jwt);
+			hydrateUserFromStorage();
 			setLoading(false);
 		}, []);
 
