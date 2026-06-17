@@ -54,7 +54,9 @@ export default function TopProductCard({ product: p, rank }: Props) {
 			await likeProduct({ variables: { input: p._id } });
 			setLiked((prev) => !prev);
 			setLikes((prev) => (liked ? prev - 1 : prev + 1));
-		} catch {}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (

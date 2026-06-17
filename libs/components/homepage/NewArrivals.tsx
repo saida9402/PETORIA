@@ -94,7 +94,9 @@ function ArrivalCard({ product: p }: { product: Product }) {
 			await likeProduct({ variables: { input: p._id } });
 			setLiked((v) => !v);
 			setLikes((v) => (liked ? v - 1 : v + 1));
-		} catch {}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (

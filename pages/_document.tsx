@@ -9,7 +9,7 @@ export default function Document() {
 				<link rel="icon" type="image/svg+xml" href="/img/logo/petoriaLogoIcon.svg" />
 
 				{/* SEO */}
-				<meta name="keyword" content={'petoria, petoriashop, pet shop, pet products, dog, cat, bird, fish'} />
+				<meta name="keywords" content={'petoria, petoriashop, pet shop, pet products, dog, cat, bird, fish'} />
 				<meta
 					name={'description'}
 					content={
@@ -17,6 +17,15 @@ export default function Document() {
 						'Shop the best pet products at the best prices on Petoria.'
 					}
 				/>
+				{/* Open Graph defaults — per-page Head blocks override these for detail pages */}
+				<meta property="og:site_name" content="Petoria" />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Petoria — Your Pet's Happy Place" />
+				<meta
+					property="og:description"
+					content="Shop premium pet food, toys, medicine and accessories for dogs, cats, birds and fish. Fast delivery, verified sellers."
+				/>
+				<meta name="twitter:card" content="summary_large_image" />
 			</Head>
 			<body>
 				<Main />

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://petoria.com/sitemap.xml

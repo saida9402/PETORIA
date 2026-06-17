@@ -83,7 +83,7 @@ function createIsomorphicLink() {
 		const wsLink = new WebSocketLink({
 			uri: WS_URI,
 			options: {
-				reconnect: false,
+				reconnect: true,
 				timeout: 30000,
 				connectionParams: () => {
 					return { headers: getHeaders() };

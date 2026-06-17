@@ -53,7 +53,9 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 			await likeArticle({ variables: { articleId: a._id } });
 			setLiked((prev) => !prev);
 			setLikes((prev) => (liked ? prev - 1 : prev + 1));
-		} catch {}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	if (variant === 'compact') {

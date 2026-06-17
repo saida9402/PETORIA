@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Stack, Typography, Tab, Tabs, IconButton, Backdrop, Pagination } from '@mui/material';
@@ -212,8 +213,21 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
+	const articleTitle = boardArticle?.articleTitle ?? 'Community Article';
+	const articleDesc = `Read "${articleTitle}" on Petoria Community. Join the conversation and share your pet care experiences.`;
+
 	return (
 		<div id="community-detail-page">
+			<Head>
+				<title>{`${articleTitle} | Petoria Community`}</title>
+				<meta name="description" content={articleDesc.slice(0, 160)} />
+				<meta property="og:title" content={`${articleTitle} | Petoria Community`} />
+				<meta property="og:description" content={articleDesc.slice(0, 200)} />
+				<meta property="og:type" content="article" />
+				<meta name="twitter:card" content="summary" />
+				<meta name="twitter:title" content={`${articleTitle} | Petoria Community`} />
+				<meta name="twitter:description" content={articleDesc.slice(0, 200)} />
+			</Head>
 				<div className="container">
 					<Stack className="main-box">
 						<Stack className="left-config">

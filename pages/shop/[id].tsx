@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useQuery, useMutation } from '@apollo/client';
@@ -63,7 +64,9 @@ const ProductDetail: NextPage = () => {
 			await likeTargetProduct({ variables: { input: product._id } });
 			setLiked((v) => !v);
 			setLikes((v) => (liked ? v - 1 : v + 1));
-		} catch {}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const handleAddToCart = () => {
@@ -157,9 +160,35 @@ const ProductDetail: NextPage = () => {
 	const incQty = () => setQty((q) => (product.productStock ? Math.min(product.productStock, q + 1) : q + 1));
 	const decQty = () => setQty((q) => Math.max(1, q - 1));
 
+	const ogTitle = product.productName ? `${product.productName} | Petoria` : 'Product | Petoria';
+	const ogDesc =
+		product.productDesc ??
+		`Buy ${product.productName} at Petoria — premium pet products for your beloved pets.`;
+	const ogImage = product.productImages?.[0]
+		? product.productImages[0].startsWith('http')
+			? product.productImages[0]
+			: `${API_URL}/${product.productImages[0]}`
+		: undefined;
+
+	const productHead = (
+		<Head>
+			<title>{ogTitle}</title>
+			<meta name="description" content={ogDesc.slice(0, 160)} />
+			<meta property="og:title" content={ogTitle} />
+			<meta property="og:description" content={ogDesc.slice(0, 200)} />
+			<meta property="og:type" content="product" />
+			{ogImage && <meta property="og:image" content={ogImage} />}
+			<meta name="twitter:card" content="summary_large_image" />
+			<meta name="twitter:title" content={ogTitle} />
+			<meta name="twitter:description" content={ogDesc.slice(0, 200)} />
+			{ogImage && <meta name="twitter:image" content={ogImage} />}
+		</Head>
+	);
+
 	if (device === 'mobile') {
 		return (
 			<div className="product-detail-page product-detail-page--mobile">
+				{productHead}
 				<div className="wrap">
 					<Link href="/shop" className="product-detail__back">← Back to shop</Link>
 					<div
@@ -342,6 +371,7 @@ const ProductDetail: NextPage = () => {
 
 	return (
 		<div className="product-detail-page">
+			{productHead}
 			<section className="product-detail-container">
 				{/* Breadcrumb */}
 				<nav className="product-detail__breadcrumb">

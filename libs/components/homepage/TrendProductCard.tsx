@@ -79,7 +79,9 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 			await likeProduct({ variables: { input: p._id } });
 			setLiked((v) => !v);
 			setLikes((v) => (liked ? v - 1 : v + 1));
-		} catch {}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const handleCart = (e: React.MouseEvent) => {

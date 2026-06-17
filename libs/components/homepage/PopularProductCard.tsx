@@ -59,7 +59,9 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 			await likeProduct({ variables: { input: p._id } });
 			setLiked((prev) => !prev);
 			setLikes((prev) => (liked ? prev - 1 : prev + 1));
-		} catch {}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const handleAdd = (e: React.MouseEvent) => {

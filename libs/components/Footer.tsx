@@ -101,7 +101,7 @@ const Footer = () => {
 						<p className={'footer-tagline'}>Your pet's happy place 🐾</p>
 						<div className={'footer-contact'}>
 							<span className={'contact-label'}>Customer Care (24/7)</span>
-							<a href="tel:+821048672909" className={'contact-value'}>
+							<a href="tel:+821021220202" className={'contact-value'}>
 								+82 10 2122 0202
 							</a>
 							<span className={'contact-label'}>Email Support</span>

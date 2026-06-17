@@ -27,6 +27,14 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
+function safeParseInput<T>(raw: string | string[] | undefined, fallback: T): T {
+	try {
+		return raw ? JSON.parse(raw as string) : fallback;
+	} catch {
+		return fallback;
+	}
+}
+
 const SORT_OPTIONS = [
 	{ id: 'newest',  label: 'Newest',       sort: 'createdAt',    direction: Direction.DESC },
 	{ id: 'lowest',  label: 'Lowest Price',  sort: 'productPrice', direction: Direction.ASC  },
@@ -49,7 +57,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 	const router = useRouter();
 
 	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(
-		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
+		safeParseInput(router?.query?.input, initialInput),
 	);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -73,7 +81,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 
 	useEffect(() => {
 		if (router.query.input) {
-			setSearchFilter(JSON.parse(router.query.input as string));
+			setSearchFilter(safeParseInput(router.query.input, initialInput));
 		} else if (router.query.type || router.query.cat || router.query.text || router.query.productBrand) {
 			setSearchFilter({
 				...initialInput,

@@ -5,8 +5,6 @@ import Footer from '../Footer';
 import HeroBanner from '../homepage/HeroBanner';
 import HeaderFilter from '../homepage/HeaderFilter';
 import WeatherBar from '../homepage/WeatherBar';
-import { userVar } from '../../../apollo/store';
-import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import 'swiper/css';
@@ -17,7 +15,6 @@ import Top from '../Top';
 const withLayoutHome = (Component: any) => {
 	return (props: any) => {
 		const device = useDeviceDetect();
-		const user = useReactiveVar(userVar);
 
 		useEffect(() => {
 			const jwt = getJwtToken();

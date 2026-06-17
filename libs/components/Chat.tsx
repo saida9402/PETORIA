@@ -39,30 +39,35 @@ const Chat = () => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
+		if (!socket) return;
 		socket.onmessage = (msg) => {
 			const data = JSON.parse(msg.data);
-
 			switch (data.event) {
-				case 'info':
+				case 'info': {
 					const newInfo: InfoPayload = data;
 					setOnlineUsers(newInfo.totalClients);
 					onlineUsersVar(newInfo.totalClients);
 					break;
-				case 'getMessages':
+				}
+				case 'getMessages': {
 					const list: MessagePayload[] = data.list;
 					setMessagesList(list);
 					break;
-				case 'message':
+				}
+				case 'message': {
 					const newMessage: MessagePayload = data;
-					messagesList.push(newMessage);
-					setMessagesList([...messagesList]);
-					if (!chatOpenVar() && newMessage.memberData?._id !== user?._id) {
+					setMessagesList((prev) => [...prev, newMessage]);
+					if (!chatOpenVar() && newMessage.memberData?._id !== userVar()._id) {
 						unreadMsgCountVar(unreadMsgCountVar() + 1);
 					}
 					break;
+				}
 			}
 		};
-	}, [socket, messagesList]);
+		return () => {
+			socket.onmessage = null;
+		};
+	}, [socket]);
 
 	useEffect(() => {
 		if (open) unreadMsgCountVar(0);
@@ -82,7 +87,7 @@ const Chat = () => {
 
 	const getInputMessageHandler = useCallback(
 		(e: any) => setMessageInput(e.target.value),
-		[messageInput],
+		[],
 	);
 
 	const getKeyHandler = (e: any) => {

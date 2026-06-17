@@ -76,14 +76,7 @@ export const sweetErrorAlert = async (msg: string, duration: number = 3000) => {
 	});
 };
 
-export const sweetMixinErrorAlert = async (msg: string, duration: number = 3000) => {
-	await Swal.fire({
-		icon: 'error',
-		title: msg,
-		showConfirmButton: false,
-		timer: duration,
-	});
-};
+export const sweetMixinErrorAlert = sweetErrorAlert;
 
 export const sweetMixinSuccessAlert = async (msg: string, duration: number = 2000) => {
 	await Swal.fire({

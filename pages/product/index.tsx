@@ -19,6 +19,14 @@ import { Messages } from '../../libs/config';
 import ShopFilter from '../../libs/components/product/ShopFilter';
 import ProductCard from '../../libs/components/common/ProductCard';
 
+function safeParseInput<T>(raw: string | string[] | undefined, fallback: T): T {
+	try {
+		return raw ? JSON.parse(raw as string) : fallback;
+	} catch {
+		return fallback;
+	}
+}
+
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
@@ -28,7 +36,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 	const router = useRouter();
 	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(
-		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
+		safeParseInput(router?.query?.input, initialInput),
 	);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -58,7 +66,7 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (router.query.input) {
-			setSearchFilter(JSON.parse(router?.query?.input as string));
+			setSearchFilter(safeParseInput(router.query.input, initialInput));
 		}
 		setCurrentPage(searchFilter.page ?? 1);
 	}, [router]);
