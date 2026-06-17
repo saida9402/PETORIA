@@ -90,7 +90,7 @@ const SellerDashboard: NextPage = ({ initialInput }: any) => {
 							Welcome back, {user.memberFullName || user.memberNick} 👋
 						</Typography>
 						<Typography className="sdp-welcome__sub">
-							Here's your store overview for today.
+							Here&apos;s your store overview for today.
 						</Typography>
 					</div>
 					<Link href={`/seller/${user._id}`} className="sdp-welcome__view-store">

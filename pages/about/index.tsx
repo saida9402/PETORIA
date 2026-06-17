@@ -27,7 +27,7 @@ const About: NextPage = () => {
 				<Stack className={'intro'}>
 					<Stack className={'container'}>
 						<Stack className={'left'}>
-							<strong>We're on a Mission to Make Every Pet's Life Better. 🐾</strong>
+							<strong>We&apos;re on a Mission to Make Every Pet&apos;s Life Better. 🐾</strong>
 						</Stack>
 						<Stack className={'right'}>
 							<p>
@@ -35,7 +35,7 @@ const About: NextPage = () => {
 								healthcare. We bring together the finest pet products from trusted brands, all in one place.
 								<br />
 								<br />
-								Whether you're a dog parent, cat lover, bird enthusiast, or fish keeper, Petoria is your go-to
+								Whether you&apos;re a dog parent, cat lover, bird enthusiast, or fish keeper, Petoria is your go-to
 								destination for everything your pet needs to thrive.
 							</p>
 							<Stack className={'boxes'}>
@@ -122,7 +122,7 @@ const About: NextPage = () => {
 				{/* Options */}
 				<Stack className={'options'}>
 					<Stack className={'container'}>
-						<strong>Let's find the right products for your pet</strong>
+						<strong>Let&apos;s find the right products for your pet</strong>
 						<Stack className={'box'}>
 							<div className={'icon-box'} style={{ fontSize: '28px' }}>
 								🐶
@@ -160,7 +160,7 @@ const About: NextPage = () => {
 				{/* Partners */}
 				<Stack className={'partners'}>
 					<Stack className={'container'}>
-						<span>Trusted by the world's best pet brands</span>
+						<span>Trusted by the world&apos;s best pet brands</span>
 						<Stack className={'wrap'}>
 							{['Royal Canin', "Hill's", 'Purina', 'Kong', 'Orijen', 'Acana'].map((brand) => (
 								<Link

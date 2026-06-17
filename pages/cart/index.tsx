@@ -228,7 +228,7 @@ const CartPage: NextPage = () => {
 					<div className="cart-empty">
 						<div className="cart-empty__icon">🛒</div>
 						<h2>Your cart is empty</h2>
-						<p>Looks like you haven't added anything yet.</p>
+						<p>Looks like you haven&apos;t added anything yet.</p>
 						<Link href="/shop" className="btn btn--primary">
 							Browse products →
 						</Link>

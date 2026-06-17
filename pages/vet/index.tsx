@@ -343,8 +343,8 @@ const VetPage: NextPage = () => {
 				{/* CTA */}
 				<div className="vet-cta">
 					<div className="vet-cta__content">
-						<h2>Can't find what you're looking for?</h2>
-						<p>Contact our support team and we'll connect you with the right specialist.</p>
+						<h2>Can&apos;t find what you&apos;re looking for?</h2>
+						<p>Contact our support team and we&apos;ll connect you with the right specialist.</p>
 					</div>
 					<Link href="/cs" className="btn btn--primary">Contact Support →</Link>
 				</div>

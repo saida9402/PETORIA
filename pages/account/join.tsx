@@ -292,7 +292,7 @@ const Join: NextPage = () => {
 										<span>Seller Rating</span>
 									</div>
 								</div>
-								<p className="right-quote">"Petoria helped me grow my pet food business 3x in just 6 months."</p>
+								<p className="right-quote">&quot;Petoria helped me grow my pet food business 3x in just 6 months.&quot;</p>
 								<span className="right-author">— PawsWorld Store</span>
 							</div>
 						</Stack>
