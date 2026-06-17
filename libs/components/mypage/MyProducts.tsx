@@ -15,7 +15,7 @@ import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
 
 const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchFilter, setSearchFilter] = useState<SellerProductsInquiry>(initialInput);
-	const [sellerProducts, setAgentProducts] = useState<Product[]>([]);
+	const [sellerProducts, setSellerProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
@@ -33,7 +33,7 @@ const MyProducts: NextPage = ({ initialInput, ...props }: any) => {
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setAgentProducts(data?.getSellerProducts?.list);
+			setSellerProducts(data?.getSellerProducts?.list);
 			setTotal(data?.getSellerProducts?.metaCounter[0]?.total ?? 0);
 		},
 	});

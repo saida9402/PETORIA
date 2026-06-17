@@ -48,7 +48,6 @@ const RecentlyViewed: NextPage = () => {
 
 	/** HANDLERS **/
 	const likeProductHandler = async (id: string) => {
-		console.log('LIKE CLICKED', id);
 		if (likeInProgressRef.current === id) return;
 		likeInProgressRef.current = id;
 		try {
@@ -86,7 +85,6 @@ const RecentlyViewed: NextPage = () => {
 				<Stack className="favorites-list-box">
 					{recentlyViewed?.length ? (
 						recentlyViewed.map((product: Product) => {
-							console.log('RENDERING CARD', product._id, 'likeHandler:', !!likeProductHandler);
 							return (
 								<ShopProductCard
 									key={product._id}

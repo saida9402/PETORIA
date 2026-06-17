@@ -103,7 +103,7 @@ const Faq = () => {
 			{
 				id: '00f5a45ed8897f8090116a02',
 				subject: 'How can I make the payment?',
-				content: 'you make the payment through an agent!',
+				content: 'you can securely complete payments through our platform',
 			},
 			{
 				id: '00f5a45ed8897f8090116a91',
@@ -113,7 +113,7 @@ const Faq = () => {
 			{
 				id: '00f5a45ed8897f8090116a92',
 				subject: 'Is there an option for installment payments?',
-				content: 'Yes, we offer installment payment plans for certain properties. Please inquire for more details.',
+				content: 'Yes, we offer installment payment options for selected products.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a93',

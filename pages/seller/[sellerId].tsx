@@ -29,7 +29,7 @@ import { CommentGroup } from '../../libs/enums/comment.enum';
 import { T } from '../../libs/types/common';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import ShopProductCard from '../../libs/components/common/ShopProductCard';
-import ReviewCard from '../../libs/components/agent/ReviewCard';
+import ReviewCard from '../../libs/components/seller/ReviewCard';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export const getStaticProps = async ({ locale }: any) => ({

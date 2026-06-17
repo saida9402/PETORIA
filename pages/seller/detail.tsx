@@ -19,7 +19,7 @@ import { T } from '../../libs/types/common';
 import { GET_COMMENTS } from '../../apollo/user/query';
 import { GET_MEMBER, GET_PRODUCTS } from '../../apollo/user/query';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
-import ReviewCard from '../../libs/components/agent/ReviewCard';
+import ReviewCard from '../../libs/components/seller/ReviewCard';
 import ProductCard from '../../libs/components/common/ProductCard';
 
 export const getServerSideProps = async ({ locale }: any) => ({

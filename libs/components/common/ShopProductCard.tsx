@@ -55,7 +55,6 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 	};
 
 	const handleLike = (e: React.MouseEvent) => {
-		console.log('handleLike fired', product._id);
 		e.stopPropagation();
 		e.preventDefault();
 		if (likeProductHandler) likeProductHandler(product._id);
