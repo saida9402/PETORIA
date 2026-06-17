@@ -11,6 +11,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { CartItem as SharedCartItem, getCart as readCart, saveCart as writeCart, subscribeCart } from '../../libs/cart';
 import { updateStorage, updateUserInfo } from '../../libs/auth';
 import { API_URL } from '../../libs/config';
+import PaymentModal from '../../libs/components/mypage/PaymentModal';
+import { Order } from '../../libs/types/order/order';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -76,7 +78,12 @@ const CartPage: NextPage = () => {
 	const [note, setNote] = useState('');
 	const [placing, setPlacing] = useState(false);
 	const [addrError, setAddrError] = useState('');
+	const [paymentOpen, setPaymentOpen] = useState(false);
 	const touchedRef = useRef(false);
+	// Captured at checkout time so the PaymentModal onCreate callback can read them.
+	const checkoutAddressRef = useRef('');
+	const checkoutNoteRef = useRef('');
+	const checkoutItemsRef = useRef<CartItem[]>([]);
 
 	const [createOrder] = useMutation(CREATE_ORDER);
 	const [updateMember] = useMutation(UPDATE_MEMBER);
@@ -167,30 +174,41 @@ const CartPage: NextPage = () => {
 					const token = data?.updateMember?.accessToken;
 					if (token) { updateStorage({ jwtToken: token }); updateUserInfo(token); }
 				} catch {
-					/* non-fatal — proceed with order anyway */
+					/* non-fatal */
 				}
 			}
 
-			await createOrder({
+			// Capture checkout data for the PaymentModal onCreate callback.
+			checkoutAddressRef.current = address.trim();
+			checkoutNoteRef.current = note;
+			checkoutItemsRef.current = items;
+			setPaymentOpen(true);
+		} finally {
+			setPlacing(false);
+		}
+	};
+
+	/** Called by PaymentModal when the user confirms payment — creates the order. */
+	const handleCreateOrder = async (): Promise<Order | null> => {
+		try {
+			const { data } = await createOrder({
 				variables: {
 					input: {
-						orderItems: items.map((it) => ({
+						orderItems: checkoutItemsRef.current.map((it) => ({
 							productId: it.productId,
 							itemQuantity: it.quantity,
 							itemPrice: it.productPrice,
 						})),
 						paymentMethod: 'CREDIT_CARD',
-						orderAddress: address.trim(),
-						orderNote: note || undefined,
+						orderAddress: checkoutAddressRef.current,
+						orderNote: checkoutNoteRef.current || undefined,
 					},
 				},
 			});
-			router.push('/mypage?category=myOrders&pay=latest');
-			clearCart();
+			return data?.createOrder ?? null;
 		} catch (err) {
 			sweetErrorHandling(err).then();
-		} finally {
-			setPlacing(false);
+			return null;
 		}
 	};
 
@@ -347,6 +365,20 @@ const CartPage: NextPage = () => {
 					</div>
 				)}
 			</div>
+
+			{paymentOpen && (
+				<PaymentModal
+					checkoutTotal={total}
+					onCreate={handleCreateOrder}
+					open={paymentOpen}
+					onClose={() => setPaymentOpen(false)}
+					onComplete={() => {
+						setPaymentOpen(false);
+						clearCart();
+						router.push('/mypage?category=myOrders');
+					}}
+				/>
+			)}
 		</div>
 	);
 };

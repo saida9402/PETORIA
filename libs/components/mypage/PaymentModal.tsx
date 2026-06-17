@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useReactiveVar } from '@apollo/client';
+import { userVar } from '../../../apollo/store';
 import { UPDATE_MY_ORDER_STATUS } from '../../../apollo/user/mutation';
 import { Order } from '../../types/order/order';
 import { OrderStatus } from '../../enums/order.enum';
 import { sweetMixinErrorAlert } from '../../sweetAlert';
 
-const STORAGE_KEY = 'petoria_saved_cards';
 
 export interface SavedCard {
 	id: string;
@@ -37,17 +37,18 @@ const PROGRESS_STEPS: { status: OrderStatus; label: string; sublabel: string }[]
 	{ status: OrderStatus.DELIVERED, label: 'Delivered', sublabel: '✅ Delivered!' },
 ];
 
-export function loadSavedCards(): SavedCard[] {
-	if (typeof window === 'undefined') return [];
+export function loadSavedCards(userId: string): SavedCard[] {
+	if (typeof window === 'undefined' || !userId) return [];
 	try {
-		return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+		return JSON.parse(localStorage.getItem(`petoria_saved_cards_${userId}`) || '[]');
 	} catch {
 		return [];
 	}
 }
 
-export function persistSavedCards(cards: SavedCard[]) {
-	localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+export function persistSavedCards(userId: string, cards: SavedCard[]) {
+	if (!userId) return;
+	localStorage.setItem(`petoria_saved_cards_${userId}`, JSON.stringify(cards));
 }
 
 function detectBrand(n: string): string {
@@ -59,7 +60,11 @@ function detectBrand(n: string): string {
 }
 
 function fmtCardNumber(v: string) {
-	return v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+	return v
+		.replace(/\D/g, '')
+		.slice(0, 16)
+		.replace(/(.{4})/g, '$1 ')
+		.trim();
 }
 
 function fmtExpiry(v: string) {
@@ -73,19 +78,25 @@ const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 type Step = 'select-method' | 'card-form' | 'processing' | 'progress' | 'complete';
 
 interface Props {
-	order: Order;
+	/** Existing order — used in the "Pay Now" flow from My Orders. */
+	order?: Order;
+	/** Total amount to display before an order is created (Cart checkout flow). */
+	checkoutTotal?: number;
+	/** Called once when the user confirms payment; must create and return the new order. */
+	onCreate?: () => Promise<Order | null>;
 	open?: boolean;
 	onClose: () => void;
 	onComplete: () => void;
 }
 
-export default function PaymentModal({ order, open = true, onClose, onComplete }: Props) {
+export default function PaymentModal({ order, checkoutTotal, onCreate, open = true, onClose, onComplete }: Props) {
 	// ── all hooks unconditionally first ──────────────────────────
+	const { _id: userId } = useReactiveVar(userVar);
 	const [step, setStep] = useState<Step>('select-method');
 	const [method, setMethod] = useState('');
-	const [cards, setCards] = useState<SavedCard[]>(loadSavedCards);
+	const [cards, setCards] = useState<SavedCard[]>(() => loadSavedCards(userId));
 	const [selectedCardId, setSelectedCardId] = useState<string>(() => {
-		const c = loadSavedCards();
+		const c = loadSavedCards(userId);
 		return c.find((x) => x.isDefault)?.id ?? c[0]?.id ?? '';
 	});
 	const [showNewCard, setShowNewCard] = useState(false);
@@ -95,7 +106,12 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 	const [cvv, setCvv] = useState('');
 	const [saveCard, setSaveCard] = useState(true);
 	const [status, setStatus] = useState<OrderStatus>(OrderStatus.PENDING);
+	const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
 	const cancelledRef = useRef(false);
+	// Holds the resolved order ID once the order is created or already available.
+	const orderIdRef = useRef<string>(
+		order ? (typeof order._id === 'object' ? (order._id as any).toString() : String(order._id)) : '',
+	);
 
 	const [updateMyOrderStatus] = useMutation(UPDATE_MY_ORDER_STATUS);
 
@@ -106,16 +122,30 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 		};
 	}, []);
 
+	// Keep orderIdRef in sync when an existing order is passed (Pay Now flow).
+	useEffect(() => {
+		if (order?._id) {
+			orderIdRef.current = typeof order._id === 'object' ? (order._id as any).toString() : String(order._id);
+		}
+	}, [order?._id]);
+
 	if (!open) return null;
+
+	// Resolved order for display — either the prop or the one we just created.
+	const resolvedOrder = order ?? createdOrder;
+	const displayTotal = resolvedOrder?.orderTotal ?? checkoutTotal ?? 0;
 
 	// ── helpers (defined after the early return, not hooks) ──────
 
 	const callMutation = async (to: OrderStatus): Promise<boolean> => {
 		try {
-			await updateMyOrderStatus({ variables: { input: { orderId: order._id, orderStatus: to } } });
+			const orderId = orderIdRef.current;
+			if (!orderId) return false;
+			await updateMyOrderStatus({ variables: { input: { orderId, orderStatus: to } } });
 			if (!cancelledRef.current) setStatus(to);
 			return true;
 		} catch (err: any) {
+			console.error('[PaymentModal] callMutation error:', err);
 			if (!cancelledRef.current) await sweetMixinErrorAlert(err?.message ?? 'Failed to update order status');
 			return false;
 		}
@@ -139,27 +169,43 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 	const processPayment = async () => {
 		await wait(1500);
 		if (cancelledRef.current) return;
+
+		// Cart checkout flow: create the order now that the user has confirmed payment.
+		if (!order && onCreate) {
+			const newOrder = await onCreate();
+			if (!newOrder || cancelledRef.current) {
+				setStep('select-method');
+				return;
+			}
+			setCreatedOrder(newOrder);
+			orderIdRef.current =
+				typeof newOrder._id === 'object' ? (newOrder._id as any).toString() : String(newOrder._id);
+		}
+
 		const ok = await callMutation(OrderStatus.PROCESS);
 		if (!ok || cancelledRef.current) {
 			setStep('select-method');
 			return;
 		}
+		// Small delay to let React flush the PROCESS state before showing progress
+		await wait(100);
+		if (cancelledRef.current) return;
 		setStep('progress');
-		runProgressSequence();
+		await runProgressSequence();
 	};
 
-	const handleMethodSelect = (id: string) => {
+	const handleMethodSelect = async (id: string) => {
 		setMethod(id);
 		if (id === 'CARD') {
 			setShowNewCard(cards.length === 0);
 			setStep('card-form');
 		} else {
 			setStep('processing');
-			processPayment();
+			await processPayment();
 		}
 	};
 
-	const handleCardSubmit = () => {
+	const handleCardSubmit = async () => {
 		const usingNew = showNewCard || cards.length === 0;
 		if (usingNew && (!cardNum.replace(/\s/g, '') || !holder || !expiry)) return;
 		if (!usingNew && !selectedCardId) return;
@@ -168,20 +214,27 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 			const last4 = cardNum.replace(/\s/g, '').slice(-4);
 			const brand = detectBrand(cardNum);
 			const isFirst = cards.length === 0;
-			const newCard: SavedCard = { id: Date.now().toString(), last4, brand, holderName: holder, expiry, isDefault: isFirst };
+			const newCard: SavedCard = {
+				id: Date.now().toString(),
+				last4,
+				brand,
+				holderName: holder,
+				expiry,
+				isDefault: isFirst,
+			};
 			const next = [...cards, newCard];
-			persistSavedCards(next);
+			persistSavedCards(userId, next);
 			setCards(next);
 			setSelectedCardId(newCard.id);
 		}
 
 		setStep('processing');
-		processPayment();
+		await processPayment();
 	};
 
 	const setDefault = (id: string) => {
 		const next = cards.map((c) => ({ ...c, isDefault: c.id === id }));
-		persistSavedCards(next);
+		persistSavedCards(userId, next);
 		setCards(next);
 		setSelectedCardId(id);
 	};
@@ -189,7 +242,7 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 	const removeCard = (id: string) => {
 		let next = cards.filter((c) => c.id !== id);
 		if (next.length && !next.some((c) => c.isDefault)) next[0] = { ...next[0], isDefault: true };
-		persistSavedCards(next);
+		persistSavedCards(userId, next);
 		setCards(next);
 		if (selectedCardId === id) setSelectedCardId(next[0]?.id ?? '');
 	};
@@ -207,15 +260,19 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 				<div className="pm-modal__header">
 					<span className="pm-modal__title">{step === 'complete' ? '🎉 Order Complete' : '💳 Payment'}</span>
 					{!isLocked && step !== 'complete' && (
-						<button className="pm-modal__close" onClick={onClose}>✕</button>
+						<button className="pm-modal__close" onClick={onClose}>
+							✕
+						</button>
 					)}
 				</div>
 
 				{/* Order summary strip */}
 				{step !== 'complete' && (
 					<div className="pm-modal__summary">
-						<span className="pm-modal__order-id">Order #{order._id.slice(-8).toUpperCase()}</span>
-						<strong className="pm-modal__total">${order.orderTotal.toFixed(2)}</strong>
+						<span className="pm-modal__order-id">
+							{resolvedOrder ? `Order #${String(resolvedOrder._id).slice(-8).toUpperCase()}` : 'New Order'}
+						</span>
+						<strong className="pm-modal__total">${displayTotal.toFixed(2)}</strong>
 					</div>
 				)}
 
@@ -264,40 +321,80 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 											{card.isDefault && <span className="pm-badge-default">Default</span>}
 											<div className="pm-saved-card__btns">
 												{!card.isDefault && (
-													<button className="pm-link-btn" onClick={(e) => { e.stopPropagation(); setDefault(card.id); }}>
+													<button
+														className="pm-link-btn"
+														onClick={(e) => {
+															e.stopPropagation();
+															setDefault(card.id);
+														}}
+													>
 														Set default
 													</button>
 												)}
-												<button className="pm-link-btn pm-link-btn--danger" onClick={(e) => { e.stopPropagation(); removeCard(card.id); }}>
+												<button
+													className="pm-link-btn pm-link-btn--danger"
+													onClick={(e) => {
+														e.stopPropagation();
+														removeCard(card.id);
+													}}
+												>
 													Remove
 												</button>
 											</div>
 										</div>
 									))}
 								</div>
-								<button className="pm-add-card-btn" onClick={() => setShowNewCard(true)}>+ Use a different card</button>
+								<button className="pm-add-card-btn" onClick={() => setShowNewCard(true)}>
+									+ Use a different card
+								</button>
 							</>
 						) : (
 							<div className="pm-card-form">
 								{cards.length > 0 && (
-									<button className="pm-back-link" onClick={() => setShowNewCard(false)}>← Saved cards</button>
+									<button className="pm-back-link" onClick={() => setShowNewCard(false)}>
+										← Saved cards
+									</button>
 								)}
 								<div className="pm-field">
 									<label className="pm-field__label">Card Number</label>
-									<input className="pm-field__input" placeholder="XXXX XXXX XXXX XXXX" value={cardNum} onChange={(e) => setCardNum(fmtCardNumber(e.target.value))} maxLength={19} />
+									<input
+										className="pm-field__input"
+										placeholder="XXXX XXXX XXXX XXXX"
+										value={cardNum}
+										onChange={(e) => setCardNum(fmtCardNumber(e.target.value))}
+										maxLength={19}
+									/>
 								</div>
 								<div className="pm-field">
 									<label className="pm-field__label">Cardholder Name</label>
-									<input className="pm-field__input" placeholder="Full name on card" value={holder} onChange={(e) => setHolder(e.target.value)} />
+									<input
+										className="pm-field__input"
+										placeholder="Full name on card"
+										value={holder}
+										onChange={(e) => setHolder(e.target.value)}
+									/>
 								</div>
 								<div className="pm-field-row">
 									<div className="pm-field">
 										<label className="pm-field__label">Expiry (MM/YY)</label>
-										<input className="pm-field__input" placeholder="MM/YY" value={expiry} onChange={(e) => setExpiry(fmtExpiry(e.target.value))} maxLength={5} />
+										<input
+											className="pm-field__input"
+											placeholder="MM/YY"
+											value={expiry}
+											onChange={(e) => setExpiry(fmtExpiry(e.target.value))}
+											maxLength={5}
+										/>
 									</div>
 									<div className="pm-field">
 										<label className="pm-field__label">CVV</label>
-										<input className="pm-field__input" placeholder="•••" type="password" value={cvv} onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} maxLength={4} />
+										<input
+											className="pm-field__input"
+											placeholder="•••"
+											type="password"
+											value={cvv}
+											onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))}
+											maxLength={4}
+										/>
 									</div>
 								</div>
 								<label className="pm-checkbox">
@@ -307,9 +404,11 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 							</div>
 						)}
 						<div className="pm-card-footer">
-							<button className="pm-back-method-btn" onClick={() => setStep('select-method')}>← Back</button>
+							<button className="pm-back-method-btn" onClick={() => setStep('select-method')}>
+								← Back
+							</button>
 							<button className="pm-pay-btn" onClick={handleCardSubmit}>
-								Pay ${order.orderTotal.toFixed(2)}
+								Pay ${displayTotal.toFixed(2)}
 							</button>
 						</div>
 					</div>
@@ -333,7 +432,9 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 								const active = progressIndex === i;
 								return (
 									<React.Fragment key={s.status}>
-										<div className={`pm-ps-step${done ? ' pm-ps-step--done' : ''}${active ? ' pm-ps-step--active' : ''}`}>
+										<div
+											className={`pm-ps-step${done ? ' pm-ps-step--done' : ''}${active ? ' pm-ps-step--active' : ''}`}
+										>
 											<div className="pm-ps-step__dot">{done && <span>✓</span>}</div>
 											<span className="pm-ps-step__label">{s.label}</span>
 										</div>
@@ -360,11 +461,13 @@ export default function PaymentModal({ order, open = true, onClose, onComplete }
 						<div className="pm-complete__summary">
 							<div className="pm-complete__row">
 								<span>Order ID</span>
-								<strong>#{order._id.slice(-8).toUpperCase()}</strong>
+								<strong>
+									{resolvedOrder ? `#${String(resolvedOrder._id).slice(-8).toUpperCase()}` : '—'}
+								</strong>
 							</div>
 							<div className="pm-complete__row">
 								<span>Total</span>
-								<strong>${order.orderTotal.toFixed(2)}</strong>
+								<strong>${displayTotal.toFixed(2)}</strong>
 							</div>
 							<div className="pm-complete__row">
 								<span>Method</span>
