@@ -3,6 +3,7 @@ import { OrderItemStatus, OrderPaymentMethod, OrderStatus } from '../../enums/or
 export interface OrderItem {
 	_id: string;
 	productId: string;
+	itemName?: string | null;
 	itemQuantity: number;
 	itemPrice: number;
 	itemStatus: OrderItemStatus;

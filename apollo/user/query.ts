@@ -386,6 +386,7 @@ export const GET_MY_ORDERS = gql`
 			orderItems {
 				_id
 				productId
+				itemName
 				itemQuantity
 				itemPrice
 				itemStatus
