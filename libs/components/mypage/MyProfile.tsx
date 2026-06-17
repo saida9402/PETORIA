@@ -40,11 +40,11 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const [newCvv, setNewCvv] = useState('');
 
 	useEffect(() => {
-		setCards(loadSavedCards());
-	}, []);
+		setCards(loadSavedCards(user._id));
+	}, [user._id]);
 
 	const syncCards = (next: SavedCard[]) => {
-		persistSavedCards(next);
+		persistSavedCards(user._id, next);
 		setCards(next);
 	};
 

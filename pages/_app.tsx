@@ -8,7 +8,7 @@ import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
 import { themeVar } from '../libs/store/themeStore';
-import { getJwtToken, SAVED_CARDS_KEY } from '../libs/auth';
+import { getJwtToken } from '../libs/auth';
 import { userVar, initDomain } from '../apollo/store';
 import { CART_KEY } from '../libs/cart';
 import '../scss/app.scss';
@@ -26,7 +26,6 @@ const App = ({ Component, pageProps }: AppProps) => {
 	// stale per-user data so it cannot be inherited by the next account.
 	useEffect(() => {
 		if (!getJwtToken()) {
-			localStorage.removeItem(SAVED_CARDS_KEY);
 			localStorage.removeItem(CART_KEY);
 		}
 	}, []);
@@ -38,7 +37,6 @@ const App = ({ Component, pageProps }: AppProps) => {
 		const handleCrossTabLogout = (e: StorageEvent) => {
 			if (e.key !== 'logout') return;
 			userVar(initDomain);
-			localStorage.removeItem(SAVED_CARDS_KEY);
 			localStorage.removeItem(CART_KEY);
 			client.clearStore().catch(() => {});
 			router.push('/');

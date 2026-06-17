@@ -8,8 +8,6 @@ import { sweetMixinErrorAlert } from '../sweetAlert';
 import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
 import { CART_KEY } from '../cart';
 
-export const SAVED_CARDS_KEY = 'petoria_saved_cards';
-
 export function getJwtToken(): any {
 	if (typeof window !== 'undefined') {
 		return localStorage.getItem('accessToken') ?? '';
@@ -164,7 +162,6 @@ export const logOut = async (
 
 const deleteStorage = () => {
 	localStorage.removeItem('accessToken');
-	localStorage.removeItem(SAVED_CARDS_KEY);
 	localStorage.removeItem(CART_KEY);
 	window.localStorage.setItem('logout', Date.now().toString());
 };
