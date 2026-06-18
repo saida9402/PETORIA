@@ -1,0 +1,78 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Petoria Frontend — Production Compose
+#
+# Usage:
+#   cp .env.production.example .env.production
+#   # fill in all values in .env.production
+#   docker compose -f docker-compose.production.yml --env-file .env.production up -d --build
+#
+# To rebuild after a code change:
+#   docker compose -f docker-compose.production.yml --env-file .env.production up -d --build --force-recreate
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # NEXT_PUBLIC_* vars are baked into the bundle at build time.
+      # Any change to these values requires a full image rebuild.
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_API_GRAPHQL_URL: ${NEXT_PUBLIC_API_GRAPHQL_URL}
+        NEXT_PUBLIC_API_WS: ${NEXT_PUBLIC_API_WS}
+        NEXT_PUBLIC_OPENWEATHER_API_KEY: ${NEXT_PUBLIC_OPENWEATHER_API_KEY:-}
+        NEXT_PUBLIC_WEATHER_FALLBACK_LAT: ${NEXT_PUBLIC_WEATHER_FALLBACK_LAT:-37.5385}
+        NEXT_PUBLIC_WEATHER_FALLBACK_LNG: ${NEXT_PUBLIC_WEATHER_FALLBACK_LNG:-127.2153}
+        NEXT_PUBLIC_WEATHER_FALLBACK_CITY: ${NEXT_PUBLIC_WEATHER_FALLBACK_CITY:-Hanam-si}
+    image: petoria-frontend:latest
+    container_name: petoria-frontend
+    restart: unless-stopped
+    # Expose to the host (or a reverse proxy on the same network).
+    # If Nginx is on the same Docker network, remove the host binding and use
+    # the service name "frontend:4000" inside the nginx upstream block.
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      HOSTNAME: 0.0.0.0
+      # Server-side only secret — NOT a build arg, injected at runtime.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    networks:
+      - petoria-net
+    # Health check: Next.js returns 200 on the root path after startup
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── Optional Nginx reverse proxy ─────────────────────────────────────────────
+  # Uncomment this service if you want Nginx to handle TLS termination and
+  # caching on the same host. Alternatively, use a host-level Nginx or a
+  # cloud load balancer.
+  #
+  # nginx:
+  #   image: nginx:1.27-alpine
+  #   container_name: petoria-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/petoria.conf:ro
+  #     - /etc/letsencrypt:/etc/letsencrypt:ro
+  #     - /var/www/certbot:/var/www/certbot:ro
+  #   depends_on:
+  #     - frontend
+  #   networks:
+  #     - petoria-net
+
+networks:
+  petoria-net:
+    driver: bridge
