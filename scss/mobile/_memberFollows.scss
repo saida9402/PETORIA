@@ -1,6 +1,17 @@
-// ─── MEMBER FOLLOWS PAGE MOBILE ──────────────────────────────────────────────
-// Extracted from scss/pc/member/memberFollows.scss @media block.
-// #pc-wrap prefix removed.
+// ─── MEMBER FOLLOWS PAGE — MOBILE OVERRIDES ───────────────────────────────────
+//
+// Selector specificity breakdown:
+//   Desktop rule (pc/member/memberFollows.scss):
+//     #pc-wrap/#mobile-wrap  +  #member-follows-page  +  .follows-card-box
+//     .info  +  .image-box
+//     = 2 IDs + 3 classes = 230
+//
+//   This mobile rule:
+//     #pc-wrap/#mobile-wrap  +  #member-follows-page  +  .follows-list-box
+//     .follows-card-box  +  .info  +  .image-box
+//     = 2 IDs + 4 classes = 240
+//
+//   240 > 230 → mobile rule wins at ≤768px regardless of source order.
 
 #pc-wrap, #mobile-wrap {
   @media (max-width: 768px) {
@@ -31,8 +42,11 @@
             flex-direction: row !important;
 
             .image-box {
+              // Override desktop 110px × 110px with mobile-appropriate size.
+              // margin-right reduced from 25px so the name column has more room.
               width: 52px;
               height: 52px;
+              margin-right: 12px;
               flex-shrink: 0;
             }
 

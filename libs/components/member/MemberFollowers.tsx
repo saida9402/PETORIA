@@ -88,7 +88,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 							<Stack className="follows-card-box" key={follower._id}>
 								<Stack className={'info'} onClick={() => redirectToMemberPageHandler(follower?.followerData?._id, follower?.followerData?.memberType)}>
 									<Stack className="image-box">
-										<UserAvatar src={imagePath} alt={follower?.followerData?.memberNick ?? ''} size={40} />
+										<UserAvatar src={imagePath} alt={follower?.followerData?.memberNick ?? ''} />
 									</Stack>
 									<Stack className="information-box">
 										<Typography className="name">{follower?.followerData?.memberNick}</Typography>

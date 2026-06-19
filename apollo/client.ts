@@ -72,10 +72,24 @@ function createIsomorphicLink() {
 			fetch,
 		}) as unknown as ApolloLink;
 
+		// Open the chat socket directly so it is not subject to the
+		// subscriptions-transport-ws connection_init/connection_ack handshake.
+		// Without this, subscriptions-transport-ws closes and reopens the socket
+		// every 30 s (its connection_ack timeout) against the NestJS WsAdapter,
+		// which does not speak the GraphQL subscriptions protocol, causing all
+		// chat clients to cycle through disconnect/reconnect every 30 seconds.
+		const chatSocket = new WebSocket(WS_URI);
+		chatSocket.onerror = () => {};
+		socketVar(chatSocket);
+
 		/* WEBSOCKET SUBSCRIPTION LINK */
+		// lazy: true — only connects when an actual subscription operation is sent.
+		// Since this app has no GraphQL subscription operations, the WS connection
+		// opened above for chat is the only one; WebSocketLink never activates.
 		const wsLink = new WebSocketLink({
 			uri: WS_URI,
 			options: {
+				lazy: true,
 				reconnect: true,
 				timeout: 30000,
 				connectionParams: () => ({}),
