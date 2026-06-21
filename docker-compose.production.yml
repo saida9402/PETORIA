@@ -1,5 +1,3 @@
-version: '3.8'
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Petoria Frontend — Production Compose
 #
@@ -10,10 +8,13 @@ version: '3.8'
 #
 # To rebuild after a code change:
 #   docker compose -f docker-compose.production.yml --env-file .env.production up -d --build --force-recreate
+#
+# NOTE: The shared petoria-net network must be created once on the VPS before
+# deploying either service:
+#   docker network create petoria-net
 # ─────────────────────────────────────────────────────────────────────────────
 
 services:
-
   frontend:
     build:
       context: .
@@ -31,11 +32,10 @@ services:
     image: petoria-frontend:latest
     container_name: petoria-frontend
     restart: unless-stopped
-    # Expose to the host (or a reverse proxy on the same network).
-    # If Nginx is on the same Docker network, remove the host binding and use
-    # the service name "frontend:4000" inside the nginx upstream block.
-    ports:
-      - "4000:4000"
+    # Internal only — Nginx reaches the container on the shared petoria-net network.
+    # No host port binding: the frontend is never exposed directly to the internet.
+    expose:
+      - '4000'
     environment:
       NODE_ENV: production
       PORT: 4000
@@ -44,35 +44,16 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     networks:
       - petoria-net
-    # Health check: Next.js returns 200 on the root path after startup
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/ || exit 1"]
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:4000/ || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 20s
 
-  # ── Optional Nginx reverse proxy ─────────────────────────────────────────────
-  # Uncomment this service if you want Nginx to handle TLS termination and
-  # caching on the same host. Alternatively, use a host-level Nginx or a
-  # cloud load balancer.
-  #
-  # nginx:
-  #   image: nginx:1.27-alpine
-  #   container_name: petoria-nginx
-  #   restart: unless-stopped
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/petoria.conf:ro
-  #     - /etc/letsencrypt:/etc/letsencrypt:ro
-  #     - /var/www/certbot:/var/www/certbot:ro
-  #   depends_on:
-  #     - frontend
-  #   networks:
-  #     - petoria-net
-
 networks:
   petoria-net:
-    driver: bridge
+    # Pre-created on the VPS: docker network create petoria-net
+    # Both compose projects (backend and frontend) attach to this shared network,
+    # allowing the backend Nginx container to reach frontend:4000 by service name.
+    external: true
