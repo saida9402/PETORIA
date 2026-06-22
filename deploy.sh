@@ -1,9 +1,7 @@
 #!/bin/bash
 
+git reset --hard
+git checkout main
+git pull origin main
 
-# PRODUCTION
-git reset --hard 
-git checkout master 
-git pull origin master
-
-docker compose up -d
+docker compose -f docker-compose.production.yml up -d --build
