@@ -32,10 +32,10 @@ services:
     image: petoria-frontend:latest
     container_name: petoria-frontend
     restart: unless-stopped
-    # Internal only — Nginx reaches the container on the shared petoria-net network.
-    # No host port binding: the frontend is never exposed directly to the internet.
-    expose:
-      - '4000'
+    # Bind to host loopback only — Nginx at 127.0.0.1:4000 can proxy here.
+    # Not reachable from the internet; only accessible by host-level processes.
+    ports:
+      - '127.0.0.1:4000:4000'
     environment:
       NODE_ENV: production
       PORT: 4000
@@ -44,12 +44,12 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     networks:
       - petoria-net
-    # healthcheck:
-    #   test: ['CMD-SHELL', 'wget -qO- http://localhost:4000/ || exit 1']
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 20s
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:4000/ || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
 networks:
   petoria-net:
