@@ -5,7 +5,6 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Stack } from '@mui/material';
-import moment from 'moment';
 import Link from 'next/link';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 
@@ -65,7 +64,7 @@ const Footer = () => {
 						</div>
 					</Stack>
 					<Stack className={'footer-bottom'}>
-						<span>© Petoria {moment().year()}. All rights reserved.</span>
+						<span>© Petoria {new Date().getFullYear()}. All rights reserved.</span>
 					</Stack>
 				</Stack>
 			</footer>
@@ -153,7 +152,7 @@ const Footer = () => {
 
 				{/* Copyright bar */}
 				<div className={'footer-copyright'}>
-					<span>© Petoria {moment().year()}. All rights reserved.</span>
+					<span>© Petoria {new Date().getFullYear()}. All rights reserved.</span>
 					<div className={'footer-legal'}>
 						<span>Privacy</span>
 						<span>·</span>

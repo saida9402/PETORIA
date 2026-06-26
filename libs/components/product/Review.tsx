@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import { Comment } from '../../types/comment/comment';
 import { API_URL } from '../../config';
-import Moment from 'react-moment';
+import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
@@ -38,7 +38,7 @@ const Review = (props: ReviewProps) => {
 							{comment.memberData?.memberNick}
 						</Typography>
 						<Typography className={'date'}>
-							<Moment format={'DD MMMM, YYYY'}>{comment.createdAt}</Moment>
+							{format(new Date(comment.createdAt), 'dd MMMM, yyyy')}
 						</Typography>
 					</Stack>
 				</Stack>

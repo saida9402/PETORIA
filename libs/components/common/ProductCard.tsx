@@ -7,7 +7,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Link from 'next/link';
-import Moment from 'react-moment';
+import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
 import { formatterStr } from '../../utils';
@@ -112,7 +112,7 @@ const ProductCard = (props: ProductCardProps) => {
 
 				<Stack className="date-box">
 					<Typography className="date">
-						<Moment format="DD MMMM, YYYY">{product.createdAt}</Moment>
+						{format(new Date(product.createdAt), 'dd MMMM, yyyy')}
 					</Typography>
 				</Stack>
 

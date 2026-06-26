@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { BoardArticle } from '../../types/board-article/board-article';
-import Moment from 'react-moment';
+import { format } from 'date-fns';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -92,7 +92,7 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 						{boardArticle.articleCategory}
 					</span>
 					<span className="community-card__time">
-						<Moment format="MMM DD, YYYY">{boardArticle.createdAt}</Moment>
+						{format(new Date(boardArticle.createdAt), 'MMM dd, yyyy')}
 					</span>
 				</div>
 

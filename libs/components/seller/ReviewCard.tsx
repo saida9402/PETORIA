@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Box, Typography } from '@mui/material';
 import { Comment } from '../../types/comment/comment';
-import Moment from 'react-moment';
+import { format } from 'date-fns';
 import { API_URL } from '../../config';
 import UserAvatar from '../common/UserAvatar';
 
@@ -24,7 +24,7 @@ const ReviewCard = (props: ReviewCardProps) => {
 					<div>
 						<strong>{comment.memberData?.memberNick}</strong>
 						<span>
-							<Moment format={'DD MMMM'}>{comment.createdAt}</Moment>
+							{format(new Date(comment.createdAt), 'dd MMMM')}
 						</span>
 					</div>
 				</div>
