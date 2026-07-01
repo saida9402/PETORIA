@@ -1,6 +1,7 @@
 import { JwtPayload } from 'jwt-decode';
 
 export interface CustomJwtPayload extends JwtPayload {
+	memberProducts: any;
 	_id: string;
 	memberType: string;
 	memberStatus: string;

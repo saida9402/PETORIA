@@ -24,6 +24,7 @@ export const initDomain: CustomJwtPayload = {
 	memberViews: 0,
 	memberWarnings: 0,
 	memberBlocks: 0,
+	memberProducts: 0,
 };
 
 export const userVar = makeVar<CustomJwtPayload>(initDomain);

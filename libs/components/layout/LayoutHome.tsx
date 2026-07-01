@@ -5,7 +5,7 @@ import Footer from '../Footer';
 import HeroBanner from '../homepage/HeroBanner';
 import HeaderFilter from '../homepage/HeaderFilter';
 import WeatherBar from '../homepage/WeatherBar';
-import { hydrateUserFromStorage } from '../../auth';
+import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -17,7 +17,8 @@ const withLayoutHome = (Component: any) => {
 		const device = useDeviceDetect();
 
 		useEffect(() => {
-			hydrateUserFromStorage();
+			const jwt = getJwtToken();
+			if (jwt) updateUserInfo(jwt);
 		}, []);
 
 		if (device === 'mobile') {

@@ -8,9 +8,10 @@ import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
 import { themeVar } from '../libs/store/themeStore';
-import { loadUserProfile } from '../libs/auth';
+import { getJwtToken } from '../libs/auth';
 import { userVar, initDomain } from '../apollo/store';
 import { CART_KEY } from '../libs/cart';
+
 import '../scss/app.scss';
 import '../scss/pc/main.scss';
 import '../scss/mobile/main.scss';
@@ -25,7 +26,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 	// Fix 4 — startup cleanup: if no user profile is stored, remove any stale
 	// per-user data so it cannot be inherited by the next account.
 	useEffect(() => {
-		if (!loadUserProfile()) {
+		if (!getJwtToken()) {
 			localStorage.removeItem(CART_KEY);
 		}
 	}, []);

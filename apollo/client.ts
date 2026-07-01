@@ -4,6 +4,7 @@ import { createUploadLink } from 'apollo-upload-client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
+import { getJwtToken } from '../libs/auth';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { sweetErrorAlert } from '../libs/sweetAlert';
 import { socketVar } from './store';
@@ -16,6 +17,14 @@ const WS_URI = process.env.NEXT_PUBLIC_API_WS || 'ws://localhost:3002';
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
+function getHeaders() {
+	const headers = {} as HeadersInit;
+	const token = getJwtToken();
+	// @ts-ignore
+	if (token) headers['Authorization'] = `Bearer ${token}`;
+	return headers;
+}
+
 const tokenRefreshLink = new TokenRefreshLink({
 	accessTokenField: 'accessToken',
 	isTokenValidOrUndefined: () => {
@@ -27,8 +36,7 @@ const tokenRefreshLink = new TokenRefreshLink({
 	},
 });
 
-// Custom WebSocket client — token is sent via HttpOnly cookie during the HTTP
-// upgrade handshake (same-site), so no URL query param is needed.
+// Custom WebSocket client
 class LoggingWebSocket {
 	private socket: WebSocket;
 
@@ -52,12 +60,11 @@ class LoggingWebSocket {
 
 function createIsomorphicLink() {
 	if (typeof window !== 'undefined') {
-		// Auth is carried by the HttpOnly cookie sent automatically with every
-		// credentialed request — no Authorization header needed.
 		const authLink = new ApolloLink((operation, forward) => {
 			operation.setContext(({ headers = {} }) => ({
 				headers: {
 					...headers,
+					...getHeaders(),
 					// Required by Apollo Server v4 CSRF prevention for multipart uploads
 					'apollo-require-preflight': 'true',
 				},
@@ -68,7 +75,6 @@ function createIsomorphicLink() {
 		const link = createUploadLink({
 			uri: GRAPHQL_URI,
 			headers: { 'apollo-require-preflight': 'true' },
-			credentials: 'include',
 			fetch,
 		}) as unknown as ApolloLink;
 

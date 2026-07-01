@@ -5,35 +5,17 @@ import { initializeApollo } from '../../apollo/client';
 import { userVar, initDomain } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
-import { LOGIN, SIGN_UP, LOGOUT } from '../../apollo/user/mutation';
+import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
 import { CART_KEY } from '../cart';
 
-// Non-sensitive user profile stored in localStorage for page-refresh hydration.
-// The JWT itself lives in an HttpOnly cookie set by the backend and is never
-// accessible to JavaScript.
-const USER_PROFILE_KEY = 'userProfile';
-
-function saveUserProfile(profile: CustomJwtPayload): void {
-	try {
-		localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
-	} catch {
-		// Storage unavailable (private browsing quota exceeded, etc.)
+export function getJwtToken(): any {
+	if (typeof window !== 'undefined') {
+		return localStorage.getItem('accessToken') ?? '';
 	}
 }
 
-export function loadUserProfile(): CustomJwtPayload | null {
-	try {
-		if (typeof window === 'undefined') return null;
-		const raw = localStorage.getItem(USER_PROFILE_KEY);
-		return raw ? (JSON.parse(raw) as CustomJwtPayload) : null;
-	} catch {
-		return null;
-	}
-}
-
-export function hydrateUserFromStorage(): void {
-	const profile = loadUserProfile();
-	if (profile) userVar(profile);
+export function setJwtToken(token: string) {
+	localStorage.setItem('accessToken', token);
 }
 
 export const logIn = async (nick: string, password: string): Promise<void> => {
@@ -130,9 +112,8 @@ const requestSignUp = async ({
 	}
 };
 
-export const updateStorage = ({ jwtToken: _jwtToken }: { jwtToken: any }) => {
-	// JWT is set as an HttpOnly cookie by the backend — never stored in localStorage.
-	// This timestamp signals other tabs that a login occurred.
+export const updateStorage = ({ jwtToken }: { jwtToken: any }) => {
+	setJwtToken(jwtToken);
 	window.localStorage.setItem('login', Date.now().toString());
 };
 
@@ -160,21 +141,16 @@ export const updateUserInfo = (jwtToken: any) => {
 		memberLikes: claims.memberLikes,
 		memberViews: claims.memberViews,
 		memberWarnings: claims.memberWarnings,
-		memberBlocks: claims.memberBlocks,
+		memberBlocks: claims.memberBlocks ?? 0,
+			memberProducts: claims.memberProducts ?? 0,
 	};
 	userVar(profile);
-	saveUserProfile(profile);
 };
 
 export const logOut = async (
 	client: ApolloClient<any>,
 	router: NextRouter,
 ): Promise<void> => {
-	try {
-		await client.mutate({ mutation: LOGOUT });
-	} catch {
-		// Non-fatal — proceed with client-side cleanup regardless
-	}
 	client.stop();
 	deleteStorage();
 	userVar(initDomain);
@@ -183,7 +159,7 @@ export const logOut = async (
 };
 
 const deleteStorage = () => {
-	localStorage.removeItem(USER_PROFILE_KEY);
+	localStorage.removeItem('accessToken');
 	localStorage.removeItem(CART_KEY);
 	window.localStorage.setItem('logout', Date.now().toString());
 };
