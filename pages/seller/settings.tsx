@@ -3,8 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Typography, Button } from '@mui/material';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import StorefrontIcon from '@mui/icons-material/Storefront';
+import { Camera, Storefront } from 'phosphor-react';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { UPDATE_MEMBER, IMAGE_UPLOADER } from '../../apollo/user/mutation';
 import { userVar } from '../../apollo/store';
@@ -86,7 +85,7 @@ const SellerSettings: NextPage = ({ initialValues }: any) => {
 					{/* ── Sidebar Nav ── */}
 					<aside className="ssg-sidebar">
 						<div className="ssg-sidebar__header">
-							<StorefrontIcon className="ssg-sidebar__icon" />
+							<Storefront size={24} className="ssg-sidebar__icon" />
 							<Typography className="ssg-sidebar__title">Store Settings</Typography>
 						</div>
 						<nav className="ssg-nav">
@@ -117,7 +116,7 @@ const SellerSettings: NextPage = ({ initialValues }: any) => {
 										alt="Store avatar"
 									/>
 									<label htmlFor="avatar-upload" className="ssg-avatar__overlay">
-										<CameraAltIcon sx={{ fontSize: 20, color: '#fff' }} />
+										<Camera size={20} color="#fff" />
 									</label>
 									<input
 										id="avatar-upload"

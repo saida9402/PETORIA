@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import ModeIcon from '@mui/icons-material/Mode';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Heart, Eye, PencilSimple, Trash, Lightning, Tag, Package, Ruler } from 'phosphor-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
@@ -173,10 +169,10 @@ const ProductCard = (props: ProductCardProps) => {
 				{!memberPage && product.productStatus === ProductStatus.ACTIVE && (
 					<Stack className="action-box">
 						<IconButton className="icon-button" onClick={() => pushEditProduct(product._id)}>
-							<ModeIcon className="buttons" />
+							<PencilSimple size={20} className="buttons" />
 						</IconButton>
 						<IconButton className="icon-button" onClick={() => deleteProductHandler?.(product._id)}>
-							<DeleteIcon className="buttons" />
+							<Trash size={20} className="buttons" />
 						</IconButton>
 					</Stack>
 				)}
@@ -194,7 +190,7 @@ const ProductCard = (props: ProductCardProps) => {
 
 				{product.productRank > topProductRank && (
 					<Box component={'div'} className={'top-badge'}>
-						<img src="/img/icons/electricity.svg" alt="top-product" />
+						<Lightning size={16} weight="fill" />
 						<Typography>TOP</Typography>
 					</Box>
 				)}
@@ -229,16 +225,16 @@ const ProductCard = (props: ProductCardProps) => {
 
 				<Stack className="options">
 					<Stack className="option">
-						<img src="/img/icons/category.svg" alt="category" />
+						<Tag size={14} />
 						<Typography>{product.productCategory}</Typography>
 					</Stack>
 					<Stack className="option">
-						<img src="/img/icons/stock.svg" alt="stock" />
+						<Package size={14} />
 						<Typography>{product.productStock > 0 ? `${product.productStock} in stock` : 'Out of stock'}</Typography>
 					</Stack>
 					{product.productSize && (
 						<Stack className="option">
-							<img src="/img/icons/expand.svg" alt="size" />
+							<Ruler size={14} />
 							<Typography>{product.productSize}</Typography>
 						</Stack>
 					)}
@@ -288,15 +284,15 @@ const ProductCard = (props: ProductCardProps) => {
 					{!recentlyViewed && (
 						<Stack className="buttons">
 							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
+								<Eye size={20} />
 							</IconButton>
 							<Typography className="view-cnt">{product.productViews ?? 0}</Typography>
 
 							<IconButton color={'default'} onClick={() => likeProductHandler?.(user, product._id)}>
 								{myFavorites || product?.meLiked?.[0]?.myFavorite ? (
-									<FavoriteIcon color="primary" />
+									<Heart size={20} weight="fill" color="#4E8A28" />
 								) : (
-									<FavoriteBorderIcon />
+									<Heart size={20} />
 								)}
 							</IconButton>
 							<Typography className="view-cnt">{product.productLikes ?? 0}</Typography>

@@ -3,9 +3,7 @@ import { Stack, Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import { API_URL } from '../../config';
 import IconButton from '@mui/material/IconButton';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Eye, Heart } from 'phosphor-react';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 
@@ -50,14 +48,14 @@ const SellerCard = (props: SellerCardProps) => {
 				</Box>
 				<Box component={'div'} className={'buttons'}>
 					<IconButton color={'default'}>
-						<RemoveRedEyeIcon />
+						<Eye size={20} />
 					</IconButton>
 					<Typography className="view-cnt">{seller?.memberViews}</Typography>
 					<IconButton color={'default'} onClick={() => likeMemberHandler(user, seller?._id)}>
 						{seller?.meLiked && seller?.meLiked[0]?.myFavorite ? (
-							<FavoriteIcon color={'primary'} />
+							<Heart size={20} weight="fill" color="#4E8A28" />
 						) : (
-							<FavoriteBorderIcon />
+							<Heart size={20} />
 						)}
 					</IconButton>
 					<Typography className="view-cnt">{seller?.memberLikes}</Typography>

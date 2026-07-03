@@ -10,8 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { TabContext } from '@mui/lab';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TablePagination from '@mui/material/TablePagination';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import SearchIcon from '@mui/icons-material/Search';
+import { XCircle, MagnifyingGlass } from 'phosphor-react';
 import { MembersInquiry } from '../../../libs/types/member/member.input';
 import { Member } from '../../../libs/types/member/member';
 import { MemberStatus, MemberType } from '../../../libs/enums/member.enum';
@@ -202,7 +201,8 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 									endAdornment={
 										<>
 											{searchText && (
-												<CancelRoundedIcon
+												<XCircle
+													size={20}
 													style={{ cursor: 'pointer' }}
 													onClick={async () => {
 														setSearchText('');
@@ -215,7 +215,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 												/>
 											)}
 											<InputAdornment position="end" onClick={searchTextHandler}>
-												<SearchIcon sx={{ color: '#bdbdbd', cursor: 'pointer' }} />
+												<MagnifyingGlass size={20} color="#bdbdbd" style={{ cursor: 'pointer' }} />
 											</InputAdornment>
 										</>
 									}

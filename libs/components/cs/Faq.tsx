@@ -4,7 +4,7 @@ import { AccordionDetails, Box, Stack, Typography } from '@mui/material';
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary';
 import { useRouter } from 'next/router';
 import { styled } from '@mui/material/styles';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { CaretDown } from 'phosphor-react';
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
 	({ theme }) => ({
@@ -18,7 +18,7 @@ const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters
 	}),
 );
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
-	<MuiAccordionSummary expandIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: '1.4rem' }} />} {...props} />
+	<MuiAccordionSummary expandIcon={<CaretDown size={22} />} {...props} />
 ))(({ theme }) => ({
 	backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : '#fff',
 	'& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {

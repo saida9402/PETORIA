@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { logIn, signUp } from '../../libs/auth';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { ArrowUpRight } from 'phosphor-react';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -212,7 +213,7 @@ const Join: NextPage = () => {
 							{loginView ? (
 								<Button
 									variant="contained"
-									endIcon={<img src="/img/icons/rightup.svg" alt="" />}
+									endIcon={<ArrowUpRight size={18} />}
 									disabled={input.nick === '' || input.password === ''}
 									onClick={doLogin}
 								>
@@ -224,7 +225,7 @@ const Join: NextPage = () => {
 									className={isSeller ? 'seller-signup-btn' : ''}
 									disabled={!input.nick || !input.password || !input.phone || !input.type}
 									onClick={doSignUp}
-									endIcon={<img src="/img/icons/rightup.svg" alt="" />}
+									endIcon={<ArrowUpRight size={18} />}
 								>
 									{isSeller ? 'CREATE MY STORE' : 'SIGN UP'}
 								</Button>

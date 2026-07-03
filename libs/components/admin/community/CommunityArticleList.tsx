@@ -17,11 +17,9 @@ import {
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import OpenInBrowserRoundedIcon from '@mui/icons-material/OpenInBrowserRounded';
+import { ArrowSquareOut, Trash } from 'phosphor-react';
 import { format } from 'date-fns';
 import { BoardArticle } from '../../../types/board-article/board-article';
-
-import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import { BoardArticleStatus } from '../../../enums/board-article.enum';
 import { API_URL } from '../../../config';
@@ -162,7 +160,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 												>
 													<IconButton className="btn_window">
 														<Tooltip title={'Open window'}>
-															<OpenInBrowserRoundedIcon />
+															<ArrowSquareOut size={20} />
 														</Tooltip>
 													</IconButton>
 												</Link>
@@ -196,7 +194,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 												sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
 												onClick={() => removeArticleHandler(article._id)}
 											>
-												<DeleteIcon fontSize="small" />
+												<Trash size={18} />
 											</Button>
 										) : (
 											<>

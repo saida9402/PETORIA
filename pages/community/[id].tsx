@@ -4,21 +4,15 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Stack, Typography, Tab, Tabs, IconButton, Backdrop, Pagination } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Trash, ThumbsUp, Eye, Chat, ChatCircle, PencilSimple } from 'phosphor-react';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { format } from 'date-fns';
 import { userVar } from '../../apollo/store';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ChatIcon from '@mui/icons-material/Chat';
-import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
 import dynamic from 'next/dynamic';
 import { CommentGroup, CommentStatus } from '../../libs/enums/comment.enum';
 import { T } from '../../libs/types/common';
-import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { CREATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
@@ -317,20 +311,20 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 										<Stack className="info">
 											<Stack className="icon-info">
 												{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
-													<ThumbUpAltIcon onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
+													<ThumbsUp size={22} weight="fill" onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
 												) : (
-													<ThumbUpOffAltIcon onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
+													<ThumbsUp size={22} onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
 												)}
 												<Typography className="text">{boardArticle?.articleLikes}</Typography>
 											</Stack>
 											<Stack className="divider"></Stack>
 											<Stack className="icon-info">
-												<VisibilityIcon />
+												<Eye size={22} />
 												<Typography className="text">{boardArticle?.articleViews}</Typography>
 											</Stack>
 											<Stack className="divider"></Stack>
 											<Stack className="icon-info">
-												{total > 0 ? <ChatIcon /> : <ChatBubbleOutlineRoundedIcon />}
+												{total > 0 ? <Chat size={22} weight="fill" /> : <ChatCircle size={22} />}
 												<Typography className="text">{boardArticle?.articleComments}</Typography>
 											</Stack>
 										</Stack>
@@ -342,9 +336,9 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 										<Stack className="top">
 											<Button>
 												{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
-													<ThumbUpAltIcon onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
+													<ThumbsUp size={22} weight="fill" onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
 												) : (
-													<ThumbUpOffAltIcon onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
+													<ThumbsUp size={22} onClick={() => likeBoArticleHandler(user, boardArticle?._id)} />
 												)}
 												<Typography className="text">{boardArticle?.articleLikes}</Typography>
 											</Button>
@@ -414,7 +408,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 																	updateButtonHandler(commentData?._id, CommentStatus.DELETE);
 																}}
 															>
-																<DeleteForeverIcon sx={{ color: '#757575', cursor: 'pointer' }} />
+																<Trash size={20} color="#757575" style={{ cursor: 'pointer' }} />
 															</IconButton>
 															<IconButton
 																onClick={() => {
@@ -424,7 +418,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 																	setOpenBackdrop(true);
 																}}
 															>
-																<EditIcon sx={{ color: '#757575' }} />
+																<PencilSimple size={20} color="#757575" />
 															</IconButton>
 															<Backdrop
 																sx={{

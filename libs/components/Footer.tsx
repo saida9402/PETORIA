@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import TelegramIcon from '@mui/icons-material/Telegram';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import YouTubeIcon from '@mui/icons-material/YouTube';
+import { FacebookLogo, InstagramLogo, TelegramLogo, TwitterLogo, YoutubeLogo } from 'phosphor-react';
 import { Stack } from '@mui/material';
 import Link from 'next/link';
 import useDeviceDetect from '../hooks/useDeviceDetect';
@@ -31,11 +27,11 @@ const COMMUNITY_LINKS = [
 ];
 
 const SOCIAL_ICONS = [
-	{ icon: <FacebookOutlinedIcon />, label: 'Facebook' },
-	{ icon: <TelegramIcon />, label: 'Telegram' },
-	{ icon: <InstagramIcon />, label: 'Instagram' },
-	{ icon: <TwitterIcon />, label: 'Twitter' },
-	{ icon: <YouTubeIcon />, label: 'YouTube' },
+	{ icon: <FacebookLogo size={22} />, label: 'Facebook' },
+	{ icon: <TelegramLogo size={22} />, label: 'Telegram' },
+	{ icon: <InstagramLogo size={22} />, label: 'Instagram' },
+	{ icon: <TwitterLogo size={22} />, label: 'Twitter' },
+	{ icon: <YoutubeLogo size={22} />, label: 'YouTube' },
 ];
 
 const Footer = () => {

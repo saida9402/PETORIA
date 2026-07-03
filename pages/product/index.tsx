@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { ProductsInquiry } from '../../libs/types/product/product.input';
 import { Product } from '../../libs/types/product/product';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { CaretDown } from 'phosphor-react';
 import { Direction } from '../../libs/enums/product.enum';
 import { T } from '../../libs/types/common';
 import { useMutation, useQuery } from '@apollo/client';
@@ -133,7 +133,7 @@ const ShopList: NextPage = ({ initialInput, ...props }: any) => {
 					<Box component={'div'} className={'right'}>
 						<span>Sort by</span>
 						<div>
-							<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
+							<Button onClick={sortingClickHandler} endIcon={<CaretDown size={18} />}>
 								{filterSortName}
 							</Button>
 							<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>

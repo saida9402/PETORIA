@@ -4,9 +4,7 @@ import Link from 'next/link';
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import { ChatsCircle, Headset, User, UserCircleGear, ShoppingCart } from 'phosphor-react';
+import { ChatsCircle, Headset, User, UserCircleGear, ShoppingCart, CaretUp, CaretDown } from 'phosphor-react';
 import cookies from 'js-cookie';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
@@ -143,7 +141,7 @@ const AdminMenuList = (props: any) => {
 							{item.icon}
 						</ListItemIcon>
 						<ListItemText>{item.title}</ListItemText>
-						{clickMenu.find((menu: string) => item.title === menu) ? <ExpandLess /> : <ExpandMore />}
+						{clickMenu.find((menu: string) => item.title === menu) ? <CaretUp size={18} /> : <CaretDown size={18} />}
 					</ListItemButton>
 					<Collapse
 						in={!!clickMenu.find((menu: string) => menu === item.title)}

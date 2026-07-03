@@ -3,9 +3,7 @@ import { NextPage } from 'next';
 import { Button, Drawer, IconButton, Menu, MenuItem, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import CloseIcon from '@mui/icons-material/Close';
-import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
+import { CaretDown, X, SlidersHorizontal } from 'phosphor-react';
 import { useMutation, useQuery } from '@apollo/client';
 
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
@@ -169,7 +167,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 					<div className="shop-mobile-bar__actions">
 						<Button
 							onClick={sortingClickHandler}
-							endIcon={<KeyboardArrowDownRoundedIcon />}
+							endIcon={<CaretDown size={18} />}
 							className="shop-sort-btn"
 							aria-label={`Sort by ${filterSortName}`}
 						>
@@ -197,7 +195,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 
 						<Button
 							onClick={() => setFilterDrawerOpen(true)}
-							startIcon={<TuneRoundedIcon />}
+							startIcon={<SlidersHorizontal size={20} />}
 							className={`shop-filter-btn${activeFilterCount > 0 ? ' shop-filter-btn--active' : ''}`}
 							aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ''}`}
 						>
@@ -265,7 +263,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 								size="small"
 								className="shop-filter-drawer__close"
 							>
-								<CloseIcon />
+								<X size={20} />
 							</IconButton>
 						</div>
 						<div className="shop-filter-drawer__body">
@@ -295,7 +293,7 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 						<span className="shop-sort-bar__label">Sort by</span>
 						<Button
 							onClick={sortingClickHandler}
-							endIcon={<KeyboardArrowDownRoundedIcon />}
+							endIcon={<CaretDown size={18} />}
 							className="shop-sort-btn"
 						>
 							{filterSortName}
