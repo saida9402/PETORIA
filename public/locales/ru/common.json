@@ -18,5 +18,8 @@
 	"my page": "моя страница",
 	"Community Detail": "Детали сообщества",
 	"Login/Signup": "Логин/регистрация",
-	"Member Page": "Страница участника"
+	"Member Page": "Страница участника",
+	"NOTIFICATIONS": "Уведомления",
+	"MARK_ALL_READ": "Отметить все прочитанными",
+	"NO_NOTIFICATIONS": "Нет уведомлений"
 }
