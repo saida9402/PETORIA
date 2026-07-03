@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Avatar, Box, Stack } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
+import { PaperPlaneTilt, ArrowsIn, ChatCircleDots } from 'phosphor-react';
 import { useRouter } from 'next/router';
 import ScrollableFeed from 'react-scrollable-feed';
 import { RippleBadge } from '../../scss/MaterialTheme/styled';
 import { useReactiveVar } from '@apollo/client';
-import { socketVar, userVar, chatOpenVar, onlineUsersVar, unreadMsgCountVar } from '../../apollo/store';
+import { socketVar, userVar, chatOpenVar, onlineUsersVar, unreadMsgCountVar, chatMessagesVar } from '../../apollo/store';
 import { Member } from '../types/member/member';
 import { Messages, API_URL } from '../config';
 import { sweetErrorAlert } from '../sweetAlert';
@@ -27,7 +25,9 @@ interface InfoPayload {
 
 const Chat = () => {
 	const chatContentRef = useRef<HTMLDivElement>(null);
-	const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
+	// ─── PETORIA FIX START (BUG 3) ───
+	const messagesList = useReactiveVar(chatMessagesVar);
+	// ─── PETORIA FIX END (BUG 3) ───
 	const [onlineUsers, setOnlineUsers] = useState<number>(0);
 	const textInput = useRef(null);
 	const [messageInput, setMessageInput] = useState<string>('');
@@ -51,12 +51,16 @@ const Chat = () => {
 				}
 				case 'getMessages': {
 					const list: MessagePayload[] = data.list;
-					setMessagesList(list);
+					// ─── PETORIA FIX START (BUG 3) ───
+					chatMessagesVar(list);
+					// ─── PETORIA FIX END (BUG 3) ───
 					break;
 				}
 				case 'message': {
 					const newMessage: MessagePayload = data;
-					setMessagesList((prev) => [...prev, newMessage]);
+					// ─── PETORIA FIX START (BUG 3) ───
+					chatMessagesVar([...chatMessagesVar(), newMessage]);
+					// ─── PETORIA FIX END (BUG 3) ───
 					if (!chatOpenVar() && newMessage.memberData?._id !== userVar()._id) {
 						unreadMsgCountVar(unreadMsgCountVar() + 1);
 					}
@@ -70,13 +74,22 @@ const Chat = () => {
 	}, [socket]);
 
 	useEffect(() => {
-		if (open) unreadMsgCountVar(0);
-	}, [open]);
+		if (open) {
+			unreadMsgCountVar(0);
+			// ─── PETORIA FIX START (BUG 3) ───
+			if (socket && socket.readyState === WebSocket.OPEN) {
+				socket.send(JSON.stringify({ event: 'getMessages' }));
+			}
+			// ─── PETORIA FIX END (BUG 3) ───
+		}
+	}, [open, socket]);
 
+	// ─── PETORIA FIX START (BUG 3) ───
 	useEffect(() => {
 		const timeoutId = setTimeout(() => setOpenButton(true), 100);
 		return () => clearTimeout(timeoutId);
-	}, []);
+	}, [router.pathname]);
+	// ─── PETORIA FIX END (BUG 3) ───
 
 	useEffect(() => {
 		setOpenButton(false);
@@ -106,7 +119,7 @@ const Chat = () => {
 		<Stack className="chatting">
 			{openButton && (
 				<button className="chat-button" onClick={handleOpenChat}>
-					{open ? <CloseFullscreenIcon /> : <MarkChatUnreadIcon />}
+					{open ? <ArrowsIn size={22} /> : <ChatCircleDots size={22} />}
 				</button>
 			)}
 
@@ -175,7 +188,7 @@ const Chat = () => {
 						onKeyDown={getKeyHandler}
 					/>
 					<button className={'send-msg-btn'} onClick={onClickHandler}>
-						<SendIcon style={{ color: '#fff' }} />
+						<PaperPlaneTilt size={20} color="#fff" />
 					</button>
 				</Box>
 			</Stack>
