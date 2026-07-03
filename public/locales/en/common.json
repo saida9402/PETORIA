@@ -18,5 +18,8 @@
   "my page": "my page",
   "Community Detail": "Community Detail",
   "Login/Signup": "Login/Signup",
-  "Member Page": "Member Page"
+  "Member Page": "Member Page",
+  "NOTIFICATIONS": "Notifications",
+  "MARK_ALL_READ": "Mark all as read",
+  "NO_NOTIFICATIONS": "No notifications yet"
 }
