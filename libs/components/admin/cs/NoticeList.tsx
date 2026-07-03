@@ -1,246 +1,127 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
-	TableCell,
-	TableHead,
-	TableBody,
-	TableRow,
 	Table,
+	TableBody,
+	TableCell,
 	TableContainer,
-	Button,
-	Menu,
-	Fade,
-	MenuItem,
-	Box,
-	Checkbox,
-	Toolbar,
+	TableHead,
+	TableRow,
+	IconButton,
+	Tooltip,
+	Stack,
+	Chip,
 } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import { IconButton, Tooltip } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import { Stack } from '@mui/material';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import { NotePencil } from 'phosphor-react';
-
-type Order = 'asc' | 'desc';
-
-interface Data {
-	category: string;
-	title: string;
-	id: string;
-	writer: string;
-	date: string;
-	view: number;
-	action: string;
-}
-interface HeadCell {
-	disablePadding: boolean;
-	id: keyof Data;
-	label: string;
-	numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-	{
-		id: 'category',
-		numeric: true,
-		disablePadding: false,
-		label: 'Category',
-	},
-	{
-		id: 'title',
-		numeric: true,
-		disablePadding: false,
-		label: 'TITLE',
-	},
-	{
-		id: 'id',
-		numeric: true,
-		disablePadding: false,
-		label: 'ID',
-	},
-	{
-		id: 'writer',
-		numeric: true,
-		disablePadding: false,
-		label: 'WRITER',
-	},
-	{
-		id: 'date',
-		numeric: true,
-		disablePadding: false,
-		label: 'DATE',
-	},
-	{
-		id: 'view',
-		numeric: true,
-		disablePadding: false,
-		label: 'VIEW',
-	},
-	{
-		id: 'action',
-		numeric: false,
-		disablePadding: false,
-		label: 'ACTION',
-	},
-];
-
-interface EnhancedTableProps {
-	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	order: Order;
-	orderBy: string;
-	rowCount: number;
-}
-
-interface EnhancedTableToolbarProps {
-	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	order: Order;
-	orderBy: string;
-	rowCount: number;
-}
-
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-	const [select, setSelect] = useState('');
-	const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-
-	return (
-		<>
-			{numSelected > 0 ? (
-				<>
-					<Toolbar>
-						<Box component={'div'}>
-							<Box component={'div'} className="flex_box">
-								<Checkbox
-									color="primary"
-									indeterminate={numSelected > 0 && numSelected < rowCount}
-									checked={rowCount > 0 && numSelected === rowCount}
-									onChange={onSelectAllClick}
-									inputProps={{
-										'aria-label': 'select all',
-									}}
-								/>
-								<Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="h6" component="div">
-									{numSelected} selected
-								</Typography>
-							</Box>
-							<Button variant={'text'} size={'large'}>
-								Delete
-							</Button>
-						</Box>
-					</Toolbar>
-				</>
-			) : (
-				<TableHead>
-					<TableRow>
-						<TableCell padding="checkbox">
-							<Checkbox
-								color="primary"
-								indeterminate={numSelected > 0 && numSelected < rowCount}
-								checked={rowCount > 0 && numSelected === rowCount}
-								onChange={onSelectAllClick}
-								inputProps={{
-									'aria-label': 'select all',
-								}}
-							/>
-						</TableCell>
-						{headCells.map((headCell) => (
-							<TableCell
-								key={headCell.id}
-								align={headCell.numeric ? 'left' : 'right'}
-								padding={headCell.disablePadding ? 'none' : 'normal'}
-							>
-								{headCell.label}
-							</TableCell>
-						))}
-					</TableRow>
-				</TableHead>
-			)}
-			{numSelected > 0 ? null : null}
-		</>
-	);
-};
+import { NotePencil, Trash } from 'phosphor-react';
+import { format } from 'date-fns';
+import Swal from 'sweetalert2';
+import { useMutation } from '@apollo/client';
+import { DELETE_NOTICE, UPDATE_NOTICE } from '../../../../apollo/admin/mutation';
+import { Notice, NoticeStatus } from '../../../types/notice/notice';
+import NoticeFormModal from '../../NoticeFormModal';
 
 interface NoticeListType {
-	dense?: boolean;
-	membersData?: any;
-	searchMembers?: any;
-	anchorEl?: any;
-	handleMenuIconClick?: any;
-	handleMenuIconClose?: any;
-	generateMentorTypeHandle?: any;
+	noticesData?: Notice[];
+	refetch?: () => void;
 }
 
-export const NoticeList = (props: NoticeListType) => {
-	const {
-		dense,
-		membersData,
-		searchMembers,
-		anchorEl,
-		handleMenuIconClick,
-		handleMenuIconClose,
-		generateMentorTypeHandle,
-	} = props;
-	const router = useRouter();
+const statusColor: Record<NoticeStatus, 'default' | 'success' | 'error'> = {
+	[NoticeStatus.HOLD]: 'default',
+	[NoticeStatus.ACTIVE]: 'success',
+	[NoticeStatus.DELETE]: 'error',
+};
 
-	/** APOLLO REQUESTS **/
-	/** LIFECYCLES **/
-	/** HANDLERS **/
+export const NoticeList = ({ noticesData = [], refetch }: NoticeListType) => {
+	const [editTarget, setEditTarget] = useState<Notice | null>(null);
+	const [formOpen, setFormOpen] = useState(false);
+
+	const [deleteNotice] = useMutation(DELETE_NOTICE);
+	const [updateNotice] = useMutation(UPDATE_NOTICE);
+
+	const handleDelete = async (noticeId: string) => {
+		const result = await Swal.fire({
+			title: 'Delete this notice?',
+			text: 'This will soft-delete the notice.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#aaa',
+			confirmButtonText: 'Delete',
+		});
+		if (!result.isConfirmed) return;
+		await deleteNotice({ variables: { noticeId } });
+		if (refetch) refetch();
+	};
+
+	const handleEdit = (notice: Notice) => {
+		setEditTarget(notice);
+		setFormOpen(true);
+	};
+
+	const handleSubmit = async (data: any) => {
+		await updateNotice({ variables: { input: data } });
+		if (refetch) refetch();
+	};
 
 	return (
 		<Stack>
 			<TableContainer>
-				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-					{/*@ts-ignore*/}
-					<EnhancedTableToolbar />
+				<Table sx={{ minWidth: 750 }} size="medium">
+					<TableHead>
+						<TableRow>
+							<TableCell align="left">CATEGORY</TableCell>
+							<TableCell align="left">TITLE</TableCell>
+							<TableCell align="left">STATUS</TableCell>
+							<TableCell align="left">DATE</TableCell>
+							<TableCell align="right">ACTION</TableCell>
+						</TableRow>
+					</TableHead>
 					<TableBody>
-						{[1, 2, 3, 4, 5].map((ele: any, index: number) => {
-							const member_image = '/img/profile/defaultUser.svg';
-
-							return (
-								<TableRow hover key={'member._id'} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell padding="checkbox">
-										<Checkbox color="primary" />
-									</TableCell>
-									<TableCell align="left">mb id</TableCell>
-									<TableCell align="left">member.mb_full_name</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="left" className={'name'}>
-										<Stack direction={'row'}>
-											<Link href={`/_admin/users/detail?mb_id=$'{member._id'}`}>
-												<div>
-													<Avatar alt="Remy Sharp" src={member_image} sx={{ ml: '2px', mr: '10px' }} />
-												</div>
-											</Link>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>member.mb_nick</div>
-											</Link>
-										</Stack>
-									</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="right">
-										<Tooltip title={'delete'}>
-											<IconButton>
-												<DeleteRoundedIcon />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title="edit">
-											<IconButton onClick={() => router.push(`/_admin/cs/notice_create?id=notice._id`)}>
-												<NotePencil size={24} weight="fill" />
-											</IconButton>
-										</Tooltip>
-									</TableCell>
-								</TableRow>
-							);
-						})}
+						{noticesData.map((notice) => (
+							<TableRow key={notice._id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+								<TableCell align="left" sx={{ fontFamily: 'Nunito', fontSize: 13 }}>
+									{notice.noticeCategory}
+								</TableCell>
+								<TableCell
+									align="left"
+									sx={{ fontFamily: 'Nunito', fontSize: 13, maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+								>
+									{notice.noticeTitle}
+								</TableCell>
+								<TableCell align="left">
+									<Chip
+										label={notice.noticeStatus}
+										color={statusColor[notice.noticeStatus]}
+										size="small"
+										sx={{ fontFamily: 'Nunito', fontSize: 11 }}
+									/>
+								</TableCell>
+								<TableCell align="left" sx={{ fontFamily: 'Nunito', fontSize: 13, color: '#888' }}>
+									{format(new Date(notice.createdAt), 'yyyy-MM-dd')}
+								</TableCell>
+								<TableCell align="right">
+									<Tooltip title="Edit">
+										<IconButton size="small" onClick={() => handleEdit(notice)}>
+											<NotePencil size={20} weight="fill" />
+										</IconButton>
+									</Tooltip>
+									<Tooltip title="Delete">
+										<IconButton size="small" onClick={() => handleDelete(notice._id)}>
+											<Trash size={18} />
+										</IconButton>
+									</Tooltip>
+								</TableCell>
+							</TableRow>
+						))}
 					</TableBody>
 				</Table>
 			</TableContainer>
+
+			<NoticeFormModal
+				open={formOpen}
+				onClose={() => { setFormOpen(false); setEditTarget(null); }}
+				onSubmit={handleSubmit}
+				initialData={editTarget}
+			/>
 		</Stack>
 	);
 };

@@ -36,6 +36,32 @@ export const GET_UNREAD_NOTIFICATION_COUNT = gql`
 	}
 `;
 
+export const GET_NOTICES = gql`
+	query GetNotices($input: NoticesInquiry!) {
+		getNotices(input: $input) {
+			list {
+				_id
+				noticeCategory
+				noticeStatus
+				noticeTitle
+				noticeContent
+				memberId
+				createdAt
+				updatedAt
+				memberData {
+					_id
+					memberNick
+					memberImage
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+// ─── PETORIA WEBSOCKET ADDITION END ───
+
 /**************************
  *         MEMBER         *
  *************************/

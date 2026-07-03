@@ -1,25 +1,52 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
-import { Box, Button, InputAdornment, Stack } from '@mui/material';
+import { Box, Button, Divider, Stack, TablePagination, Typography } from '@mui/material';
 import { List, ListItem } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import { TabContext } from '@mui/lab';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import TablePagination from '@mui/material/TablePagination';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import { Plus } from 'phosphor-react';
+import { useQuery, useMutation } from '@apollo/client';
+import Swal from 'sweetalert2';
+import { GET_NOTICES } from '../../../apollo/user/query';
+import { CREATE_NOTICE } from '../../../apollo/admin/mutation';
 import { NoticeList } from '../../../libs/components/admin/cs/NoticeList';
+import NoticeFormModal from '../../../libs/components/NoticeFormModal';
+import { NoticeStatus } from '../../../libs/types/notice/notice';
 
-const AdminNotice: NextPage = (props: any) => {
-	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
+const LIMIT = 20;
 
-	/** APOLLO REQUESTS **/
-	/** LIFECYCLES **/
-	/** HANDLERS **/
+const AdminNotice: NextPage = () => {
+	const [tabValue, setTabValue] = useState<'all' | 'active' | 'hold' | 'deleted'>('all');
+	const [page, setPage] = useState(0);
+	const [createOpen, setCreateOpen] = useState(false);
+
+	const buildSearch = () => {
+		if (tabValue === 'active') return { noticeStatus: NoticeStatus.ACTIVE };
+		if (tabValue === 'hold') return { noticeStatus: NoticeStatus.HOLD };
+		if (tabValue === 'deleted') return { noticeStatus: NoticeStatus.DELETE };
+		return {};
+	};
+
+	const { data, refetch } = useQuery(GET_NOTICES, {
+		variables: { input: { page: page + 1, limit: LIMIT, search: buildSearch() } },
+		fetchPolicy: 'network-only',
+	});
+
+	const [createNotice] = useMutation(CREATE_NOTICE);
+
+	const noticesData = data?.getNotices?.list ?? [];
+	const total = data?.getNotices?.metaCounter?.[0]?.total ?? 0;
+
+	const handleCreate = async (input: any) => {
+		await createNotice({ variables: { input } });
+		Swal.fire({ icon: 'success', title: 'Notice created!', timer: 1500, showConfirmButton: false });
+		refetch();
+	};
+
+	const handleTabChange = (value: 'all' | 'active' | 'hold' | 'deleted') => {
+		setTabValue(value);
+		setPage(0);
+	};
 
 	return (
 		// @ts-ignore
@@ -30,96 +57,54 @@ const AdminNotice: NextPage = (props: any) => {
 					className="btn_add"
 					variant={'contained'}
 					size={'medium'}
-					// onClick={() => router.push(`/_admin/cs/faq_create`)}
+					onClick={() => setCreateOpen(true)}
 				>
-					<AddRoundedIcon sx={{ mr: '8px' }} />
+					<Plus size={18} style={{ marginRight: 8 }} />
 					ADD
 				</Button>
 			</Box>
+
 			<Box component={'div'} className={'table-wrap'}>
 				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
-					<TabContext value={'value'}>
+					<TabContext value={tabValue}>
 						<Box component={'div'}>
 							<List className={'tab-menu'}>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'all')}
-									value="all"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									All (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'active')}
-									value="active"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Active (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'blocked')}
-									value="blocked"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Blocked (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'deleted')}
-									value="deleted"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Deleted (0)
-								</ListItem>
+								{(['all', 'active', 'hold', 'deleted'] as const).map((t) => (
+									<ListItem
+										key={t}
+										onClick={() => handleTabChange(t)}
+										value={t}
+										className={tabValue === t ? 'li on' : 'li'}
+										sx={{ cursor: 'pointer' }}
+									>
+										{t.charAt(0).toUpperCase() + t.slice(1)} ({t === 'all' ? total : noticesData.filter((n: any) => n.noticeStatus === t.toUpperCase()).length})
+									</ListItem>
+								))}
 							</List>
 							<Divider />
-							<Stack className={'search-area'} sx={{ m: '24px' }}>
-								<Select sx={{ width: '160px', mr: '20px' }} value={'searchCategory'}>
-									<MenuItem value={'mb_nick'}>mb_nick</MenuItem>
-									<MenuItem value={'mb_id'}>mb_id</MenuItem>
-								</Select>
-
-								<OutlinedInput
-									value={'searchInput'}
-									// onChange={(e) => handleInput(e.target.value)}
-									sx={{ width: '100%' }}
-									className={'search'}
-									placeholder="Search user name"
-									onKeyDown={(event) => {
-										// if (event.key == 'Enter') searchTargetHandler().then();
-									}}
-									endAdornment={
-										<>
-											{true && <CancelRoundedIcon onClick={() => {}} />}
-											<InputAdornment position="end" onClick={() => {}}>
-												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
-											</InputAdornment>
-										</>
-									}
-								/>
-							</Stack>
-							<Divider />
 						</Box>
-						<NoticeList
-							// dense={dense}
-							// membersData={membersData}
-							// searchMembers={searchMembers}
-							anchorEl={anchorEl}
-							// handleMenuIconClick={handleMenuIconClick}
-							// handleMenuIconClose={handleMenuIconClose}
-							// generateMentorTypeHandle={generateMentorTypeHandle}
-						/>
+
+						<NoticeList noticesData={noticesData} refetch={refetch} />
 
 						<TablePagination
 							rowsPerPageOptions={[20, 40, 60]}
 							component="div"
-							count={4}
-							rowsPerPage={10}
-							page={1}
-							onPageChange={() => {}}
+							count={total}
+							rowsPerPage={LIMIT}
+							page={page}
+							onPageChange={(_, p) => setPage(p)}
 							onRowsPerPageChange={() => {}}
 						/>
 					</TabContext>
 				</Box>
 			</Box>
+
+			<NoticeFormModal
+				open={createOpen}
+				onClose={() => setCreateOpen(false)}
+				onSubmit={handleCreate}
+				initialData={null}
+			/>
 		</Box>
 	);
 };
