@@ -1,5 +1,41 @@
 import { gql } from '@apollo/client';
 
+// ─── PETORIA WEBSOCKET ADDITION START ───
+export const GET_MY_NOTIFICATIONS = gql`
+	query GetMyNotifications($input: NotificationsInquiry!) {
+		getMyNotifications(input: $input) {
+			list {
+				_id
+				notificationType
+				notificationStatus
+				notificationGroup
+				notificationTitle
+				notificationDesc
+				authorId
+				receiverId
+				productId
+				articleId
+				createdAt
+				updatedAt
+				authorData {
+					_id
+					memberNick
+					memberImage
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+export const GET_UNREAD_NOTIFICATION_COUNT = gql`
+	query GetUnreadNotificationCount {
+		getUnreadNotificationCount
+	}
+`;
+
 /**************************
  *         MEMBER         *
  *************************/

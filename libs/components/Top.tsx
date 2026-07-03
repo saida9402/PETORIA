@@ -8,21 +8,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { alpha, styled } from '@mui/material/styles';
 import Menu, { MenuProps } from '@mui/material/Menu';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import SearchIcon from '@mui/icons-material/Search';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
-import { CaretDown } from 'phosphor-react';
-import { Logout } from '@mui/icons-material';
+import { CaretDown, MagnifyingGlass, ShoppingCart, Bell, List as HamburgerIcon, X, Moon, Sun, ChatCircle, UserCircle, SignOut } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
-import { userVar, chatOpenVar, onlineUsersVar } from '../../apollo/store';
+import { userVar, chatOpenVar, onlineUsersVar, unreadNotifCountVar, unreadMsgCountVar } from '../../apollo/store';
+// ─── PETORIA WEBSOCKET ADDITION START ───
+import NotificationDropdown from './NotificationDropdown';
+// ─── PETORIA WEBSOCKET ADDITION END ───
 import { themeVar } from '../store/themeStore';
 import { API_URL } from '../config';
 import { cartCount as readCartCount, subscribeCart } from '../cart';
@@ -70,6 +63,11 @@ const Top = () => {
 	const user = useReactiveVar(userVar);
 	const currentTheme = useReactiveVar(themeVar);
 	const onlineCount = useReactiveVar(onlineUsersVar);
+	// ─── PETORIA WEBSOCKET ADDITION START ───
+	const unreadNotifCount = useReactiveVar(unreadNotifCountVar);
+	const unreadMsgCount = useReactiveVar(unreadMsgCountVar);
+	const [notifAnchor, setNotifAnchor] = useState<null | HTMLElement>(null);
+	// ─── PETORIA WEBSOCKET ADDITION END ───
 	const { t } = useTranslation('common');
 	const router = useRouter();
 	const client = useApolloClient();
@@ -176,15 +174,15 @@ const Top = () => {
 								sx={{ color: '#fff' }}
 								aria-label="Open search"
 							>
-								<SearchIcon />
+								<MagnifyingGlass size={20} color="#fff" />
 							</IconButton>
 							<Link href={'/cart'}>
 								<Badge badgeContent={cartCount} color="error" className={'cart-badge'}>
-									<ShoppingCartOutlinedIcon sx={{ color: '#fff' }} />
+									<ShoppingCart size={22} color="#fff" />
 								</Badge>
 							</Link>
 							<IconButton onClick={() => setMobileOpen(true)} sx={{ color: '#fff' }} aria-label="Open menu">
-								<MenuIcon />
+								<HamburgerIcon size={22} color="#fff" />
 							</IconButton>
 						</div>
 					</Stack>
@@ -202,14 +200,14 @@ const Top = () => {
 									inputProps={{ 'aria-label': 'Search products' }}
 								/>
 								<IconButton type="submit" className={'mobile-search-btn'} aria-label="Submit search">
-									<SearchIcon />
+									<MagnifyingGlass size={20} />
 								</IconButton>
 								<IconButton
 									onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
 									className={'mobile-search-close'}
 									aria-label="Close search"
 								>
-									<CloseIcon />
+									<X size={20} />
 								</IconButton>
 							</form>
 						</div>
@@ -221,10 +219,10 @@ const Top = () => {
 						<div className={'drawer-header'}>
 							<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" />
 							<IconButton onClick={toggleTheme} sx={{ color: 'inherit' }} aria-label="Toggle dark mode">
-								{currentTheme === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+								{currentTheme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
 							</IconButton>
 							<IconButton onClick={() => setMobileOpen(false)}>
-								<CloseIcon />
+								<X size={22} />
 							</IconButton>
 						</div>
 						<List>
@@ -292,7 +290,7 @@ const Top = () => {
 							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
 						<IconButton type="submit" className={'search-btn'}>
-							<SearchIcon />
+							<MagnifyingGlass size={20} />
 						</IconButton>
 					</form>
 
@@ -322,24 +320,31 @@ const Top = () => {
 
 						{/* Notifications */}
 						{user?._id && (
-							<IconButton className={'icon-btn'}>
-								<NotificationsOutlinedIcon />
-							</IconButton>
+							// ─── PETORIA WEBSOCKET ADDITION START ───
+							<>
+								<IconButton className={'icon-btn'} onClick={(e) => setNotifAnchor(e.currentTarget)}>
+									<Badge badgeContent={unreadNotifCount} color="error" max={99}>
+										<Bell size={22} />
+									</Badge>
+								</IconButton>
+								<NotificationDropdown anchorEl={notifAnchor} onClose={() => setNotifAnchor(null)} />
+							</>
+							// ─── PETORIA WEBSOCKET ADDITION END ───
 						)}
 
 						{/* Cart */}
 						<Link href={'/cart'}>
 							<IconButton className={'icon-btn cart-btn'}>
 								<Badge badgeContent={cartCount} color="error">
-									<ShoppingCartOutlinedIcon />
+									<ShoppingCart size={22} />
 								</Badge>
 							</IconButton>
 						</Link>
 
 						{/* Chat */}
 						<IconButton className={'icon-btn chat-btn'} onClick={toggleChat}>
-							<Badge badgeContent={onlineCount} color="error" max={99}>
-								<ChatBubbleOutlineRoundedIcon />
+							<Badge badgeContent={unreadMsgCount} color="error" max={99}>
+								<ChatCircle size={22} />
 							</Badge>
 						</IconButton>
 
@@ -367,7 +372,7 @@ const Top = () => {
 										🐾 My Page
 									</MenuItem>
 									<MenuItem onClick={() => { logOut(client, router); setLogoutAnchor(null); }}>
-										<Logout fontSize="small" sx={{ color: '#4E8A28', mr: 1 }} />
+										<SignOut size={18} color="#4E8A28" style={{ marginRight: 8 }} />
 										Logout
 									</MenuItem>
 								</Menu>
@@ -376,7 +381,7 @@ const Top = () => {
 							<>
 								<Link href={'/account/join'}>
 									<div className={'login-btn'}>
-										<AccountCircleOutlinedIcon />
+										<UserCircle size={22} />
 										<span>{t('Login')}</span>
 									</div>
 								</Link>
@@ -385,12 +390,12 @@ const Top = () => {
 
 						{/* Dark mode toggle */}
 						<IconButton className={'icon-btn theme-btn'} onClick={toggleTheme}>
-							{currentTheme === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+							{currentTheme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
 						</IconButton>
 
 						{/* Hamburger — only visible at ≤768px via CSS */}
 						<IconButton className={'icon-btn hamburger-btn'} onClick={() => setMobileOpen(true)}>
-							<MenuIcon />
+							<HamburgerIcon size={22} />
 						</IconButton>
 					</div>
 				</Stack>
@@ -402,7 +407,7 @@ const Top = () => {
 					<div className={'drawer-header'}>
 						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" />
 						<IconButton onClick={() => setMobileOpen(false)}>
-							<CloseIcon />
+							<X size={22} />
 						</IconButton>
 					</div>
 					<List>

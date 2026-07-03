@@ -1,6 +1,7 @@
 import { makeVar } from '@apollo/client';
 
 import { CustomJwtPayload } from '../libs/types/customJwtPayload';
+import type { Notification } from '../libs/types/notification/notification';
 export { themeVar } from '../libs/store/themeStore';
 export const chatOpenVar = makeVar(false);
 export const onlineUsersVar = makeVar(0);
@@ -36,3 +37,5 @@ export const socketVar = makeVar<WebSocket>();
 // ─── PETORIA FIX START (BUG 3) ───
 export const chatMessagesVar = makeVar<any[]>([]);
 // ─── PETORIA FIX END (BUG 3) ───
+export const notificationsVar = makeVar<Notification[]>([]);
+export const unreadNotifCountVar = makeVar<number>(0);
