@@ -1,5 +1,22 @@
 import { gql } from '@apollo/client';
 
+// ─── PETORIA WEBSOCKET ADDITION START ───
+export const MARK_NOTIFICATION_READ = gql`
+	mutation MarkNotificationRead($notificationId: String!) {
+		markNotificationRead(notificationId: $notificationId) {
+			_id
+			notificationStatus
+		}
+	}
+`;
+
+export const MARK_ALL_NOTIFICATIONS_READ = gql`
+	mutation MarkAllNotificationsRead {
+		markAllNotificationsRead
+	}
+`;
+// ─── PETORIA WEBSOCKET ADDITION END ───
+
 /**************************
  *         MEMBER         *
  *************************/
