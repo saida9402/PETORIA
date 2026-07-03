@@ -1,5 +1,46 @@
 import { gql } from '@apollo/client';
 
+// ─── PETORIA WEBSOCKET ADDITION START ───
+export const CREATE_NOTICE = gql`
+	mutation CreateNotice($input: NoticeInput!) {
+		createNotice(input: $input) {
+			_id
+			noticeCategory
+			noticeStatus
+			noticeTitle
+			noticeContent
+			memberId
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const UPDATE_NOTICE = gql`
+	mutation UpdateNotice($input: NoticeUpdate!) {
+		updateNotice(input: $input) {
+			_id
+			noticeCategory
+			noticeStatus
+			noticeTitle
+			noticeContent
+			memberId
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const DELETE_NOTICE = gql`
+	mutation DeleteNotice($noticeId: String!) {
+		deleteNotice(noticeId: $noticeId) {
+			_id
+			noticeStatus
+		}
+	}
+`;
+// ─── PETORIA WEBSOCKET ADDITION END ───
+
 /**************************
  *         MEMBER         *
  *************************/
