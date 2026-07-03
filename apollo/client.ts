@@ -14,6 +14,22 @@ const GRAPHQL_URI =
 	`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/graphql`;
 const WS_URI = process.env.NEXT_PUBLIC_API_WS || 'ws://localhost:3002';
 
+// ─── PETORIA FIX START (BUG 2) ───
+export const createChatSocket = (): WebSocket | null => {
+	if (typeof window === 'undefined') return null;
+	const existing = socketVar();
+	if (existing && existing.readyState === WebSocket.OPEN) {
+		existing.close();
+	}
+	const _wsToken = localStorage.getItem('accessToken');
+	const _wsUri = _wsToken ? `${WS_URI}?token=${_wsToken}` : WS_URI;
+	const newSocket = new WebSocket(_wsUri);
+	newSocket.onerror = () => {};
+	socketVar(newSocket);
+	return newSocket;
+};
+// ─── PETORIA FIX END (BUG 2) ───
+
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -84,9 +100,14 @@ function createIsomorphicLink() {
 		// every 30 s (its connection_ack timeout) against the NestJS WsAdapter,
 		// which does not speak the GraphQL subscriptions protocol, causing all
 		// chat clients to cycle through disconnect/reconnect every 30 seconds.
-		const chatSocket = new WebSocket(WS_URI);
-		chatSocket.onerror = () => {};
-		socketVar(chatSocket);
+		// ─── PETORIA WEBSOCKET ADDITION START ───
+		// Pass JWT as ?token= query param — the browser WebSocket API cannot set
+		// custom headers, and the backend's handleConnection reads this as a fallback
+		// to the cookie-based auth it uses for server-side requests.
+		// ─── PETORIA FIX START (BUG 2) ───
+		createChatSocket();
+		// ─── PETORIA FIX END (BUG 2) ───
+		// ─── PETORIA WEBSOCKET ADDITION END ───
 
 		/* WEBSOCKET SUBSCRIPTION LINK */
 		// lazy: true — only connects when an actual subscription operation is sent.

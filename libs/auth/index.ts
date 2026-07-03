@@ -1,8 +1,10 @@
 import decodeJWT from 'jwt-decode';
 import { ApolloClient } from '@apollo/client';
 import { NextRouter } from 'next/router';
-import { initializeApollo } from '../../apollo/client';
-import { userVar, initDomain } from '../../apollo/store';
+import { initializeApollo, createChatSocket } from '../../apollo/client';
+// ─── PETORIA FIX START (BUG 2) ───
+import { userVar, initDomain, socketVar, chatMessagesVar } from '../../apollo/store';
+// ─── PETORIA FIX END (BUG 2) ───
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
 import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
@@ -25,6 +27,9 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
 		if (member) {
 			updateStorage({ jwtToken: member.accessToken });
 			updateUserInfo(member.accessToken);
+			// ─── PETORIA FIX START (BUG 2) ───
+			createChatSocket();
+			// ─── PETORIA FIX END (BUG 2) ───
 		}
 	} catch (err) {
 		deleteStorage();
@@ -151,6 +156,16 @@ export const logOut = async (
 	client: ApolloClient<any>,
 	router: NextRouter,
 ): Promise<void> => {
+	// ─── PETORIA FIX START (BUG 2) ───
+	const _socket = socketVar();
+	if (_socket) {
+		_socket.close();
+		socketVar(null as any);
+	}
+	// ─── PETORIA FIX END (BUG 2) ───
+	// ─── PETORIA FIX START (BUG 3) ───
+	chatMessagesVar([]);
+	// ─── PETORIA FIX END (BUG 3) ───
 	client.stop();
 	deleteStorage();
 	userVar(initDomain);

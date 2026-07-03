@@ -31,3 +31,8 @@ export const userVar = makeVar<CustomJwtPayload>(initDomain);
 
 //@ts-ignore
 export const socketVar = makeVar<WebSocket>();
+
+// ─── PETORIA WEBSOCKET ADDITION START ───
+// ─── PETORIA FIX START (BUG 3) ───
+export const chatMessagesVar = makeVar<any[]>([]);
+// ─── PETORIA FIX END (BUG 3) ───
