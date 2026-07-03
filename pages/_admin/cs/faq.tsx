@@ -10,8 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { TabContext } from '@mui/lab';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TablePagination from '@mui/material/TablePagination';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import { Plus, XCircle, MagnifyingGlass } from 'phosphor-react';
 import { FaqArticlesPanelList } from '../../../libs/components/admin/cs/FaqList';
 
 const FaqArticles: NextPage = (props: any) => {
@@ -32,7 +31,7 @@ const FaqArticles: NextPage = (props: any) => {
 					size={'medium'}
 					// onClick={() => router.push(`/_admin/cs/faq_create`)}
 				>
-					<AddRoundedIcon sx={{ mr: '8px' }} />
+					<Plus size={18} style={{ marginRight: 8 }} />
 					ADD
 				</Button>
 			</Box>
@@ -88,9 +87,9 @@ const FaqArticles: NextPage = (props: any) => {
 									}}
 									endAdornment={
 										<>
-											{true && <CancelRoundedIcon onClick={() => {}} />}
+											{true && <XCircle size={20} onClick={() => {}} style={{ cursor: 'pointer' }} />}
 											<InputAdornment position="end" onClick={() => {}}>
-												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
+												<MagnifyingGlass size={20} color="#bdbdbd" style={{ cursor: 'pointer' }} />
 											</InputAdornment>
 										</>
 									}

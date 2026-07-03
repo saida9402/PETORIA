@@ -3,13 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack, Typography, Pagination, Box, Chip, Avatar, Button } from '@mui/material';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import GroupIcon from '@mui/icons-material/Group';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import StarIcon from '@mui/icons-material/Star';
+import { ShieldCheck, Heart, Eye, Users, Package, Star } from 'phosphor-react';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_MEMBER, GET_PRODUCTS, GET_COMMENTS } from '../../apollo/user/query';
 import {
@@ -188,7 +182,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 						<div className="ssp-avatar-wrap">
 							<Avatar src={avatarSrc} className="ssp-avatar" />
 							<Chip
-								icon={<VerifiedIcon sx={{ fontSize: 14 }} />}
+								icon={<ShieldCheck size={14} weight="fill" />}
 								label="Verified Seller"
 								size="small"
 								className="ssp-verified-badge"
@@ -206,22 +200,22 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 							{/* Stats */}
 							<div className="ssp-stats">
 								<div className="ssp-stat">
-									<Inventory2Icon className="ssp-stat__icon" />
+									<Package size={20} className="ssp-stat__icon" />
 									<span className="ssp-stat__value">{seller?.memberProducts ?? 0}</span>
 									<span className="ssp-stat__label">Products</span>
 								</div>
 								<div className="ssp-stat">
-									<FavoriteIcon className="ssp-stat__icon" />
+									<Heart size={20} weight="fill" color="#e11d48" className="ssp-stat__icon" />
 									<span className="ssp-stat__value">{seller?.memberLikes ?? 0}</span>
 									<span className="ssp-stat__label">Likes</span>
 								</div>
 								<div className="ssp-stat">
-									<RemoveRedEyeIcon className="ssp-stat__icon" />
+									<Eye size={20} className="ssp-stat__icon" />
 									<span className="ssp-stat__value">{seller?.memberViews ?? 0}</span>
 									<span className="ssp-stat__label">Views</span>
 								</div>
 								<div className="ssp-stat">
-									<GroupIcon className="ssp-stat__icon" />
+									<Users size={20} className="ssp-stat__icon" />
 									<span className="ssp-stat__value">{seller?.memberFollowers ?? 0}</span>
 									<span className="ssp-stat__label">Followers</span>
 								</div>
@@ -286,7 +280,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 					{commentTotal > 0 && (
 						<div className="ssp-reviews">
 							<Box component="div" className="ssp-reviews__header">
-								<StarIcon sx={{ color: '#F59E0B', fontSize: 16 }} />
+								<Star size={16} color="#F59E0B" weight="fill" />
 								<span>{commentTotal} review{commentTotal > 1 ? 's' : ''}</span>
 							</Box>
 							{sellerComments.map((comment: Comment) => (

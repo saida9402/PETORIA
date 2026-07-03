@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Heart, Eye, ShoppingCart as ShoppingCartIcon } from 'phosphor-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
@@ -87,9 +84,9 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 			{/* Like button — outside overflow:hidden img-wrap so it always receives clicks */}
 			<button type="button" className="shop-product-card__fav" onClick={handleLike} aria-label="Like product">
 				{product.meLiked && product.meLiked[0]?.myFavorite ? (
-					<FavoriteIcon sx={{ color: '#e53935', fontSize: 18 }} />
+					<Heart size={18} weight="fill" color="#e53935" />
 				) : (
-					<FavoriteBorderIcon sx={{ color: '#666', fontSize: 18 }} />
+					<Heart size={18} color="#666" />
 				)}
 			</button>
 
@@ -149,11 +146,11 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 					{/* Stats */}
 					<Stack direction="row" gap={1} className="shop-product-card__stats">
 						<div className="shop-product-card__stat">
-							<FavoriteBorderIcon sx={{ fontSize: 13 }} />
+							<Heart size={13} />
 							<span>{formatNum(product.productLikes ?? 0)}</span>
 						</div>
 						<div className="shop-product-card__stat">
-							<RemoveRedEyeIcon sx={{ fontSize: 13 }} />
+							<Eye size={13} />
 							<span>{formatNum(product.productViews ?? 0)}</span>
 						</div>
 					</Stack>
@@ -175,7 +172,7 @@ const ShopProductCard = (props: ShopProductCardProps) => {
 					disabled={product.productStock === 0}
 					aria-label="Add to cart"
 				>
-					<ShoppingCartIcon sx={{ fontSize: 16 }} />
+					<ShoppingCartIcon size={16} />
 					<span>{cartAdded ? 'Added!' : 'Add to Cart'}</span>
 				</button>
 			</Stack>

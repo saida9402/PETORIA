@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { GET_SELLERS } from '../../apollo/user/query';
 import SellerCard from '../../libs/components/common/SellerCard';
+import { ArrowUpRight, Phone } from 'phosphor-react';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -152,7 +153,7 @@ const About: NextPage = () => {
 						</Stack>
 						<Stack className={'btn'}>
 							Shop Now
-							<img src="/img/icons/rightup.svg" alt="" />
+							<ArrowUpRight size={18} />
 						</Stack>
 					</Stack>
 				</Stack>
@@ -199,10 +200,10 @@ const About: NextPage = () => {
 						<Box component={'div'} className={'right'}>
 							<div className={'white'}>
 								Contact Us
-								<img src="/img/icons/rightup.svg" alt="" />
+								<ArrowUpRight size={18} />
 							</div>
 							<div className={'black'}>
-								<img src="/img/icons/call.svg" alt="" />
+								<Phone size={18} />
 								+8210 2122 0102
 							</div>
 						</Box>

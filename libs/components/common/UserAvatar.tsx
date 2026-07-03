@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { UserCircle } from 'phosphor-react';
 
 interface UserAvatarProps {
 	src?: string | null;
@@ -31,14 +31,11 @@ const UserAvatar = ({ src, alt = '', size, className = '', style, onClick }: Use
 
 	if (!src || broken) {
 		return (
-			<AccountCircleIcon
+			<UserCircle
+				size={size || 24}
+				color="#bdbdbd"
 				className={className}
 				onClick={onClick}
-				sx={{
-					color: '#bdbdbd',
-					borderRadius: '50%',
-					...(size ? { width: size, height: size } : {}),
-				}}
 				style={{ flexShrink: 0, display: 'block', ...style }}
 			/>
 		);

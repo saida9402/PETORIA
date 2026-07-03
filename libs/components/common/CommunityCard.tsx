@@ -4,9 +4,7 @@ import { BoardArticle } from '../../types/board-article/board-article';
 import { format } from 'date-fns';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { Heart, Eye } from 'phosphor-react';
 import { API_URL } from '../../config';
 import UserAvatar from './UserAvatar';
 
@@ -120,7 +118,7 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 
 					<div className="community-card__meta">
 						<span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-							<RemoveRedEyeIcon sx={{ fontSize: 13 }} />
+							<Eye size={13} />
 							{boardArticle.articleViews}
 						</span>
 						<button
@@ -132,9 +130,9 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 							}}
 						>
 							{boardArticle.meLiked?.[0]?.myFavorite ? (
-								<FavoriteIcon sx={{ fontSize: 13, color: '#e11d48' }} />
+								<Heart size={13} weight="fill" color="#e11d48" />
 							) : (
-								<FavoriteBorderIcon sx={{ fontSize: 13 }} />
+								<Heart size={13} />
 							)}
 							{boardArticle.articleLikes}
 						</button>

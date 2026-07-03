@@ -3,12 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack, Typography, Pagination, InputBase } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { MagnifyingGlass, Plus, Trash, Package, CheckCircle } from 'phosphor-react';
 import Link from 'next/link';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_SELLER_PRODUCTS } from '../../apollo/user/query';
@@ -28,7 +23,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
+const SellerProducts: NextPage = ({ initialInput }: any) => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [searchQuery, setSearchQuery] = useState<string>('');
@@ -119,7 +114,7 @@ const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
 						<Typography className="spg-header__sub">Manage your store listings</Typography>
 					</div>
 					<Link href="/mypage?category=addProduct" className="spg-add-btn">
-						<AddBoxIcon sx={{ fontSize: 18 }} />
+						<Plus size={18} />
 						Add New Product
 					</Link>
 				</div>
@@ -127,7 +122,7 @@ const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
 				{/* ── Toolbar: Search + Tabs ── */}
 				<div className="spg-toolbar">
 					<div className="spg-search">
-						<SearchIcon className="spg-search__icon" />
+						<MagnifyingGlass size={18} className="spg-search__icon" />
 						<InputBase
 							className="spg-search__input"
 							placeholder="Search by name or brand..."
@@ -212,14 +207,14 @@ const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
 													onClick={() => markSoldHandler(product._id)}
 													title="Mark as Sold"
 												>
-													<CheckCircleIcon sx={{ fontSize: 15 }} />
+													<CheckCircle size={15} />
 												</button>
 												<button
 													className="spg-action-btn spg-action-btn--delete"
 													onClick={() => deleteHandler(product._id)}
 													title="Delete"
 												>
-													<DeleteIcon sx={{ fontSize: 15 }} />
+													<Trash size={15} />
 												</button>
 											</>
 										)}
@@ -230,14 +225,14 @@ const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
 													onClick={() => reactivateHandler(product._id)}
 													title="Reactivate"
 												>
-													<InventoryIcon sx={{ fontSize: 15 }} />
+													<Package size={15} />
 												</button>
 												<button
 													className="spg-action-btn spg-action-btn--delete"
 													onClick={() => deleteHandler(product._id)}
 													title="Delete"
 												>
-													<DeleteIcon sx={{ fontSize: 15 }} />
+													<Trash size={15} />
 												</button>
 											</>
 										)}
@@ -247,7 +242,7 @@ const SellerProducts: NextPage = ({ initialInput, ...props }: any) => {
 												onClick={() => reactivateHandler(product._id)}
 												title="Restore"
 											>
-												<InventoryIcon sx={{ fontSize: 15 }} />
+												<Package size={15} />
 											</button>
 										)}
 									</div>

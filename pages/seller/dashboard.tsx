@@ -3,14 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack, Typography } from '@mui/material';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import GroupIcon from '@mui/icons-material/Group';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import SettingsIcon from '@mui/icons-material/Settings';
-import StorefrontIcon from '@mui/icons-material/Storefront';
+import { Package, Heart, Eye, Users, Plus, ListBullets, Gear, Storefront } from 'phosphor-react';
 import { useQuery, useReactiveVar } from '@apollo/client';
 import { GET_SELLER_PRODUCTS, GET_MEMBER } from '../../apollo/user/query';
 import { userVar } from '../../apollo/store';
@@ -94,7 +87,7 @@ const SellerDashboard: NextPage = ({ initialInput }: any) => {
 						</Typography>
 					</div>
 					<Link href={`/seller/${user._id}`} className="sdp-welcome__view-store">
-						<StorefrontIcon sx={{ fontSize: 16 }} />
+						<Storefront size={16} />
 						View My Store
 					</Link>
 				</div>
@@ -102,35 +95,35 @@ const SellerDashboard: NextPage = ({ initialInput }: any) => {
 				{/* ── Stat Cards ── */}
 				<div className="sdp-cards">
 					<SellerDashboardCard
-						icon={<Inventory2Icon />}
+						icon={<Package size={24} />}
 						label="Active Products"
 						value={totalActive}
 						sub="Currently listed"
 						accentColor="var(--np, #4E8A28)"
 					/>
 					<SellerDashboardCard
-						icon={<ListAltIcon />}
+						icon={<ListBullets size={24} />}
 						label="Sold Out"
 						value={totalSold}
 						sub="Total sold items"
 						accentColor="#F59E0B"
 					/>
 					<SellerDashboardCard
-						icon={<GroupIcon />}
+						icon={<Users size={24} />}
 						label="Followers"
 						value={sellerData?.memberFollowers ?? 0}
 						sub="People following you"
 						accentColor="#6366F1"
 					/>
 					<SellerDashboardCard
-						icon={<RemoveRedEyeIcon />}
+						icon={<Eye size={24} />}
 						label="Store Views"
 						value={user.memberViews ?? 0}
 						sub="Total profile views"
 						accentColor="#0EA5E9"
 					/>
 					<SellerDashboardCard
-						icon={<FavoriteIcon />}
+						icon={<Heart size={24} weight="fill" />}
 						label="Likes Received"
 						value={user.memberLikes ?? 0}
 						sub="Total likes on store"
@@ -143,19 +136,19 @@ const SellerDashboard: NextPage = ({ initialInput }: any) => {
 					<Typography className="sdp-section-title">Quick Actions</Typography>
 					<div className="sdp-actions__grid">
 						<Link href="/mypage?category=addProduct" className="sdp-action-btn sdp-action-btn--primary">
-							<AddBoxIcon />
+							<Plus size={20} />
 							<span>Add Product</span>
 						</Link>
 						<Link href="/seller/products" className="sdp-action-btn">
-							<Inventory2Icon />
+							<Package size={20} />
 							<span>Manage Products</span>
 						</Link>
 						<Link href="/seller/settings" className="sdp-action-btn">
-							<SettingsIcon />
+							<Gear size={20} />
 							<span>Store Settings</span>
 						</Link>
 						<Link href="/mypage?category=myOrders" className="sdp-action-btn">
-							<ListAltIcon />
+							<ListBullets size={20} />
 							<span>My Orders</span>
 						</Link>
 					</div>

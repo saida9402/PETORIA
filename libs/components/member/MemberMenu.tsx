@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Phone, House, Compass, UsersThree } from 'phosphor-react';
 import UserAvatar from '../common/UserAvatar';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Button } from '@mui/material';
@@ -78,7 +79,7 @@ const MemberMenu = (_props: MemberMenuProps) => {
 					<Stack className={'user-info'}>
 						<Typography className={'user-name'}>{member?.memberNick}</Typography>
 						<Box component={'div'} className={'user-phone'}>
-							<img src={'/img/icons/call.svg'} alt={'icon'} style={{ width: 16, height: 16 }} />
+							<Phone size={16} />
 							<Typography className={'p-number'}>{member?.memberPhone}</Typography>
 						</Box>
 						<Typography className={'view-list'}>{member?.memberType}</Typography>
@@ -124,11 +125,7 @@ const MemberMenu = (_props: MemberMenuProps) => {
 										style={{ width: '100%' }}
 									>
 										<div className={'flex-box'}>
-											{category === 'products' ? (
-												<img className={'com-icon'} src={'/img/icons/homeWhite.svg'} alt={''} />
-											) : (
-												<img className={'com-icon'} src={'/img/icons/home.svg'} alt={''} />
-											)}
+											<House className={'com-icon'} size={18} color={category === 'products' ? 'white' : '#2D5016'} />
 											<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 												Products
 											</Typography>
@@ -148,19 +145,7 @@ const MemberMenu = (_props: MemberMenuProps) => {
 									style={{ width: '100%' }}
 								>
 									<div className={'flex-box'}>
-										<svg
-											className={'com-icon'}
-											fill={category === 'followers' ? 'white' : '#2D5016'}
-											height="800px"
-											width="800px"
-											viewBox="0 0 328 328"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<g>
-												<path d="M52.25,64.001c0,34.601,28.149,62.749,62.75,62.749c34.602,0,62.751-28.148,62.751-62.749S149.602,1.25,115,1.25C80.399,1.25,52.25,29.4,52.25,64.001z" />
-												<path d="M15,286.75h125.596c19.246,24.348,49.031,40,82.404,40c57.896,0,105-47.103,105-105c0-57.896-47.104-105-105-105c-34.488,0-65.145,16.716-84.297,42.47c-7.764-1.628-15.695-2.47-23.703-2.47c-63.411,0-115,51.589-115,115C0,280.034,6.716,286.75,15,286.75z" />
-											</g>
-										</svg>
+										<UsersThree className={'com-icon'} size={18} color={category === 'followers' ? 'white' : '#2D5016'} />
 										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 											Followers
 										</Typography>
@@ -179,19 +164,7 @@ const MemberMenu = (_props: MemberMenuProps) => {
 									style={{ width: '100%' }}
 								>
 									<div className={'flex-box'}>
-										<svg
-											className={'com-icon'}
-											fill={category === 'followings' ? 'white' : '#2D5016'}
-											height="800px"
-											width="800px"
-											viewBox="0 0 328 328"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<g>
-												<path d="M177.75,64.001C177.75,29.4,149.601,1.25,115,1.25c-34.602,0-62.75,28.15-62.75,62.751S80.398,126.75,115,126.75C149.601,126.75,177.75,98.602,177.75,64.001z" />
-												<path d="M223,116.75c-34.488,0-65.145,16.716-84.298,42.47c-7.763-1.628-15.694-2.47-23.702-2.47c-63.412,0-115,51.589-115,115c0,8.284,6.715,15,15,15h125.596c19.246,24.348,49.03,40,82.404,40c57.896,0,105-47.103,105-105C328,163.854,280.896,116.75,223,116.75z" />
-											</g>
-										</svg>
+										<UsersThree className={'com-icon'} size={18} color={category === 'followings' ? 'white' : '#2D5016'} />
 										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 											Followings
 										</Typography>
@@ -217,11 +190,7 @@ const MemberMenu = (_props: MemberMenuProps) => {
 									style={{ width: '100%' }}
 								>
 									<div className={'flex-box'}>
-										{category === 'articles' ? (
-											<img className={'com-icon'} src={'/img/icons/discoveryWhite.svg'} alt={''} />
-										) : (
-											<img className={'com-icon'} src={'/img/icons/discovery.svg'} alt={''} />
-										)}
+										<Compass className={'com-icon'} size={18} color={category === 'articles' ? 'white' : '#2D5016'} />
 										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 											Articles
 										</Typography>

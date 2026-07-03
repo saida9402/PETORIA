@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { TabContext } from '@mui/lab';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TablePagination from '@mui/material/TablePagination';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import { XCircle, MagnifyingGlass } from 'phosphor-react';
 import { InquiryList } from '../../../libs/components/admin/cs/InquiryList';
 
 const InquiryArticles: NextPage = (props: any) => {
@@ -77,9 +77,9 @@ const InquiryArticles: NextPage = (props: any) => {
 									}}
 									endAdornment={
 										<>
-											{true && <CancelRoundedIcon onClick={() => {}} />}
+											{true && <XCircle size={20} onClick={() => {}} style={{ cursor: 'pointer' }} />}
 											<InputAdornment position="end" onClick={() => {}}>
-												<img src="/img/icons/search_icon.png" alt={'searchIcon'} />
+												<MagnifyingGlass size={20} color="#bdbdbd" style={{ cursor: 'pointer' }} />
 											</InputAdornment>
 										</>
 									}

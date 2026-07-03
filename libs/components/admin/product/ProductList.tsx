@@ -16,7 +16,7 @@ import Avatar from '@mui/material/Avatar';
 import { Stack } from '@mui/material';
 import { Product } from '../../../types/product/product';
 import { API_URL } from '../../../config';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Trash } from 'phosphor-react';
 import Typography from '@mui/material/Typography';
 import { ProductStatus } from '../../../enums/product.enum';
 
@@ -131,7 +131,7 @@ export const ProductPanelList = (props: ProductPanelListType) => {
 													sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
 													onClick={() => removeProductHandler(product._id)}
 												>
-													<DeleteIcon fontSize="small" />
+													<Trash size={18} />
 												</Button>
 											)}
 
