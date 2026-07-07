@@ -58,6 +58,14 @@ const AdminNotice: NextPage = () => {
 					variant={'contained'}
 					size={'medium'}
 					onClick={() => setCreateOpen(true)}
+					sx={{
+						bgcolor: '#4E8A28',
+						'&:hover': { bgcolor: '#3A6B1E' },
+						textTransform: 'none',
+						fontWeight: 600,
+						borderRadius: 2,
+						gap: 0.5,
+					}}
 				>
 					<Plus size={18} style={{ marginRight: 8 }} />
 					ADD

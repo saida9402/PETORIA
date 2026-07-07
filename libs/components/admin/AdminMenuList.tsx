@@ -133,9 +133,9 @@ const AdminMenuList = (props: any) => {
 					>
 						<ListItemIcon
 							sx={{
-								minWidth: 0,
-								mr: openMenu ? 3 : 'auto',
+								minWidth: '40px',
 								justifyContent: 'center',
+								flexShrink: 0,
 							}}
 						>
 							{item.icon}

@@ -162,8 +162,8 @@ const NoticeFormModal = ({ open, onClose, onSubmit, initialData }: Props) => {
 					variant="contained"
 					onClick={handleSubmit}
 					sx={{
-						bgcolor: '#33c1c1',
-						'&:hover': { bgcolor: '#2aa8a8' },
+						bgcolor: '#4E8A28',
+						'&:hover': { bgcolor: '#3A6B1E' },
 						textTransform: 'none',
 						fontFamily: 'Nunito',
 						borderRadius: 2,
