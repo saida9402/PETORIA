@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 import PopularProductCard from './PopularProductCard';
 import { useToast } from '../../hooks/useToast';
@@ -181,12 +182,19 @@ export default function PopularProducts() {
 					</div>
 				) : (
 					<div className="products-grid products-grid--4">
-						{displayList.map((p: any) => (
-							<PopularProductCard
+						{displayList.map((p: any, index: number) => (
+							<motion.div
 								key={p._id}
-								product={p}
-								onAddCart={() => success(`${p.productName} added to cart!`)}
-							/>
+								initial={{ opacity: 0, y: 40 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true, margin: '-60px' }}
+								transition={{ duration: 0.5, delay: index * 0.07 }}
+							>
+								<PopularProductCard
+									product={p}
+									onAddCart={() => success(`${p.productName} added to cart!`)}
+								/>
+							</motion.div>
 						))}
 					</div>
 				)}

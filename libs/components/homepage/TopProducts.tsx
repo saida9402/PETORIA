@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 import TopProductCard from './TopProductCard';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
@@ -102,7 +103,15 @@ export default function TopProducts() {
 				) : (
 					<div className="top-products__grid">
 						{list.map((p: any, i: number) => (
-							<TopProductCard key={p._id} product={p} rank={i + 1} />
+							<motion.div
+								key={p._id}
+								initial={{ opacity: 0, y: 40 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true, margin: '-60px' }}
+								transition={{ duration: 0.5, delay: i * 0.07 }}
+							>
+								<TopProductCard product={p} rank={i + 1} />
+							</motion.div>
 						))}
 					</div>
 				)}
