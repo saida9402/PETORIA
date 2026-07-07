@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useWeather } from '../../hooks/useWeather';
 
 const STATS = [
@@ -43,9 +44,14 @@ const SUN_RAYS = Array.from({ length: 6 }, (_, i) => ({
 	delay: `${(i * 0.18).toFixed(2)}s`,
 }));
 
+const fadeUp = (delay: number) => ({
+	initial: { opacity: 0, y: 30 },
+	animate: { opacity: 1, y: 0 },
+	transition: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] },
+});
+
 const HeroBanner = () => {
 	const { weather, loading } = useWeather();
-	// Default to sunny during load — smooth transition once real condition arrives
 	const condition = weather?.condition ?? 'sunny';
 
 	return (
@@ -147,53 +153,68 @@ const HeroBanner = () => {
 
 			{/* ── Floating info cards ── */}
 			{FLOAT_CARDS.map(({ pos, icon, title, sub }) => (
-				<div key={pos} className={`hero__card hero__card--${pos}`}>
+				<motion.div
+					key={pos}
+					className={`hero__card hero__card--${pos}`}
+					animate={{ y: [0, -8, 0] }}
+					transition={{ duration: 3.5 + (pos === 'tr' ? 0.5 : pos === 'bl' ? 0.8 : pos === 'br' ? 0.3 : 0), repeat: Infinity, ease: 'easeInOut' }}
+				>
 					<span className="hero__card-ico">{icon}</span>
 					<div className="hero__card-body">
 						<strong>{title}</strong>
 						<span>{sub}</span>
 					</div>
-				</div>
+				</motion.div>
 			))}
 
 			{/* ── Main content ── */}
 			<div className="hero__inner">
 				<div className="hero__left">
-					<div className="hero__badge">
-						<span className="hero__badge-dot" />
-						PETORIA PREMIUM CARE
-					</div>
+					<motion.div {...fadeUp(0.05)}>
+						<div className="hero__badge">
+							<span className="hero__badge-dot" />
+							PETORIA PREMIUM CARE
+						</div>
+					</motion.div>
 
-					<h1 className="hero__title">
-						Healthy Pets,<br />
-						<span>Happy Life.</span>
-					</h1>
+					<motion.div {...fadeUp(0.2)}>
+						<h1 className="hero__title">
+							Healthy Pets,<br />
+							<span>Happy Life.</span>
+						</h1>
+					</motion.div>
 
-					<p className="hero__sub">
-						Premium food, toys, medicine and accessories<br />
-						for your lovely pets.
-					</p>
+					<motion.div {...fadeUp(0.35)}>
+						<p className="hero__sub">
+							Premium food, toys, medicine and accessories<br />
+							for your lovely pets.
+						</p>
+					</motion.div>
 
-					<div className="hero__actions">
-						<Link href="/shop">
-							<button className="hero__btn hero__btn--primary">Shop Now →</button>
-						</Link>
-						<Link href="/about">
-							<button className="hero__btn hero__btn--outline">Explore Brands</button>
-						</Link>
-					</div>
+					<motion.div {...fadeUp(0.5)}>
+						<div className="hero__actions">
+							<Link href="/shop">
+								<button className="hero__btn hero__btn--primary">Shop Now →</button>
+							</Link>
+							<Link href="/about">
+								<button className="hero__btn hero__btn--outline">Explore Brands</button>
+							</Link>
+						</div>
+					</motion.div>
 
-					<div className="hero__stats">
-						{STATS.map(({ icon, text }, i) => (
-							<React.Fragment key={text}>
-								<div className="hero__stat">
-									<span className="hero__stat-icon">{icon}</span>
-									<span className="hero__stat-text">{text}</span>
-								</div>
-								{i < STATS.length - 1 && <div className="hero__stat-sep" />}
-							</React.Fragment>
-						))}
-					</div>
+					<motion.div {...fadeUp(0.65)}>
+						<div className="hero__stats">
+							{STATS.map(({ icon, text }, i) => (
+								<React.Fragment key={text}>
+									<div className="hero__stat">
+										<span className="hero__stat-icon">{icon}</span>
+										<span className="hero__stat-text">{text}</span>
+									</div>
+									{i < STATS.length - 1 && <div className="hero__stat-sep" />}
+								</React.Fragment>
+							))}
+						</div>
+					</motion.div>
 				</div>
 			</div>
 		</section>
