@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Checkbox, Slider } from '@mui/material';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import DiamondIcon from '@mui/icons-material/Diamond';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import ChildFriendlyIcon from '@mui/icons-material/ChildFriendly';
+import { DogIcon, CatIcon, BirdIcon, FishIcon } from '../icons/AnimalIcons';
 import { ProductCategory, ProductType } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
 
@@ -9,19 +15,21 @@ interface ShopFilterProps {
 	setSearchFilter: (input: ProductsInquiry) => void;
 }
 
+const ICON_SX = { fontSize: 15, color: '#6B8A4E', flexShrink: 0 } as const;
+
 const PET_TYPES = [
-	{ value: ProductType.DOG,  label: '🐶 Dogs' },
-	{ value: ProductType.CAT,  label: '🐱 Cats' },
-	{ value: ProductType.BIRD, label: '🦜 Birds' },
-	{ value: ProductType.FISH, label: '🐠 Fish' },
+	{ value: ProductType.DOG,  label: 'Dogs',  icon: <DogIcon  size={15} /> },
+	{ value: ProductType.CAT,  label: 'Cats',  icon: <CatIcon  size={15} /> },
+	{ value: ProductType.BIRD, label: 'Birds', icon: <BirdIcon size={15} /> },
+	{ value: ProductType.FISH, label: 'Fish',  icon: <FishIcon size={15} /> },
 ];
 
 const CATEGORIES = [
-	{ value: ProductCategory.FOOD,      label: '🍖 Food' },
-	{ value: ProductCategory.MEDICINE,  label: '💊 Medicine' },
-	{ value: ProductCategory.ACCESSORY, label: '🎀 Accessories' },
-	{ value: ProductCategory.TOY,       label: '🎾 Toys' },
-	{ value: ProductCategory.STROLLER,  label: '🛒 Stroller' },
+	{ value: ProductCategory.FOOD,      label: 'Food',        icon: <RestaurantIcon sx={ICON_SX} /> },
+	{ value: ProductCategory.MEDICINE,  label: 'Medicine',    icon: <LocalPharmacyIcon sx={ICON_SX} /> },
+	{ value: ProductCategory.ACCESSORY, label: 'Accessories', icon: <DiamondIcon sx={ICON_SX} /> },
+	{ value: ProductCategory.TOY,       label: 'Toys',        icon: <SportsEsportsIcon sx={ICON_SX} /> },
+	{ value: ProductCategory.STROLLER,  label: 'Stroller',    icon: <ChildFriendlyIcon sx={ICON_SX} /> },
 ];
 
 const BRANDS = [
@@ -58,10 +66,12 @@ const CheckRow = ({
 	checked,
 	onChange,
 	label,
+	icon,
 }: {
 	checked: boolean;
 	onChange: (v: boolean) => void;
 	label: string;
+	icon?: React.ReactNode;
 }) => (
 	<div className="filter-item">
 		<Checkbox
@@ -75,14 +85,15 @@ const CheckRow = ({
 				flexShrink: 0,
 			}}
 		/>
+		{icon && <span className="filter-item__icon">{icon}</span>}
 		<span className="filter-item__label">{label}</span>
 	</div>
 );
 
 const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterProps) => {
-	const [priceRange, setPriceRange] = useState<number[]>([0, 500]);
-	const [showAllBrands, setShowAllBrands] = useState(false);
-	const [selectedSize, setSelectedSize] = useState<string>('');
+	const [priceRange, setPriceRange] = React.useState<number[]>([0, 500]);
+	const [showAllBrands, setShowAllBrands] = React.useState(false);
+	const [selectedSize, setSelectedSize] = React.useState<string>('');
 
 	const typeHandler = (type: ProductType, checked: boolean) => {
 		const cur = searchFilter.search.typeList ?? [];
@@ -135,13 +146,13 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 
 			{/* Header */}
 			<div className="sf-header">
-				<span className="sf-header__title">🔧 Filters</span>
+				<span className="sf-header__title">Filters</span>
 				<button className="sf-header__reset" onClick={resetHandler}>Reset</button>
 			</div>
 
 			{/* Pet Type */}
 			<div className="filter-section">
-				<p className="filter-section__title">🐾 Pet Type</p>
+				<p className="filter-section__title">Pet Type</p>
 				<div className="filter-list">
 					{PET_TYPES.map((pt) => (
 						<CheckRow
@@ -149,6 +160,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 							checked={searchFilter.search.typeList?.includes(pt.value) ?? false}
 							onChange={(v) => typeHandler(pt.value, v)}
 							label={pt.label}
+							icon={pt.icon}
 						/>
 					))}
 				</div>
@@ -156,7 +168,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 
 			{/* Category */}
 			<div className="filter-section">
-				<p className="filter-section__title">📦 Category</p>
+				<p className="filter-section__title">Category</p>
 				<div className="filter-list">
 					{CATEGORIES.map((cat) => (
 						<CheckRow
@@ -164,6 +176,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 							checked={searchFilter.search.categoryList?.includes(cat.value) ?? false}
 							onChange={(v) => categoryHandler(cat.value, v)}
 							label={cat.label}
+							icon={cat.icon}
 						/>
 					))}
 				</div>
@@ -171,7 +184,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 
 			{/* Brand */}
 			<div className="filter-section">
-				<p className="filter-section__title">🏷️ Brand</p>
+				<p className="filter-section__title">Brand</p>
 				<div className="filter-list">
 					{visibleBrands.map((brand) => (
 						<CheckRow
@@ -191,7 +204,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 
 			{/* Size */}
 			<div className="filter-section">
-				<p className="filter-section__title">📐 Size / Weight</p>
+				<p className="filter-section__title">Size / Weight</p>
 				<div className="sf-size-grid">
 					{SIZES.map((s) => (
 						<button
@@ -207,7 +220,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 
 			{/* Price Range */}
 			<div className="filter-section">
-				<p className="filter-section__title">💰 Price Range</p>
+				<p className="filter-section__title">Price Range</p>
 				<div className="sf-price">
 					<Slider
 						value={priceRange}
@@ -227,7 +240,7 @@ const ShopFilter = ({ initialInput, searchFilter, setSearchFilter }: ShopFilterP
 
 			{/* On Sale */}
 			<div className="filter-section">
-				<p className="filter-section__title">🔥 Deals</p>
+				<p className="filter-section__title">Deals</p>
 				<CheckRow
 					checked={searchFilter.search.onSale ?? false}
 					onChange={(v) => saleHandler(v)}

@@ -2,11 +2,23 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { ProductType, ProductCategory } from '../../enums/product.enum';
 
-const TYPE_ICON: Record<string, string> = { DOG: '🐶', CAT: '🐱', BIRD: '🐦', FISH: '🐠' };
-const CAT_ICON: Record<string, string> = { FOOD: '🍖', MEDICINE: '💊', ACCESSORY: '🎀', TOY: '🎾' };
-
 const TYPES = Object.values(ProductType);
 const CATEGORIES = Object.values(ProductCategory);
+
+const TYPE_LABEL: Record<string, string> = {
+	DOG: 'Dogs',
+	CAT: 'Cats',
+	BIRD: 'Birds',
+	FISH: 'Fish',
+};
+
+const CAT_LABEL: Record<string, string> = {
+	FOOD: 'Food',
+	MEDICINE: 'Medicine',
+	ACCESSORY: 'Accessories',
+	TOY: 'Toys',
+	STROLLER: 'Stroller',
+};
 
 export default function HeaderFilter() {
 	const router = useRouter();
@@ -68,7 +80,7 @@ export default function HeaderFilter() {
 								className={`fchip${type === t ? ' fchip--on' : ''}`}
 								onClick={() => setType((prev) => (prev === t ? '' : t))}
 							>
-								{TYPE_ICON[t]} {t[0] + t.slice(1).toLowerCase()}
+								{TYPE_LABEL[t] ?? (t[0] + t.slice(1).toLowerCase())}
 							</button>
 						))}
 					</div>
@@ -86,7 +98,7 @@ export default function HeaderFilter() {
 								className={`fchip${category === c ? ' fchip--on' : ''}`}
 								onClick={() => setCategory((prev) => (prev === c ? '' : c))}
 							>
-								{CAT_ICON[c]} {c[0] + c.slice(1).toLowerCase()}
+								{CAT_LABEL[c] ?? (c[0] + c.slice(1).toLowerCase())}
 							</button>
 						))}
 					</div>
