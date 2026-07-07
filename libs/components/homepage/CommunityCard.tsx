@@ -88,7 +88,20 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 						onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 					/>
 				) : (
-					<span className="community-card__thumb-icon">{cfg.icon}</span>
+					<div style={{ width: '100%', height: '100%' }}>
+						<div style={{
+							background: 'linear-gradient(135deg, #1a472a 0%, #2d6a4a 100%)',
+							width: '100%',
+							height: '100%',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+						}}>
+							<span style={{ fontSize: 28, fontWeight: 700, color: 'rgba(255,255,255,0.85)', fontFamily: 'sans-serif' }}>
+								{a.articleCategory[0]}
+							</span>
+						</div>
+					</div>
 				)}
 			</div>
 

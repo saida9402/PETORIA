@@ -79,7 +79,20 @@ const CommunityCard = ({ boardArticle, likeArticleHandler, size = 'normal' }: Co
 						onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 					/>
 				) : (
-					<div className="community-card__thumb-placeholder">📝</div>
+					<div className="community-card__thumb-placeholder">
+							<div style={{
+								background: 'linear-gradient(135deg, #1a472a 0%, #2d6a4a 100%)',
+								width: '100%',
+								height: '100%',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+							}}>
+								<span style={{ fontSize: 32, fontWeight: 700, color: 'rgba(255,255,255,0.8)', fontFamily: 'sans-serif' }}>
+									{boardArticle.articleCategory[0]}
+								</span>
+							</div>
+						</div>
 				)}
 			</div>
 
