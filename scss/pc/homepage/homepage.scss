@@ -59,14 +59,13 @@
 }
 
 /* ═══════════════════════════════════════════════
-   WEATHER BAR
+   WEATHER BAR — warm premium style
 ═══════════════════════════════════════════════ */
 .weather-bar {
 	height: 48px;
-	background: rgba(10, 20, 8, 0.82);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
-	border-bottom: 1px solid rgba(109, 181, 53, 0.1);
+	background: linear-gradient(90deg, #faf5ee, #f5f0e8);
+	border-bottom: 1px solid #e8e0d0;
+	border-left: 3px solid var(--np, #4e8a28);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -84,7 +83,7 @@
 
 	/* Animated weather icon */
 	&__icon {
-		font-size: 18px;
+		font-size: 16px;
 		display: inline-flex;
 		align-items: center;
 
@@ -101,14 +100,14 @@
 		gap: 8px;
 
 		strong {
-			color: #fff;
+			color: #5a3e2b;
 			font-family: $font;
-			font-size: 13px;
+			font-size: 12px;
 			font-weight: 600;
 		}
 
 		span {
-			color: rgba(255, 255, 255, 0.5);
+			color: #a08060;
 			font-family: $font;
 			font-size: 11px;
 			text-transform: capitalize;
@@ -118,9 +117,9 @@
 	&__badge {
 		padding: 3px 10px;
 		border-radius: 20px;
-		background: rgba(109, 181, 53, 0.13);
-		border: 1px solid rgba(109, 181, 53, 0.22);
-		color: #a8cc7a;
+		background: rgba(78, 138, 40, 0.1);
+		border: 1px solid rgba(78, 138, 40, 0.2);
+		color: #4e8a28;
 		font-family: $font;
 		font-size: 11px;
 		font-weight: 500;
@@ -133,9 +132,10 @@
 	}
 
 	&__location {
-		color: rgba(255, 255, 255, 0.45);
+		color: #a08060;
 		font-family: $font;
 		font-size: 11px;
+		font-weight: 500;
 	}
 
 	&__meta {
@@ -143,14 +143,14 @@
 		gap: 14px;
 
 		span {
-			color: rgba(255, 255, 255, 0.38);
+			color: #b09070;
 			font-family: $font;
 			font-size: 11px;
 		}
 	}
 
 	&__feels {
-		color: rgba(255, 255, 255, 0.35);
+		color: #b09070;
 		font-family: $font;
 		font-size: 11px;
 	}
@@ -165,9 +165,9 @@
 		border-radius: 4px;
 		background: linear-gradient(
 			90deg,
-			rgba(255, 255, 255, 0.06) 0%,
-			rgba(255, 255, 255, 0.14) 50%,
-			rgba(255, 255, 255, 0.06) 100%
+			rgba(160, 128, 96, 0.08) 0%,
+			rgba(160, 128, 96, 0.18) 50%,
+			rgba(160, 128, 96, 0.08) 100%
 		);
 		background-size: 200% 100%;
 		animation: shimmer 1.5s ease-in-out infinite;
@@ -587,26 +587,25 @@
 }
 
 /* ═══════════════════════════════════════════════
-   FLOATING FILTER SECTION  (homepage hero only)
-   Renamed from .filter-section → .hero-filter-section
-   to prevent leaking into shop sidebar filter items.
+   SEARCH FILTER SECTION — below hero, not overlapping
 ═══════════════════════════════════════════════ */
 .hero-filter-section {
 	position: relative;
 	z-index: 20;
-	margin-top: -70px;
-	padding: 0 32px;
+	margin-top: 0;
+	padding: 20px 32px;
+	background: #ffffff;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 	box-sizing: border-box;
 }
 
 /* ═══════════════════════════════════════════════
    HOMEPAGE CONTENT WRAPPER
-   Preserves normal doc flow after floating filter
 ═══════════════════════════════════════════════ */
 .homepage-content {
 	position: relative;
 	z-index: 1;
-	padding-top: 120px;
+	padding-top: 24px;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -875,9 +874,9 @@
 		.hero__card { display: none; }
 	}
 
-	.hero-filter-section { margin-top: -40px; padding: 0 16px; }
+	.hero-filter-section { margin-top: 0; padding: 16px; }
 
-	.homepage-content { padding-top: 80px; }
+	.homepage-content { padding-top: 16px; }
 
 	.filter-card {
 		padding: 18px 18px 16px;
@@ -890,8 +889,9 @@
 	.weather-bar {
 		padding: 0 20px;
 
-		&__badge { display: none; }
-		&__meta  { display: none; }
+		&__badge  { display: none; }
+		&__meta   { display: none; }
+		&__feels  { display: none; }
 	}
 }
 
@@ -901,8 +901,8 @@
 	.hero .hero__btn { padding: 10px 20px; font-size: 12px; }
 	.hero .hero__actions { gap: 8px; }
 
-	.hero-filter-section { margin-top: -32px; padding: 0 12px; }
-	.homepage-content { padding-top: 64px; }
+	.hero-filter-section { margin-top: 0; padding: 12px; }
+	.homepage-content { padding-top: 12px; }
 
 	.weather-bar { &__location { display: none; } }
 }
@@ -938,20 +938,20 @@
 	&__eyebrow {
 		font-family: $font;
 		font-size: 11px;
-		font-weight: 700;
-		letter-spacing: 0.1em;
+		font-weight: 600;
+		letter-spacing: 1.5px;
 		text-transform: uppercase;
-		color: #4e8a28;
+		color: #a0856a;
 		margin: 0 0 6px;
 	}
 
 	&__title {
 		font-family: $font;
-		font-size: 26px;
+		font-size: 24px;
 		font-weight: 700;
-		color: var(--t1, #1a2e0a);
+		color: #1a1a1a;
 		margin: 0 0 6px;
-		letter-spacing: -0.02em;
+		letter-spacing: -0.4px;
 		line-height: 1.2;
 	}
 
@@ -983,6 +983,7 @@
 .products-grid {
 	display: grid;
 	gap: 20px;
+	align-items: stretch;
 
 	&--4 {
 		grid-template-columns: repeat(4, 1fr);
@@ -1105,7 +1106,7 @@
 ═══════════════════════════════════════════════ */
 .trend-products {
 	padding: 80px 0 72px;
-	background: var(--pb, #f4faf0);
+	background: #faf8f4;
 	width: 100%;
 
 	&__cta {
@@ -1427,7 +1428,7 @@
 ═══════════════════════════════════════════════ */
 .popular-products {
 	padding: 80px 0 72px;
-	background: var(--cb, #fff);
+	background: #ffffff;
 	width: 100%;
 
 	&__tabs {
@@ -1480,6 +1481,7 @@
 	cursor: pointer;
 	display: flex;
 	flex-direction: column;
+	height: 100%;
 	transition: transform 0.24s ease, box-shadow 0.24s ease;
 	position: relative;
 
@@ -1506,7 +1508,7 @@
 	&__img {
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
+		object-fit: cover;
 		padding: 8px;
 		display: block;
 		transition: transform 0.5s ease;
@@ -2852,16 +2854,47 @@
 }
 
 /* ═══════════════════════════════════════════════
-   SECTION WRAPPERS
+   SECTION WRAPPERS — warm alternating backgrounds
 ═══════════════════════════════════════════════ */
 .category-grid-section {
 	padding: 56px 0;
-	background: var(--pb);
+	background: #ffffff;
 }
 
 .promo-section {
 	padding: 56px 0;
-	background: var(--pb);
+	background: #faf8f4;
+}
+
+/* ── Portfolio typography utilities ── */
+.home-section-label {
+	font-size: 11px;
+	font-weight: 600;
+	color: #a0856a;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	margin-bottom: 6px;
+	font-family: $font;
+}
+
+.home-section-title {
+	font-size: 24px;
+	font-weight: 700;
+	color: #1a1a1a;
+	letter-spacing: -0.4px;
+	font-family: $font;
+}
+
+.home-view-all {
+	font-size: 13px;
+	color: #1a472a;
+	font-weight: 600;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: border-color 0.2s;
+	font-family: $font;
+
+	&:hover { border-color: #1a472a; }
 }
 
 /* ═══════════════════════════════════════════════
@@ -2884,33 +2917,38 @@
 	justify-content: center;
 	gap: 8px;
 	padding: 20px 8px;
-	background: var(--cb);
-	border: 1.5px solid var(--bd);
-	border-radius: var(--r14);
+	background: #faf8f4;
+	border: 1.5px solid #f0e8dc;
+	border-radius: 16px;
 	text-decoration: none;
 	cursor: pointer;
-	transition: all 0.22s ease;
+	transition: all 0.2s ease;
 
 	&:hover {
-		border-color: var(--np);
-		background: var(--nbg);
+		background: #1a472a;
+		border-color: #1a472a;
 		transform: translateY(-3px);
-		box-shadow: 0 6px 20px rgba(78,138,40,.15);
+		box-shadow: 0 6px 24px rgba(26,71,42,.22);
 
-		.cats__item-name { color: var(--np); }
+		.cats__item-name { color: #fff; }
+		.cats__item-icon { color: #fff; }
 	}
 }
 
 .cats__item-icon {
 	font-size: 28px;
 	line-height: 1;
+	color: var(--np, #4e8a28);
+	transition: color 0.2s;
+	display: inline-flex;
+	align-items: center;
 }
 
 .cats__item-name {
 	font-family: $font;
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--t1);
+	color: #1a1a1a;
 	transition: color 0.2s;
 	text-align: center;
 }
@@ -3005,12 +3043,15 @@
 .top-products {
 	padding: 72px 0;
 	background: var(--nbg);
+	overflow-x: hidden;
 
 	&__grid {
 		display: grid;
 		grid-template-columns: repeat(6, 1fr);
 		gap: 16px;
 		margin-top: 32px;
+
+		> * { min-width: 0; }
 
 		@media (max-width: 1200px) { grid-template-columns: repeat(4, 1fr); }
 		@media (max-width: 860px)  { grid-template-columns: repeat(3, 1fr); }
@@ -3685,7 +3726,7 @@ section:has(.video-banner) {
 ═══════════════════════════════════════════════ */
 .community-boards {
 	padding: 72px 0;
-	background: var(--nbg);
+	background: #ffffff;
 
 	&__cats {
 		display: flex;
@@ -3742,13 +3783,17 @@ section:has(.video-banner) {
 	border-radius: var(--r16);
 	overflow: hidden;
 	cursor: pointer;
-	transition: transform 0.22s ease, box-shadow 0.22s ease;
+	transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 	display: flex;
 	flex-direction: column;
+	gap: 0; /* reset legacy gap: 20px from .community-general-card-config */
+	width: 100%;
+	min-width: 0;
 
 	&:hover {
 		transform: translateY(-4px);
 		box-shadow: 0 10px 28px rgba(0,0,0,.1);
+		border-color: var(--np);
 
 		.community-card__thumb-img { transform: scale(1.04); }
 	}
@@ -3814,7 +3859,6 @@ section:has(.video-banner) {
 		font-size: 12px;
 		color: var(--t3);
 		line-height: 1.6;
-		flex: 1;
 		overflow: hidden;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -4697,5 +4741,30 @@ section:has(.video-banner) {
   .product-detail__cart-btn {
     width: 100%;
     min-height: 48px;
+  }
+}
+
+// ── Scroll-to-top button ──────────────────────────────────────────────────────
+.scroll-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1a472a;
+  color: #fff;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(26, 71, 42, 0.35);
+  transition: background 0.2s;
+
+  &:hover {
+    background: #2d6a4a;
   }
 }
