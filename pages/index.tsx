@@ -5,7 +5,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import useDeviceDetect from '../libs/hooks/useDeviceDetect';
 import withLayoutHome from '../libs/components/layout/LayoutHome';
 
-import BrandsStrip from '../libs/components/homepage/BrandsStrip';
+// PORTFOLIO: brand letters removed
+// import BrandsStrip from '../libs/components/homepage/BrandsStrip';
 import CategoryGrid from '../libs/components/homepage/CategoryGrid';
 import PopularProducts from '../libs/components/homepage/PopularProducts';
 import PromoBanner from '../libs/components/homepage/PromoBanner';
@@ -15,6 +16,7 @@ import TopProducts from '../libs/components/homepage/TopProducts';
 import VideoBanner from '../libs/components/homepage/VideoBanner';
 import Events from '../libs/components/homepage/Events';
 import CommunityBoards from '../libs/components/homepage/CommunityBoards';
+import ScrollToTop from '../libs/components/common/ScrollToTop';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -53,7 +55,7 @@ const Home: NextPage = () => {
 			<>
 				{seoHead}
 				<div className="home-page">
-					<BrandsStrip />
+					{/* BrandsStrip removed — PORTFOLIO */}
 					<CategoryGrid />
 					<PopularProducts />
 					<TrendProducts />
@@ -61,6 +63,7 @@ const Home: NextPage = () => {
 					<TopProducts />
 					<Events />
 					<CommunityBoards />
+					<ScrollToTop />
 				</div>
 			</>
 		);
@@ -70,7 +73,7 @@ const Home: NextPage = () => {
 		<>
 			{seoHead}
 			<div className="home-page">
-				<BrandsStrip />
+				{/* BrandsStrip removed — PORTFOLIO */}
 				<CategoryGrid />
 				<PopularProducts />
 				<PromoBanner />
@@ -80,6 +83,7 @@ const Home: NextPage = () => {
 				<VideoBanner />
 				<Events />
 				<CommunityBoards />
+				<ScrollToTop />
 			</div>
 		</>
 	);
