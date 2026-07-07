@@ -1,7 +1,8 @@
 .strip {
 	width: 100%;
-	padding: 20px 0;
-	background: transparent;
+	padding: 24px 0;
+	background: var(--cb, #fff);
+	border-bottom: 1px solid var(--bd, #c8e6a0);
 	overflow: hidden;
 }
 
@@ -9,12 +10,11 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: 10px;
+	gap: 12px;
 	padding: 4px 32px;
 	overflow-x: auto;
 	scroll-behavior: smooth;
 
-	/* hide scrollbar across all browsers */
 	-ms-overflow-style: none;
 	scrollbar-width: none;
 	&::-webkit-scrollbar {
@@ -22,29 +22,24 @@
 	}
 }
 
-.pill {
+.card {
 	display: inline-flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 7px;
+	gap: 8px;
 	flex-shrink: 0;
-	padding: 8px 18px;
-	background: var(--cb);
-	border: 1px solid var(--bd);
-	border-radius: 20px;
+	min-width: 88px;
+	padding: 14px 16px;
+	background: var(--cb, #fff);
+	border: 1.5px solid var(--bd, #c8e6a0);
+	border-radius: 14px;
 	cursor: pointer;
-	transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-	text-decoration: none;
-	white-space: nowrap;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 
 	&:hover {
-		background: var(--np);
-		border-color: var(--np);
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(78, 138, 40, 0.25);
-
-		.name {
-			color: #fff;
-		}
+		transform: translateY(-3px);
+		box-shadow: 0 6px 20px rgba(78, 138, 40, 0.15);
+		border-color: var(--np, #4e8a28);
 	}
 
 	&:active {
@@ -52,18 +47,39 @@
 	}
 }
 
-.emoji {
-	font-size: 16px;
+.avatar {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: var(--nbg, #eaf3de);
+	color: var(--np, #4e8a28);
+	font-size: 17px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
 	line-height: 1;
-	user-select: none;
+	transition: background 0.2s ease, color 0.2s ease;
+
+	.card:hover & {
+		background: var(--np, #4e8a28);
+		color: #fff;
+	}
 }
 
 .name {
-	color: var(--t1);
-	font-size: 13px;
-	font-weight: 500;
-	line-height: 1;
+	color: var(--t1, #1a2e0a);
+	font-size: 11px;
+	font-weight: 600;
+	text-align: center;
+	white-space: nowrap;
+	line-height: 1.2;
 	transition: color 0.2s ease;
+
+	.card:hover & {
+		color: var(--np, #4e8a28);
+	}
 }
 
 /* tablet */
@@ -77,18 +93,21 @@
 @media (max-width: 600px) {
 	.track {
 		padding: 4px 16px;
-		gap: 8px;
+		gap: 10px;
 	}
 
-	.pill {
-		padding: 7px 14px;
+	.card {
+		min-width: 76px;
+		padding: 12px 12px;
 	}
 
-	.emoji {
-		font-size: 15px;
+	.avatar {
+		width: 36px;
+		height: 36px;
+		font-size: 14px;
 	}
 
 	.name {
-		font-size: 12px;
+		font-size: 10px;
 	}
 }
