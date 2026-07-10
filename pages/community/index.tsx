@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Stack, Tab, Typography, Button, Pagination } from '@mui/material';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Stack, Typography, Button, Pagination } from '@mui/material';
 import CommunityCard from '../../libs/components/common/CommunityCard';
+import CommunityFilterSidebar from '../../libs/components/community/CommunityFilterSidebar';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { T } from '../../libs/types/common';
@@ -89,42 +90,10 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 				<div className="container">
 					<TabContext value={searchCommunity.search.articleCategory}>
 						<Stack className="main-box">
-							<Stack className="left-config">
-								<Stack className={'image-info'}>
-									<img src={'/img/logo/petoriaLogoText.svg'} alt="Petoria" />
-									<Stack className={'community-name'}>
-										<Typography className={'name'}>🐾 Petoria Community</Typography>
-									</Stack>
-								</Stack>
-
-								<TabList
-									orientation="vertical"
-									aria-label="community tabs"
-									TabIndicatorProps={{ style: { display: 'none' } }}
-									onChange={tabChangeHandler}
-								>
-									<Tab
-										value={'FREE'}
-										label={'🐾 Free Board'}
-										className={`tab-button ${searchCommunity.search.articleCategory === 'FREE' ? 'active' : ''}`}
-									/>
-									<Tab
-										value={'RECOMMEND'}
-										label={'⭐ Recommendations'}
-										className={`tab-button ${searchCommunity.search.articleCategory === 'RECOMMEND' ? 'active' : ''}`}
-									/>
-									<Tab
-										value={'NEWS'}
-										label={'📰 Pet News'}
-										className={`tab-button ${searchCommunity.search.articleCategory === 'NEWS' ? 'active' : ''}`}
-									/>
-									<Tab
-										value={'HUMOR'}
-										label={'😄 Humor'}
-										className={`tab-button ${searchCommunity.search.articleCategory === 'HUMOR' ? 'active' : ''}`}
-									/>
-								</TabList>
-							</Stack>
+							<CommunityFilterSidebar
+								activeCategory={searchCommunity.search.articleCategory}
+								onCategoryChange={tabChangeHandler}
+							/>
 
 							<Stack className="right-config">
 								<Stack className="panel-config">

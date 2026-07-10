@@ -3,8 +3,9 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Button, Stack, Typography, Tab, Tabs, IconButton, Backdrop, Pagination } from '@mui/material';
+import { Button, Stack, Typography, IconButton, Backdrop, Pagination } from '@mui/material';
 import { Trash, ThumbsUp, Eye, Chat, ChatCircle, PencilSimple } from 'phosphor-react';
+import CommunityFilterSidebar from '../../libs/components/community/CommunityFilterSidebar';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { format } from 'date-fns';
 import { userVar } from '../../apollo/store';
@@ -224,42 +225,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 			</Head>
 				<div className="container">
 					<Stack className="main-box">
-						<Stack className="left-config">
-							<Stack className={'image-info'}>
-								<img src={'/img/logo/petoriaLogoDark.svg'} alt="Petoria" style={{ width: 120, height: 'auto' }} />
-								<Stack className={'community-name'}>
-									<Typography className={'name'}>Community Board Article</Typography>
-								</Stack>
-							</Stack>
-							<Tabs
-								orientation="vertical"
-								aria-label="lab API tabs example"
-								TabIndicatorProps={{ style: { display: 'none' } }}
-								onChange={tabChangeHandler}
-								value={articleCategory}
-							>
-								<Tab
-									value={'FREE'}
-									label={'Free Board'}
-									className={`tab-button ${articleCategory === 'FREE' ? 'active' : ''}`}
-								/>
-								<Tab
-									value={'RECOMMEND'}
-									label={'Recommendation'}
-									className={`tab-button ${articleCategory === 'RECOMMEND' ? 'active' : ''}`}
-								/>
-								<Tab
-									value={'NEWS'}
-									label={'News'}
-									className={`tab-button ${articleCategory === 'NEWS' ? 'active' : ''}`}
-								/>
-								<Tab
-									value={'HUMOR'}
-									label={'Humor'}
-									className={`tab-button ${articleCategory === 'HUMOR' ? 'active' : ''}`}
-								/>
-							</Tabs>
-						</Stack>
+						<CommunityFilterSidebar activeCategory={articleCategory} onCategoryChange={tabChangeHandler} />
 						<div className="community-detail-config">
 							<Stack className="title-box">
 								<Stack className="left">

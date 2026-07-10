@@ -5,17 +5,17 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import DiamondIcon from '@mui/icons-material/Diamond';
-import { DogIcon, CatIcon, BirdIcon, FishIcon } from '../icons/AnimalIcons';
+import { Dog, Cat, Bird, Fish } from 'phosphor-react';
 
 // No color override — icons inherit color from .cats__item-icon CSS (var(--np))
 // On hover, parent sets color: #fff via CSS, currentColor propagates to SVGs
 const ICON_SX = { fontSize: 'inherit' } as const;
 
 const CATS = [
-	{ icon: <DogIcon  size={28} />, label: 'Dogs',        href: '/shop?type=DOG' },
-	{ icon: <CatIcon  size={28} />, label: 'Cats',        href: '/shop?type=CAT' },
-	{ icon: <BirdIcon size={28} />, label: 'Birds',       href: '/shop?type=BIRD' },
-	{ icon: <FishIcon size={28} />, label: 'Fish',        href: '/shop?type=FISH' },
+	{ icon: <Dog  size={28} />, label: 'Dogs',        href: '/shop?type=DOG' },
+	{ icon: <Cat  size={28} />, label: 'Cats',        href: '/shop?type=CAT' },
+	{ icon: <Bird size={28} />, label: 'Birds',       href: '/shop?type=BIRD' },
+	{ icon: <Fish size={28} />, label: 'Fish',        href: '/shop?type=FISH' },
 	{ icon: <RestaurantIcon sx={ICON_SX} />,    label: 'Food',        href: '/shop?cat=FOOD' },
 	{ icon: <LocalPharmacyIcon sx={ICON_SX} />, label: 'Medicine',    href: '/shop?cat=MEDICINE' },
 	{ icon: <SportsEsportsIcon sx={ICON_SX} />, label: 'Toys',        href: '/shop?cat=TOY' },
