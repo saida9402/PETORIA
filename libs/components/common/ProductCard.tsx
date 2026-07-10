@@ -284,13 +284,13 @@ const ProductCard = (props: ProductCardProps) => {
 					{!recentlyViewed && (
 						<Stack className="buttons">
 							<IconButton color={'default'}>
-								<Eye size={20} />
+								<Eye size={20} weight="duotone" />
 							</IconButton>
 							<Typography className="view-cnt">{product.productViews ?? 0}</Typography>
 
 							<IconButton color={'default'} onClick={() => likeProductHandler?.(user, product._id)}>
 								{myFavorites || product?.meLiked?.[0]?.myFavorite ? (
-									<Heart size={20} weight="fill" color="#4E8A28" />
+									<Heart size={20} weight="fill" color="#e11d48" />
 								) : (
 									<Heart size={20} />
 								)}

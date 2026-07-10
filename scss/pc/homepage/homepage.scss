@@ -949,6 +949,9 @@
 	}
 
 	&__title {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
 		font-family: $font;
 		font-size: 24px;
 		font-weight: 700;
@@ -1419,6 +1422,9 @@
 		margin-top: 4px;
 
 		span {
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
 			font-family: $font;
 			font-size: 10px;
 			color: var(--t3, #6b8a4e);
@@ -1646,6 +1652,9 @@
 		gap: 10px;
 
 		span {
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
 			font-family: $font;
 			font-size: 10px;
 			color: var(--t3, #6b8a4e);
@@ -3173,6 +3182,9 @@
 	}
 
 	&__like {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 		background: none;
 		border: none;
 		cursor: pointer;
@@ -3916,9 +3928,18 @@ section:has(.video-banner) {
 		font-family: $font;
 		font-size: 12px;
 		color: var(--t3);
+
+		> span {
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+		}
 	}
 
 	&__like {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
 		background: none;
 		border: none;
 		cursor: pointer;
@@ -3963,6 +3984,12 @@ section:has(.video-banner) {
 		font-size: 11px;
 		color: var(--t3);
 		margin-top: 3px;
+
+		span {
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+		}
 	}
 
 	/* Badge color overrides */
@@ -4338,6 +4365,9 @@ section:has(.video-banner) {
 		margin-bottom: 12px;
 
 		span {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
 			line-height: 1.4;
 		}
 	}
@@ -4614,6 +4644,84 @@ section:has(.video-banner) {
 			color: var(--np);
 			font-weight: 600;
 			line-height: 1.4;
+		}
+	}
+
+	&__reviews-toggle {
+		display: block;
+		margin: 4px 0 4px;
+		font-family: $font;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--np);
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 2px 0;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&__review-form {
+		margin-top: 20px;
+		padding-top: 20px;
+		border-top: 1px solid var(--bd);
+
+		&-title {
+			font-family: $font;
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--t1);
+			margin-bottom: 10px;
+		}
+	}
+
+	&__review-textarea {
+		width: 100%;
+		padding: 12px 16px;
+		border: 1px solid var(--bd);
+		border-radius: 10px;
+		background: var(--pb);
+		color: var(--t1);
+		font-family: $font;
+		font-size: 13px;
+		line-height: 1.6;
+		resize: vertical;
+		outline: none;
+		transition: border-color 0.2s;
+
+		&:focus {
+			border-color: var(--np);
+		}
+
+		&::placeholder {
+			color: var(--t3);
+		}
+	}
+
+	&__review-submit {
+		margin-top: 10px;
+		padding: 9px 24px;
+		background: var(--np);
+		color: #fff;
+		border: none;
+		border-radius: 8px;
+		font-family: $font;
+		font-size: 13px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.2s;
+
+		&:hover:not(:disabled) {
+			background: var(--nm);
+		}
+
+		&:disabled {
+			background: #ccc;
+			color: #888;
+			cursor: not-allowed;
 		}
 	}
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Fire } from 'phosphor-react';
 
 import TrendProductCard from './TrendProductCard';
 import { useToast } from '../../hooks/useToast';
@@ -84,7 +85,10 @@ export default function TrendProducts() {
 				<div className="section-hd">
 					<div>
 						<p className="section-hd__eyebrow">Just in</p>
-						<h2 className="section-hd__title">Trending Now</h2>
+						<h2 className="section-hd__title">
+							<Fire size={22} weight="duotone" color="#e11d48" />
+							Trending Now
+						</h2>
 						<p className="section-hd__sub">Freshest additions to our catalogue</p>
 					</div>
 					<Link href="/shop?sort=newest" className="section-hd__link">

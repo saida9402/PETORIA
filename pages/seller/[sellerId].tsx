@@ -49,6 +49,9 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [sellerComments, setSellerComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
+	const [showAllReviews, setShowAllReviews] = useState<boolean>(false);
+	const REVIEWS_COLLAPSED_COUNT = 3;
+	const REVIEW_MAX_LENGTH = 500;
 	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
 		commentGroup: CommentGroup.MEMBER,
 		commentContent: '',
@@ -111,6 +114,10 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 		if (commentInquiry.search.commentRefId) getCommentsRefetch({ input: commentInquiry });
 	}, [commentInquiry]);
 
+	useEffect(() => {
+		setShowAllReviews(false);
+	}, [commentInquiry.page]);
+
 	/** HANDLERS **/
 	const productPaginationHandler = async (_: ChangeEvent<unknown>, value: number) => {
 		setSearchFilter((prev) => ({ ...prev, page: value }));
@@ -165,7 +172,13 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 			setInsertCommentData((prev) => ({ ...prev, commentContent: '' }));
 			await getCommentsRefetch({ input: commentInquiry });
 		} catch (err: any) {
-			sweetErrorHandling(err).then();
+			// ApolloError's own .message is often a generic "Bad Request" — the actual
+			// backend validation text lives on the individual GraphQL/network error.
+			const message =
+				err?.graphQLErrors?.[0]?.message ??
+				err?.networkError?.result?.errors?.[0]?.message ??
+				err?.message;
+			sweetErrorHandling({ message }).then();
 		}
 	};
 
@@ -283,9 +296,16 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 								<Star size={16} color="#F59E0B" weight="fill" />
 								<span>{commentTotal} review{commentTotal > 1 ? 's' : ''}</span>
 							</Box>
-							{sellerComments.map((comment: Comment) => (
-								<ReviewCard comment={comment} key={comment._id} />
-							))}
+							{(showAllReviews ? sellerComments : sellerComments.slice(0, REVIEWS_COLLAPSED_COUNT)).map(
+								(comment: Comment) => (
+									<ReviewCard comment={comment} key={comment._id} />
+								),
+							)}
+							{sellerComments.length > REVIEWS_COLLAPSED_COUNT && (
+								<button className="ssp-reviews__toggle" onClick={() => setShowAllReviews((prev) => !prev)}>
+									{showAllReviews ? '▲ Show less' : `▼ Show more (${sellerComments.length - REVIEWS_COLLAPSED_COUNT})`}
+								</button>
+							)}
 							{commentTotal > commentInquiry.limit && (
 								<Stack className="ssp-pagination">
 									<Pagination
@@ -305,12 +325,16 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 						<textarea
 							className="ssp-leave-review__textarea"
 							rows={4}
+							maxLength={REVIEW_MAX_LENGTH}
 							placeholder="Share your experience with this seller..."
 							value={insertCommentData.commentContent}
 							onChange={({ target: { value } }) =>
 								setInsertCommentData((prev) => ({ ...prev, commentContent: value }))
 							}
 						/>
+						<span className="ssp-leave-review__counter">
+							{insertCommentData.commentContent.length} / {REVIEW_MAX_LENGTH}
+						</span>
 						<Button
 							className="ssp-leave-review__submit"
 							disabled={!insertCommentData.commentContent || !user._id}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
+import { Heart, Eye } from 'phosphor-react';
 
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { API_URL } from '../../config';
@@ -67,9 +68,9 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 					<div className="community-card__compact-meta">
 						<span>{timeLabel}</span>
 						<span>·</span>
-						<span>♥ {likes}</span>
+						<span><Heart size={11} weight="fill" color="#e11d48" /> {likes}</span>
 						<span>·</span>
-						<span>👁 {a.articleViews}</span>
+						<span><Eye size={11} weight="duotone" /> {a.articleViews}</span>
 					</div>
 				</div>
 			</div>
@@ -132,12 +133,17 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 					</div>
 
 					<div className="community-card__meta">
-						<span>👁 {a.articleViews}</span>
+						<span><Eye size={13} weight="duotone" /> {a.articleViews}</span>
 						<button
 							className={`community-card__like${liked ? ' community-card__like--liked' : ''}`}
 							onClick={handleLike}
 						>
-							{liked ? '❤️' : '🤍'} {likes}
+							{liked ? (
+								<Heart size={13} weight="fill" color="#e11d48" />
+							) : (
+								<Heart size={13} weight="regular" color="#9ca3af" />
+							)}{' '}
+							{likes}
 						</button>
 					</div>
 				</div>

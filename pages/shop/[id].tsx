@@ -3,17 +3,24 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
+import { Eye } from 'phosphor-react';
 
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { GET_PRODUCT } from '../../apollo/user/query';
-import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
-import { API_URL, TYPE_CFG, CAT_CFG } from '../../libs/config';
+import { GET_PRODUCT, GET_COMMENTS } from '../../apollo/user/query';
+import { LIKE_TARGET_PRODUCT, CREATE_COMMENT } from '../../apollo/user/mutation';
+import { API_URL, TYPE_CFG, CAT_CFG, Messages } from '../../libs/config';
 import { T } from '../../libs/types/common';
 import { addToCart } from '../../libs/cart';
-import { sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetTopSmallSuccessAlert, sweetErrorHandling } from '../../libs/sweetAlert';
+import { userVar } from '../../apollo/store';
+import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
+import { Comment } from '../../libs/types/comment/comment';
+import { CommentGroup } from '../../libs/enums/comment.enum';
+import { Direction } from '../../libs/enums/common.enum';
+import ReviewCard from '../../libs/components/seller/ReviewCard';
 
 export const getServerSideProps = async ({ locale }: any) => ({
 	props: {
@@ -28,6 +35,7 @@ const ProductDetail: NextPage = () => {
 	const router = useRouter();
 	const productId = typeof router.query.id === 'string' ? router.query.id : '';
 	const validId = isValidObjectId(productId);
+	const user = useReactiveVar(userVar);
 
 	const [liked, setLiked] = useState(false);
 	const [likes, setLikes] = useState(0);
@@ -37,11 +45,36 @@ const ProductDetail: NextPage = () => {
 	const [descExpanded, setDescExpanded] = useState(false);
 	const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
+	const REVIEWS_COLLAPSED_COUNT = 3;
+	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>({
+		page: 1,
+		limit: 20,
+		sort: 'createdAt',
+		direction: Direction.ASC,
+		search: { commentRefId: '' },
+	});
+	const [productComments, setProductComments] = useState<Comment[]>([]);
+	const [commentTotal, setCommentTotal] = useState<number>(0);
+	const [showAllReviews, setShowAllReviews] = useState<boolean>(false);
+	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
+		commentGroup: CommentGroup.PRODUCT,
+		commentContent: '',
+		commentRefId: '',
+	});
+
 	useEffect(() => {
 		setMainImgFailed(false);
 	}, [activeImg]);
 
+	useEffect(() => {
+		if (validId) {
+			setCommentInquiry((prev) => ({ ...prev, search: { commentRefId: productId } }));
+			setInsertCommentData((prev) => ({ ...prev, commentRefId: productId }));
+		}
+	}, [productId, validId]);
+
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
+	const [createComment] = useMutation(CREATE_COMMENT);
 
 	const { data, loading } = useQuery(GET_PRODUCT, {
 		fetchPolicy: 'network-only',
@@ -57,6 +90,39 @@ const ProductDetail: NextPage = () => {
 	});
 
 	const product = data?.getProduct;
+
+	const { refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
+		fetchPolicy: 'network-only',
+		variables: { input: commentInquiry },
+		skip: !commentInquiry.search.commentRefId,
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (d: T) => {
+			setProductComments(d?.getComments?.list ?? []);
+			setCommentTotal(d?.getComments?.metaCounter[0]?.total ?? 0);
+		},
+	});
+
+	useEffect(() => {
+		if (commentInquiry.search.commentRefId) getCommentsRefetch({ input: commentInquiry });
+	}, [commentInquiry]);
+
+	const createCommentHandler = async () => {
+		try {
+			if (!user._id) throw new Error(Messages.error2);
+			if (user._id === product?.memberData?._id) throw new Error('Cannot review your own product');
+			await createComment({ variables: { input: insertCommentData } });
+			setInsertCommentData((prev) => ({ ...prev, commentContent: '' }));
+			await getCommentsRefetch({ input: commentInquiry });
+		} catch (err: any) {
+			// ApolloError's own .message is often a generic "Bad Request" — the actual
+			// backend validation text lives on the individual GraphQL/network error.
+			const message =
+				err?.graphQLErrors?.[0]?.message ??
+				err?.networkError?.result?.errors?.[0]?.message ??
+				err?.message;
+			sweetErrorHandling({ message }).then();
+		}
+	};
 
 	const handleLike = async () => {
 		if (!product?._id) return;
@@ -254,7 +320,7 @@ const ProductDetail: NextPage = () => {
 						</div>
 						<div className="product-detail__stats">
 							<span>❤️ {likes} likes</span>
-							<span>👁 {product.productViews} views</span>
+							<span><Eye size={14} weight="duotone" /> {product.productViews} views</span>
 						</div>
 						{likes > 0 && (
 							<p className="product-detail__social-proof">Liked by {likes} users</p>
@@ -444,7 +510,7 @@ const ProductDetail: NextPage = () => {
 						<div className="product-detail__stats">
 							<span>❤️ {likes} likes</span>
 							<span aria-hidden>·</span>
-							<span>👁 {product.productViews} views</span>
+							<span><Eye size={14} weight="duotone" /> {product.productViews} views</span>
 						</div>
 
 						<div className="product-detail__price-row">
@@ -553,10 +619,52 @@ const ProductDetail: NextPage = () => {
 					</section>
 
 					<section className="product-detail__section">
-						<h2 className="product-detail__section-title">Reviews</h2>
-						<div className="product-detail__reviews-empty">
-							<p>No reviews yet.</p>
-							<p className="product-detail__reviews-cta">Be the first to review this product 🐾</p>
+						<h2 className="product-detail__section-title">Reviews{commentTotal > 0 ? ` (${commentTotal})` : ''}</h2>
+						{productComments.length === 0 ? (
+							<div className="product-detail__reviews-empty">
+								<p>No reviews yet.</p>
+								<p className="product-detail__reviews-cta">Be the first to review this product 🐾</p>
+							</div>
+						) : (
+							<div className="product-detail__reviews">
+								{(showAllReviews ? productComments : productComments.slice(0, REVIEWS_COLLAPSED_COUNT)).map(
+									(comment: Comment) => (
+										<ReviewCard comment={comment} key={comment._id} />
+									),
+								)}
+								{productComments.length > REVIEWS_COLLAPSED_COUNT && (
+									<button
+										type="button"
+										className="product-detail__reviews-toggle"
+										onClick={() => setShowAllReviews((prev) => !prev)}
+									>
+										{showAllReviews
+											? '▲ Show less'
+											: `▼ Show more (${productComments.length - REVIEWS_COLLAPSED_COUNT})`}
+									</button>
+								)}
+							</div>
+						)}
+
+						<div className="product-detail__review-form">
+							<p className="product-detail__review-form-title">Leave a Review</p>
+							<textarea
+								className="product-detail__review-textarea"
+								rows={4}
+								placeholder="Share your experience with this product..."
+								value={insertCommentData.commentContent}
+								onChange={({ target: { value } }) =>
+									setInsertCommentData((prev) => ({ ...prev, commentContent: value }))
+								}
+							/>
+							<button
+								type="button"
+								className="product-detail__review-submit"
+								disabled={!insertCommentData.commentContent || !user._id}
+								onClick={createCommentHandler}
+							>
+								Submit Review
+							</button>
 						</div>
 					</section>
 				</div>

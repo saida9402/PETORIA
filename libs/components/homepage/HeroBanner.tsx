@@ -161,7 +161,7 @@ const HeroBanner = () => {
 					transition={{ duration: 3.5 + (pos === 'tr' ? 0.5 : pos === 'bl' ? 0.8 : pos === 'br' ? 0.3 : 0), repeat: Infinity, ease: 'easeInOut' }}
 				>
 					<span className="hero__card-ico">
-						{React.createElement(icon, { size: 20, color: '#fff', weight: 'light' })}
+						{React.createElement(icon, { size: 20, color: '#fff', weight: 'duotone' })}
 					</span>
 					<div className="hero__card-body">
 						<strong>{title}</strong>
@@ -211,7 +211,7 @@ const HeroBanner = () => {
 								<React.Fragment key={text}>
 									<div className="hero__stat">
 										<span className="hero__stat-icon">
-											{React.createElement(icon, { size: 15, color: 'rgba(255,255,255,0.75)', weight: 'light' })}
+											{React.createElement(icon, { size: 15, color: 'rgba(255,255,255,0.85)', weight: 'duotone' })}
 										</span>
 										<span className="hero__stat-text">{text}</span>
 									</div>

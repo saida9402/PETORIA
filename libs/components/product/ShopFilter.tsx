@@ -5,7 +5,7 @@ import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import ChildFriendlyIcon from '@mui/icons-material/ChildFriendly';
-import { DogIcon, CatIcon, BirdIcon, FishIcon } from '../icons/AnimalIcons';
+import { Dog, Cat, Bird, Fish } from 'phosphor-react';
 import { ProductCategory, ProductType } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
 
@@ -18,10 +18,10 @@ interface ShopFilterProps {
 const ICON_SX = { fontSize: 15, color: '#6B8A4E', flexShrink: 0 } as const;
 
 const PET_TYPES = [
-	{ value: ProductType.DOG,  label: 'Dogs',  icon: <DogIcon  size={15} /> },
-	{ value: ProductType.CAT,  label: 'Cats',  icon: <CatIcon  size={15} /> },
-	{ value: ProductType.BIRD, label: 'Birds', icon: <BirdIcon size={15} /> },
-	{ value: ProductType.FISH, label: 'Fish',  icon: <FishIcon size={15} /> },
+	{ value: ProductType.DOG,  label: 'Dogs',  icon: <Dog  size={15} color="#6B8A4E" /> },
+	{ value: ProductType.CAT,  label: 'Cats',  icon: <Cat  size={15} color="#6B8A4E" /> },
+	{ value: ProductType.BIRD, label: 'Birds', icon: <Bird size={15} color="#6B8A4E" /> },
+	{ value: ProductType.FISH, label: 'Fish',  icon: <Fish size={15} color="#6B8A4E" /> },
 ];
 
 const CATEGORIES = [

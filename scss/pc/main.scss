@@ -46,6 +46,12 @@ body::-webkit-scrollbar {
 	display: none; /* for Chrome, Safari, and Opera */
 }
 
+/* SweetAlert2 renders its container on document.body, outside #pc-wrap —
+   its default z-index (1060) sits below the sticky navbar (1100) and gets hidden behind it. */
+.swal2-container {
+	z-index: 1200 !important;
+}
+
 #pc-wrap {
 	#top, > .top {
 		position: sticky;

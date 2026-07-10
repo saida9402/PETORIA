@@ -110,8 +110,15 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
-			await likeTargetProduct({ variables: { input: id } });
-			await getProductsRefetch({ input: searchFilter });
+			const result = await likeTargetProduct({ variables: { input: id } });
+			const updated = result?.data?.likeTargetProduct;
+			if (updated) {
+				setProducts((prev) =>
+					prev.map((p) =>
+						p._id === id ? { ...p, productLikes: updated.productLikes, meLiked: updated.meLiked } : p,
+					),
+				);
+			}
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
 			sweetMixinErrorAlert(err.message).then();

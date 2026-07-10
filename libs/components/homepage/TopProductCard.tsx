@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
+import { Heart } from 'phosphor-react';
 import { API_URL } from '../../config';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 
@@ -88,7 +89,12 @@ export default function TopProductCard({ product: p, rank }: Props) {
 						className={`top-product-card__like${liked ? ' top-product-card__like--liked' : ''}`}
 						onClick={handleLike}
 					>
-						{liked ? '❤️' : '🤍'} {likes}
+						{liked ? (
+							<Heart size={14} weight="fill" color="#e11d48" />
+						) : (
+							<Heart size={14} weight="regular" color="#9ca3af" />
+						)}{' '}
+						{likes}
 					</button>
 				</div>
 			</div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
+import { Heart, Eye } from 'phosphor-react';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { API_URL, TYPE_CFG, CAT_CFG } from '../../config';
 import { addToCart } from '../../cart';
@@ -137,7 +138,11 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 					onClick={handleLike}
 					aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
 				>
-					{liked ? '❤️' : '🤍'}
+					{liked ? (
+						<Heart size={20} weight="fill" color="#e11d48" />
+					) : (
+						<Heart size={20} weight="regular" color="#9ca3af" />
+					)}
 				</button>
 
 				{/* Quick add */}
@@ -196,8 +201,8 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 				)}
 
 				<div className="tpc__views-row" aria-hidden="true">
-					<span>❤️ {likes}</span>
-					<span>👁 {p.productViews}</span>
+					<span><Heart size={12} weight="fill" color="#e11d48" /> {likes}</span>
+					<span><Eye size={12} weight="duotone" /> {p.productViews}</span>
 				</div>
 			</div>
 		</article>
