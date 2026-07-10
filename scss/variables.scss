@@ -12,3 +12,7 @@ $bp-tablet:  768px;   // tablet portrait
 $bp-laptop:  1024px;  // laptop
 $bp-desktop: 1280px;  // standard desktop
 $bp-wide:    1440px;  // wide desktop
+
+// ── Shared page container (Header / Weather Bar / Hero / Homepage body / Footer) ──
+$page-container-width:  1320px;
+$page-container-padding: 40px;

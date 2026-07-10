@@ -1,19 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { PawPrint, Truck, Star, Package, ShieldCheck, Sparkle } from 'phosphor-react';
 import { useWeather } from '../../hooks/useWeather';
 
 const STATS = [
-	{ icon: '🐶', text: '12k+ Products' },
-	{ icon: '🚚', text: 'Free Delivery' },
-	{ icon: '⭐', text: '4.9 Rating' },
+	{ icon: PawPrint, text: '12k+ Products' },
+	{ icon: Truck, text: 'Free Delivery' },
+	{ icon: Star, text: '4.9 Rating' },
 ];
 
 const FLOAT_CARDS = [
-	{ pos: 'tl', icon: '🍖', title: 'Dog Food', sub: 'Premium Quality' },
-	{ pos: 'tr', icon: '✅', title: 'Vet Approved', sub: 'Certified' },
-	{ pos: 'bl', icon: '🐾', title: 'New Arrivals', sub: 'Just Landed' },
-	{ pos: 'br', icon: '🚚', title: 'Free Ship', sub: 'Orders over $30' },
+	{ pos: 'tl', icon: Package, title: 'Dog Food', sub: 'Premium Quality' },
+	{ pos: 'tr', icon: ShieldCheck, title: 'Vet Approved', sub: 'Certified' },
+	{ pos: 'bl', icon: Sparkle, title: 'New Arrivals', sub: 'Just Landed' },
+	{ pos: 'br', icon: Truck, title: 'Free Ship', sub: 'Orders over $30' },
 ];
 
 // Pre-computed particle data (stable across renders, SSR-safe)
@@ -159,7 +160,9 @@ const HeroBanner = () => {
 					animate={{ y: [0, -8, 0] }}
 					transition={{ duration: 3.5 + (pos === 'tr' ? 0.5 : pos === 'bl' ? 0.8 : pos === 'br' ? 0.3 : 0), repeat: Infinity, ease: 'easeInOut' }}
 				>
-					<span className="hero__card-ico">{icon}</span>
+					<span className="hero__card-ico">
+						{React.createElement(icon, { size: 20, color: '#fff', weight: 'light' })}
+					</span>
 					<div className="hero__card-body">
 						<strong>{title}</strong>
 						<span>{sub}</span>
@@ -207,7 +210,9 @@ const HeroBanner = () => {
 							{STATS.map(({ icon, text }, i) => (
 								<React.Fragment key={text}>
 									<div className="hero__stat">
-										<span className="hero__stat-icon">{icon}</span>
+										<span className="hero__stat-icon">
+											{React.createElement(icon, { size: 15, color: 'rgba(255,255,255,0.75)', weight: 'light' })}
+										</span>
 										<span className="hero__stat-text">{text}</span>
 									</div>
 									{i < STATS.length - 1 && <div className="hero__stat-sep" />}

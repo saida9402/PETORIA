@@ -70,10 +70,10 @@ body::-webkit-scrollbar {
 			}
 
 			.nav-inner {
-				max-width: 1440px;
+				max-width: $page-container-width;
 				height: 100%;
 				margin: 0 auto;
-				padding: 0 32px;
+				padding: 0 $page-container-padding;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
@@ -880,7 +880,7 @@ body::-webkit-scrollbar {
 
 			.footer-newsletter {
 				background: linear-gradient(135deg, #2d5016 0%, #3a6b1e 50%, #4e8a28 100%);
-				padding: 48px 80px;
+				padding: 48px max($page-container-padding, calc((100vw - #{$page-container-width}) / 2 + #{$page-container-padding}));
 				display: flex;
 				flex-direction: row;
 				align-items: center;
@@ -949,7 +949,7 @@ body::-webkit-scrollbar {
 			}
 
 			.footer-body {
-				padding: 64px 80px 48px;
+				padding: 64px max($page-container-padding, calc((100vw - #{$page-container-width}) / 2 + #{$page-container-padding})) 48px;
 				display: flex;
 				flex-direction: row;
 				gap: 60px;
@@ -1067,7 +1067,7 @@ body::-webkit-scrollbar {
 			}
 
 			.footer-copyright {
-				padding: 20px 80px;
+				padding: 20px max($page-container-padding, calc((100vw - #{$page-container-width}) / 2 + #{$page-container-padding}));
 				border-top: 1px solid rgba(255, 255, 255, 0.06);
 				display: flex;
 				flex-direction: row;
