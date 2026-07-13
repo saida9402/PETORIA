@@ -1,7 +1,6 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, MouseEvent, useState } from 'react';
 import { NextPage } from 'next';
 import { Button, Drawer, IconButton, Menu, MenuItem, Pagination } from '@mui/material';
-import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { CaretDown, X, SlidersHorizontal } from 'phosphor-react';
 import { useMutation, useQuery } from '@apollo/client';
@@ -10,7 +9,7 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { ProductsInquiry } from '../../libs/types/product/product.input';
 import { Product } from '../../libs/types/product/product';
-import { Direction } from '../../libs/enums/product.enum';
+import { Direction, ProductType, ProductCategory } from '../../libs/enums/product.enum';
 import { T } from '../../libs/types/common';
 import { GET_PRODUCTS } from '../../apollo/user/query';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
@@ -18,6 +17,7 @@ import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/swee
 import { Messages } from '../../libs/config';
 import ShopFilter from '../../libs/components/product/ShopFilter';
 import ProductCard from '../../libs/components/common/ProductCard';
+import { useUrlSearchFilter } from '../../libs/hooks/useUrlSearchFilter';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -25,12 +25,19 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-function safeParseInput<T>(raw: string | string[] | undefined, fallback: T): T {
-	try {
-		return raw ? JSON.parse(raw as string) : fallback;
-	} catch {
-		return fallback;
-	}
+/** Maps legacy inbound deep-links (/shop?type=DOG&cat=FOOD&text=…&productBrand=…)
+ *  into a full inquiry when no `?input=` blob is present, so those links keep working. */
+function deriveShopQuery(query: Record<string, any>, fallback: ProductsInquiry): ProductsInquiry {
+	if (!(query.type || query.cat || query.text || query.productBrand)) return fallback;
+	return {
+		...fallback,
+		search: {
+			...(query.type ? { typeList: [query.type as ProductType] } : {}),
+			...(query.cat ? { categoryList: [query.cat as ProductCategory] } : {}),
+			...(query.text ? { text: query.text as string } : {}),
+			...(query.productBrand ? { brandList: [query.productBrand as string] } : {}),
+		},
+	};
 }
 
 const SORT_OPTIONS = [
@@ -52,22 +59,24 @@ function ProductSkeleton() {
 
 const ShopPage: NextPage = ({ initialInput }: any) => {
 	const device = useDeviceDetect();
-	const router = useRouter();
 
-	const [searchFilter, setSearchFilter] = useState<ProductsInquiry>(
-		safeParseInput(router?.query?.input, initialInput),
-	);
+	// URL is the single source of truth for filters, sort and pagination.
+	const [searchFilter, setSearchFilter] = useUrlSearchFilter<ProductsInquiry>(initialInput, deriveShopQuery);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
-	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
-	const [filterSortName, setFilterSortName] = useState('Newest');
 	const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+
+	// Derived from the (URL-backed) filter so they restore correctly on refresh.
+	const currentPage = searchFilter.page ?? 1;
+	const filterSortName =
+		SORT_OPTIONS.find((o) => o.sort === searchFilter.sort && o.direction === searchFilter.direction)?.label ??
+		'Newest';
 
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
-	const { loading, refetch: getProductsRefetch } = useQuery(GET_PRODUCTS, {
+	const { loading } = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
@@ -77,33 +86,8 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 		},
 	});
 
-	useEffect(() => {
-		if (router.query.input) {
-			setSearchFilter(safeParseInput(router.query.input, initialInput));
-		} else if (router.query.type || router.query.cat || router.query.text || router.query.productBrand) {
-			setSearchFilter({
-				...initialInput,
-				search: {
-					...(router.query.type ? { typeList: [router.query.type as string] } : {}),
-					...(router.query.cat ? { categoryList: [router.query.cat as string] } : {}),
-					...(router.query.text ? { text: router.query.text as string } : {}),
-					...(router.query.productBrand ? { brandList: [router.query.productBrand as string] } : {}),
-				},
-			});
-		}
-		setCurrentPage(searchFilter.page ?? 1);
-	}, [router.query.input, router.query.type, router.query.cat, router.query.text, router.query.productBrand]);
-
-	/* Keep query in sync whenever filter state changes */
-	useEffect(() => {
-		getProductsRefetch({ input: searchFilter });
-	}, [searchFilter]);
-
-	const handlePaginationChange = async (_: ChangeEvent<unknown>, value: number) => {
-		const next = { ...searchFilter, page: value };
-		setSearchFilter(next);
-		setCurrentPage(value);
-		await router.push(`/shop?input=${JSON.stringify(next)}`, undefined, { scroll: false });
+	const handlePaginationChange = (_: ChangeEvent<unknown>, value: number) => {
+		setSearchFilter({ ...searchFilter, page: value });
 	};
 
 	const likeProductHandler = async (user: T, id: string) => {
@@ -139,7 +123,6 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 		const chosen = SORT_OPTIONS.find((o) => o.id === e.currentTarget.id);
 		if (chosen) {
 			setSearchFilter({ ...searchFilter, sort: chosen.sort, direction: chosen.direction, page: 1 });
-			setFilterSortName(chosen.label);
 		}
 		setSortingOpen(false);
 		setAnchorEl(null);
@@ -147,8 +130,6 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 
 	const resetFilters = () => {
 		setSearchFilter(initialInput);
-		setFilterSortName('Newest');
-		setCurrentPage(1);
 	};
 
 	const totalPages = total > 0 ? Math.ceil(total / searchFilter.limit) : 0;

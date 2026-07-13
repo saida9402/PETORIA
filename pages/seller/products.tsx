@@ -16,6 +16,7 @@ import { API_URL } from '../../libs/config';
 import { T } from '../../libs/types/common';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useUrlSearchFilter } from '../../libs/hooks/useUrlSearchFilter';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -27,7 +28,8 @@ const SellerProducts: NextPage = ({ initialInput }: any) => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [searchQuery, setSearchQuery] = useState<string>('');
-	const [searchFilter, setSearchFilter] = useState<SellerProductsInquiry>(initialInput);
+	// URL is the single source of truth for the status tab and pagination.
+	const [searchFilter, setSearchFilter] = useUrlSearchFilter<SellerProductsInquiry>(initialInput);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 

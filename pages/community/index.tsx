@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -16,6 +16,7 @@ import { Messages } from '../../libs/config';
 import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
+import { useUrlSearchFilter } from '../../libs/hooks/useUrlSearchFilter';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -23,14 +24,26 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
+/** Keeps existing inbound deep-links (/community?articleCategory=NEWS) working
+ *  when no `?input=` blob is present. */
+function deriveCommunityQuery(query: Record<string, any>, fallback: BoardArticlesInquiry): BoardArticlesInquiry {
+	if (!query.articleCategory) return fallback;
+	return {
+		...fallback,
+		page: 1,
+		search: { ...fallback.search, articleCategory: query.articleCategory as BoardArticleCategory },
+	};
+}
+
 const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const router = useRouter();
-	const { query } = router;
-	const articleCategory = query?.articleCategory as string;
-	const [searchCommunity, setSearchCommunity] = useState<BoardArticlesInquiry>(initialInput);
+	// URL is the single source of truth for the active board category and page.
+	const [searchCommunity, setSearchCommunity] = useUrlSearchFilter<BoardArticlesInquiry>(
+		initialInput,
+		deriveCommunityQuery,
+	);
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
-	if (articleCategory) initialInput.search.articleCategory = articleCategory;
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
@@ -50,21 +63,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		},
 	});
 
-	/** LIFECYCLES **/
-	useEffect(() => {
-		if (!query?.articleCategory) {
-			router.push({ pathname: router.pathname, query: { articleCategory: 'FREE' } }, router.pathname, {
-				shallow: true,
-			});
-		}
-	}, []);
-
 	/** HANDLERS **/
-	const tabChangeHandler = async (e: T, value: string) => {
+	const tabChangeHandler = (e: T, value: string) => {
 		setSearchCommunity({ ...searchCommunity, page: 1, search: { articleCategory: value as BoardArticleCategory } });
-		await router.push({ pathname: '/community', query: { articleCategory: value } }, router.pathname, {
-			shallow: true,
-		});
 	};
 
 	const paginationHandler = (e: T, value: number) => {
