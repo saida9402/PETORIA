@@ -1,0 +1,44 @@
+// ════════════════════════════════════════════════════════════════════
+//  DARK MODE OVERRIDES (MOBILE)  —  scss/mobile/_darkmode.scss
+//
+//  Every rule is scoped under [data-dark] (set on <html> only in Dark
+//  Mode) so Light Mode is never affected. Colors only — no layout.
+//  Reuses the shared design tokens (--pb/--cb/--nbg/--t1/--t2/--t3/--bd).
+// ════════════════════════════════════════════════════════════════════
+
+/* Base mobile canvas */
+[data-dark] #mobile-wrap { background: var(--pb); }
+
+/* ===== scss/mobile/_shop.scss ===== */
+[data-dark] #mobile-wrap {
+	@media (max-width: 768px) {
+		.card-config .top { background: var(--cb); }
+	}
+}
+
+/* ===== scss/mobile/_shopProductCard.scss ===== */
+[data-dark] #mobile-wrap {
+	@media (max-width: 768px) {
+		.shop-product-card__img-wrap { background: var(--cb); }
+	}
+}
+
+/* ===== scss/mobile/_homepage.scss ===== */
+[data-dark] #mobile-wrap {
+	@media (max-width: 768px) {
+		.product-detail__main-img img { background: var(--cb); }
+	}
+}
+
+/* ===== scss/mobile/_mypage.scss ===== */
+[data-dark] #my-page.my-page--mobile { background: var(--pb); }
+[data-dark] .mobile-tab--logout:hover { background: var(--nbg); }
+
+/* ===== scss/mobile/_memberFollows.scss ===== */
+[data-dark] #mobile-wrap {
+	@media (max-width: 768px) {
+		#member-follows-page .follows-list-box .follows-card-box {
+			border-bottom-color: var(--bd);
+		}
+	}
+}

@@ -36,6 +36,9 @@
 
 @import '/scss/pc/seller/seller.scss';
 
+// Dark Mode overrides — must load last so [data-dark] rules win by source order.
+@import '/scss/pc/darkmode.scss';
+
 body {
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */
 	scrollbar-width: none; /* for Firefox */

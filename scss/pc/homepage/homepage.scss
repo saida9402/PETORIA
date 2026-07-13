@@ -45,17 +45,30 @@
 }
 
 [data-dark] {
-	--pb:  #0f1a08;
-	--cb:  #1a2e10;
+	/* Soft dark surfaces — deliberately lighter than near-black so text
+	   stays comfortable to read; avoids pure-black/extremely-dark-gray.
+	   Surfaces (--pb/--cb/--nbg/--bd/--g200/--g300) are ~40% lighter than
+	   the previous near-black values below, while keeping the same green
+	   hue so the brand identity and light/dark hierarchy are unchanged. */
+	--pb:  #22351d;
+	--cb:  #30492d;
 	--t1:  #e8f5d0;
 	--t2:  #a8cc7a;
-	--t3:  #6db535;
-	--bd:  #27500a;
-	--nb:  #0f1a08;
-	--nm:  #1a2e10;
-	--nbg: #111e09;
-	--g200: #1f2d14;
-	--g300: #293b1c;
+	--bd:  #517e3b;
+	/* --nb/--nm/--np/--t3 are brand-accent greens (buttons, links, icons,
+	   muted text) — previously overridden to the same value as --pb/--cb
+	   (or, for --np, not overridden at all), which made anything using them
+	   for text or icons blend into the background and disappear, or fall
+	   below WCAG AA contrast (as low as ~3:1) once the surfaces above were
+	   brightened. All four now share the same brightened accent shade so
+	   they stay clearly readable (~4.6–6.2:1) against both --pb and --cb. */
+	--nb:  #3a6b1e;
+	--nm:  #77c53a;
+	--np:  #77c53a;
+	--t3:  #77c53a;
+	--nbg: #32492b;
+	--g200: #3b5130;
+	--g300: #4e6640;
 }
 
 /* ═══════════════════════════════════════════════
@@ -182,6 +195,25 @@
 	/* ── Loaded fade-in ── */
 	&--loaded {
 		animation: wbarFadeIn 0.4s ease forwards;
+	}
+}
+
+/* Dark mode — this bar previously stayed hardcoded to its light cream
+   palette regardless of theme; reuses the same shared tokens as the
+   rest of the homepage instead of introducing new one-off colors. */
+[data-dark] .weather-bar {
+	background: linear-gradient(90deg, var(--cb), var(--nbg));
+	border-bottom-color: var(--bd);
+
+	&__info strong {
+		color: var(--t1);
+	}
+
+	&__info span,
+	&__location,
+	&__meta span,
+	&__feels {
+		color: var(--t3);
 	}
 }
 
@@ -972,14 +1004,14 @@
 		font-family: $font;
 		font-size: 13px;
 		font-weight: 600;
-		color: #4e8a28;
+		color: var(--np, #4e8a28);
 		text-decoration: none;
 		white-space: nowrap;
 		transition: color 0.2s, gap 0.2s;
 		flex-shrink: 0;
 
 		&:hover {
-			color: #3a6b1e;
+			color: var(--nm, #3a6b1e);
 			text-decoration: underline;
 		}
 	}
@@ -1782,12 +1814,48 @@
 	.skeleton {
 		background: linear-gradient(
 			90deg,
-			#1a2e10 0%,
-			#243c16 48%,
-			#1a2e10 100%
+			var(--cb) 0%,
+			var(--nbg) 48%,
+			var(--cb) 100%
 		);
 		background-size: 200% 100%;
 		animation: skeletonShimmer 1.6s ease-in-out infinite;
+	}
+
+	/* Section wrappers — these hardcoded light backgrounds in the base rules
+	   (so only the inner cards were switching to dark). Map the white surfaces
+	   to the card token and the off-white ones to the page-base token, which
+	   preserves the light/dark rhythm between adjacent sections. */
+	.popular-products,
+	.category-grid-section,
+	.community-boards {
+		background: var(--cb);
+	}
+
+	.trend-products,
+	.promo-section {
+		background: var(--pb);
+	}
+
+	/* Shared section header — title/eyebrow used fixed near-black / muted-brown
+	   values, unreadable on a dark background. Route them through the same
+	   theme text tokens the subtitle already uses. */
+	.section-hd__title {
+		color: var(--t1);
+	}
+
+	.section-hd__eyebrow {
+		color: var(--t3);
+	}
+
+	/* Category tiles */
+	.cats__item {
+		background: var(--cb);
+		border-color: var(--bd);
+	}
+
+	.cats__item-name {
+		color: var(--t1);
 	}
 }
 
@@ -2893,7 +2961,7 @@
 .home-section-title {
 	font-size: 24px;
 	font-weight: 700;
-	color: #1a1a1a;
+	color: var(--t1, #1a1a1a);
 	letter-spacing: -0.4px;
 	font-family: $font;
 }

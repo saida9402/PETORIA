@@ -45,3 +45,7 @@
 @import 'myArticles';
 @import 'addNewProduct';
 @import 'writeArticle';
+
+// ── Dark Mode overrides ───────────────────────────────────────────────────────
+// Must load last so [data-dark] rules win by source order.
+@import 'darkmode';

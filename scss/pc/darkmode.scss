@@ -1,0 +1,653 @@
+/* ════════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES  —  scss/pc/darkmode.scss
+
+   Every rule in this file is scoped under [data-dark], the attribute set
+   on <html> only while Dark Mode is active. Light Mode never carries the
+   attribute, so NOTHING here can affect Light Mode. This file only remaps
+   colors (background / text / border / icon) for readability — it never
+   changes layout, spacing, sizing, typography scale or component behavior.
+
+   Design tokens (defined in homepage.scss :root / [data-dark]) are reused:
+     --pb  page background        --cb  card / input surface
+     --nbg subtle / hover surface --t1  primary text
+     --t2  secondary text         --t3  muted / meta / icons (accent green)
+     --np  accent (links/active)  --bd  borders / dividers
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Base canvas ─────────────────────────────────────────────────────── */
+[data-dark] body {
+	background: var(--pb);
+
+	&::-webkit-scrollbar-thumb { background: var(--bd); }
+	&::-webkit-scrollbar-track { background: var(--pb); }
+}
+
+[data-dark] #pc-wrap {
+	background: var(--pb);
+}
+
+/* app.scss global element resets that hardcode light-theme colors */
+[data-dark] a { color: var(--t1); }
+[data-dark] hr { border-color: var(--bd); }
+
+/* ── Shared MUI surfaces (menus, popovers, dialogs, pagination, tables,
+      inputs) render from the light MUI theme; remap them for dark. ────── */
+[data-dark] {
+	.MuiMenu-paper,
+	.MuiPopover-paper,
+	.MuiPaper-root.MuiMenu-paper,
+	.MuiDialog-paper,
+	.MuiAutocomplete-paper {
+		background-color: var(--cb);
+		color: var(--t1);
+	}
+
+	.MuiMenuItem-root,
+	.MuiList-root .MuiListItemText-primary {
+		color: var(--t1);
+
+		&:hover { background-color: var(--nbg); }
+		&.Mui-selected { background-color: var(--nbg); }
+	}
+
+	.MuiDialog-paper {
+		.MuiDialogTitle-root,
+		.MuiDialogContentText-root,
+		.MuiDialogContent-root { color: var(--t1); }
+	}
+
+	/* Pagination text/arrows inherit dark ink → invisible on dark surface */
+	.MuiPaginationItem-root { color: var(--t1); }
+
+	/* MUI form controls (selects, outlined inputs used in forms) */
+	.MuiInputBase-input,
+	.MuiOutlinedInput-input,
+	.MuiSelect-select { color: var(--t1); }
+	.MuiInputLabel-root,
+	.MuiFormHelperText-root { color: var(--t3); }
+	.MuiOutlinedInput-notchedOutline { border-color: var(--bd); }
+	.MuiSvgIcon-root.MuiSelect-icon { color: var(--t3); }
+
+	/* MUI tables (dashboards) */
+	.MuiTableCell-root { color: var(--t1); border-color: var(--bd); }
+	.MuiTableHead-root .MuiTableCell-root { color: var(--t2); }
+}
+
+/* ── Shared floating chat widget (pc/main.scss) ──────────────────────── */
+[data-dark] #pc-wrap .chatting {
+	.chat-button { background: var(--cb); }
+
+	.chat-frame {
+		background: var(--pb);
+
+		.chat-top { color: var(--t1); border-bottom-color: var(--bd); }
+		.chat-bott {
+			border-top-color: var(--bd);
+			.msg-input { background: var(--cb); color: var(--t1); }
+		}
+	}
+}
+
+/* ── Shared advanced-filter modal (pc/main.scss) ─────────────────────── */
+[data-dark] .advanced-filter-modal {
+	background: var(--cb);
+
+	.close { background: var(--nbg); }
+	.top {
+		span { color: var(--t1); }
+		div.search-input-box {
+			border-color: var(--bd);
+			img { filter: brightness(0) invert(1); }
+			input { color: var(--t1); }
+		}
+	}
+	.middle .box {
+		span { color: var(--t1); }
+		.inside {
+			div.room { border-color: var(--bd); color: var(--t1); }
+			select { border-color: var(--bd); color: var(--t1); background: var(--cb); }
+			.arrow-down { color: var(--t3); }
+			.minus-line { background: var(--t1); }
+			em { color: var(--t3); }
+		}
+	}
+	.bottom div span { color: var(--t1); }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PAGE-LEVEL OVERRIDES
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ===== scss/pc/community/detail.scss ===== */
+[data-dark] #pc-wrap #community-detail-page,
+[data-dark] #mobile-wrap #community-detail-page {
+	.config {
+		.first-box-config {
+			border-color: var(--bd);
+			.content-and-info {
+				border-bottom-color: var(--bd);
+				/* Article title — original `.content-data { color:#000 }` is
+				   (0,2,5,0); mirroring its full path here gives (0,2,6,0) so the
+				   dark title wins outright, not just on source order. */
+				.content .content-data { color: var(--t1); }
+				.content .member-info {
+					.member-nick { color: var(--t1); }
+					.time-added { color: var(--t3); }
+					.divider { background: var(--bd); }
+				}
+			}
+			.info .divider { background: var(--bd); }
+		}
+		.second-box-config {
+			border-color: var(--bd);
+			.leave-comment input {
+				border-color: var(--bd);
+				&::placeholder { color: var(--t3); }
+			}
+			.button-box { border-color: var(--bd); }
+		}
+		.comments { border-color: var(--bd); }
+		.comments-box .main-comment {
+			border-color: var(--bd);
+			.name-date-column .name { color: var(--t1); }
+			.date { color: var(--t3); }
+			.content p { color: var(--t1); }
+		}
+	}
+}
+
+/* ===== scss/pc/admin/admin.scss ===== */
+[data-dark] #pc-wrap {
+	.MuiAppBar-root {
+		background: var(--cb);
+		border-bottom-color: var(--bd);
+		.settings-icon-admin { color: var(--t3); }
+	}
+	.aside .user { background: var(--nbg); }
+	.user { background: var(--nbg); }
+	.menu-list li.on {
+		background: var(--nbg);
+		span { color: var(--t1); }
+	}
+	#bunker {
+		.detail .info-area hr { border-color: var(--bd); }
+		.content-area {
+			.comment textarea {
+				background: var(--cb);
+				color: var(--t1);
+				border-color: var(--bd);
+				&::placeholder { color: var(--t3); }
+			}
+			.desc span { color: var(--t3); }
+		}
+		.user-area .user-id { background: var(--nbg); }
+		.btn-cancel {
+			color: var(--t1);
+			border-color: var(--bd);
+		}
+		.btn-upload { border-color: var(--bd); }
+		.btn-window { color: var(--t3); }
+		.table-wrap {
+			background: var(--cb);
+			.tab-menu li { color: var(--t3); }
+			thead {
+				tr { background: var(--nbg); }
+				th {
+					color: var(--t1);
+					border-bottom-color: var(--bd);
+				}
+			}
+			tbody {
+				color: var(--t2);
+				tr { border-bottom-color: var(--bd); }
+				td {
+					color: var(--t2);
+					&.info-community a:visited { color: var(--t3); }
+				}
+			}
+			.edit-options {
+				.option-wrap {
+					.tit { background: var(--nbg); }
+					.notice { color: var(--t3); }
+				}
+				.option label { color: var(--t2); }
+			}
+		}
+		.search-area {
+			.MuiOutlinedInput-root { background: var(--cb); }
+			.MuiTableCell-root { border-bottom-color: var(--bd); }
+		}
+		.btn-action-wrap button {
+			background: var(--cb);
+			border-color: var(--bd);
+			color: var(--t1);
+		}
+	}
+}
+[data-dark] .right-dashboard-settings {
+	.top {
+		border-bottom-color: var(--bd);
+		p { color: var(--t2); }
+	}
+}
+
+/* ===== scss/pc/about/about.scss ===== */
+[data-dark] .about-page {
+	.intro {
+		.left strong { color: var(--t1); }
+		.right {
+			p { color: var(--t1); }
+			.boxes .box {
+				div { background: var(--nbg); }
+				span { color: var(--t1); }
+				p { color: var(--t2); }
+			}
+		}
+	}
+	.statistics .container .info div {
+		strong { color: var(--t1); }
+		p { color: var(--t2); }
+	}
+	.agents .container {
+		.title { color: var(--t1); }
+		.desc { color: var(--t2); }
+	}
+	.options {
+		background: var(--cb);
+		.container {
+			strong { color: var(--t1); }
+			.box {
+				.icon-box { background: var(--nbg); }
+				.text-box {
+					span { color: var(--t1); }
+					p { color: var(--t2); }
+				}
+			}
+		}
+	}
+	.partners .container span { color: var(--t2); }
+	.help .container {
+		background: var(--cb);
+		.left {
+			strong { color: var(--t1); }
+			p { color: var(--t2); }
+		}
+		.right div.white {
+			color: var(--t1);
+			border-color: var(--bd);
+			img { filter: brightness(0) invert(1); }
+		}
+	}
+}
+
+/* ===== scss/pc/account/join.scss ===== */
+[data-dark] .join-page {
+	.container .main {
+		background: var(--cb);
+		.left {
+			.logo span { color: var(--t1); }
+			.info {
+				span { color: var(--t1); }
+				p { color: var(--t2); }
+			}
+			.input-wrap .input-box {
+				span { color: var(--t1); }
+				input {
+					background: var(--cb);
+					color: var(--t1);
+					border-color: var(--bd);
+					&::placeholder { color: var(--t3); }
+				}
+			}
+			.register {
+				.type-option span.text { color: var(--t1); }
+				.remember-info a { color: var(--t1); }
+			}
+			.ask-info p { color: var(--t1); }
+		}
+	}
+	.seller-store-perks .ssp-item {
+		background: var(--nbg);
+		border-color: var(--bd);
+		span:last-child { color: var(--t2); }
+	}
+}
+
+/* ===== scss/pc/mypage/writeArticle.scss =====
+   Originals live under `#pc-wrap #write-article-page` (2 IDs); these overrides
+   must carry the same two IDs (plus [data-dark]) to win on specificity. */
+[data-dark] #pc-wrap #write-article-page,
+[data-dark] #mobile-wrap #write-article-page {
+	.main-title-box .right-box {
+		.main-title { color: var(--t1); }
+		.sub-title { color: var(--t2); }
+	}
+	.right-wrap {
+		.input-tit {
+			background: var(--cb);
+			color: var(--t1);
+			border-color: var(--bd);
+			&::placeholder { color: var(--t3); }
+		}
+	}
+	.youtube-input {
+		background: var(--cb);
+		color: var(--t1);
+		border-color: var(--bd);
+		&::placeholder { color: var(--t3); }
+	}
+}
+
+/* ===== scss/pc/mypage/myArticles.scss  &  member/memberArticles.scss =====
+   Both originals live under `#pc-wrap #my-articles-page` (2 IDs). */
+[data-dark] #pc-wrap #my-articles-page,
+[data-dark] #mobile-wrap #my-articles-page {
+	.main-title-box .right-box {
+		.main-title { color: var(--t1); }
+		.sub-title { color: var(--t2); }
+	}
+	.pagination-conf .total p { color: var(--t2); }
+}
+
+/* ===== scss/pc/member/memberPage.scss ===== */
+[data-dark] #pc-wrap #member-page,
+[data-dark] #mobile-wrap #member-page {
+	background: var(--pb);
+	.container .member-page .back-frame {
+		border-color: var(--bd);
+		background: var(--cb);
+		.left-config {
+			background: var(--cb);
+			border-color: var(--bd);
+			.profile .user-info {
+				.user-name { color: var(--t1); }
+				.view-list { color: var(--t3); }
+			}
+			.follow-button-box {
+				button { border-color: var(--bd); color: var(--t1); }
+				p { color: var(--t3); }
+			}
+			.sections .section {
+				.sub-title { color: var(--t1); }
+				.count-title { color: var(--t1); }
+			}
+		}
+	}
+}
+
+/* ===== scss/pc/member/memberFollows.scss =====
+   Originals live under `#pc-wrap #member-follows-page` (2 IDs) with hardcoded
+   #181a20 text — these overrides need matching 2-ID specificity to win. */
+[data-dark] #pc-wrap #member-follows-page,
+[data-dark] #mobile-wrap #member-follows-page {
+	.main-title-box .right-box .main-title { color: var(--t1); }
+	.follows-list-box .listing-title-box {
+		background: var(--nbg);
+		.title-text { color: var(--t1); }
+	}
+	.follows-card-box {
+		border-color: var(--bd);
+		.info .information-box .name { color: var(--t1); }
+		.details-box .info-box {
+			p { color: var(--t1); }
+			span { color: var(--t1); }
+		}
+		.action-box {
+			button { border-color: var(--bd); color: var(--t1); }
+			p { color: var(--t3); }
+		}
+	}
+	.pagination-config .total-result p { color: var(--t1); }
+}
+
+/* ===== scss/pc/mypage/mypage.scss (product cards) ===== */
+[data-dark] #pc-wrap #my-page .container .my-page .back-frame .main-config .list-config .card-config {
+	.top .price-box {
+		background: var(--cb);
+		border-color: var(--bd);
+		p { color: var(--t1); }
+	}
+	.bottom {
+		.name-address .address p { color: var(--t3); }
+		.divider { background: var(--bd); }
+	}
+}
+
+/* ===== scss/pc/mypage/mySaved.scss ===== */
+[data-dark] #pc-wrap #my-page #my-saved-page .my-saved-list-box {
+	border-color: var(--bd);
+	.list-title-box { background: var(--nbg); }
+	.search-box { border-bottom-color: var(--bd); }
+	.action-box .icon-button:hover { background: var(--nbg); }
+}
+
+/* ===== scss/pc/mypage/myProfile.scss ===== */
+[data-dark] #pc-wrap #my-page #my-profile-page {
+	.top-box,
+	.bottom-box {
+		background: var(--cb);
+		border-color: var(--bd);
+	}
+	.top-box {
+		.photo-box .image-big-box {
+			.image-box .delete-box { background-color: var(--cb); }
+			.upload-big-box .labeler { border-color: var(--bd); }
+		}
+		.small-input-box .input-box input,
+		.address-box input {
+			background: var(--cb);
+			color: var(--t1);
+			border-color: var(--bd);
+			&::placeholder { color: var(--t3); }
+		}
+		.about-me-box {
+			.about-textarea {
+				background: var(--cb);
+				color: var(--t1);
+				border-color: var(--bd);
+			}
+			.update-button { background-color: var(--np); }
+			button:disabled { background: var(--nbg); }
+		}
+	}
+	.bottom-box {
+		.top-inner-box .old-password-box input,
+		.bottom-inner-box .new-password-box input {
+			background: var(--cb);
+			color: var(--t1);
+			border-color: var(--bd);
+			&::placeholder { color: var(--t3); }
+		}
+		.change-password { background-color: var(--np); }
+	}
+}
+
+/* ===== scss/pc/mypage/myOrders.scss ===== */
+[data-dark] .pm-pay-btn:disabled { background: var(--nbg); }
+
+/* ===== scss/pc/mypage/addNewProduct.scss ===== */
+[data-dark] #pc-wrap #my-page #add-product-page {
+	.anp-image-slot--add {
+		&:hover,
+		&.is-drag { background: var(--nbg); }
+	}
+	.anp-field__input:focus { background: var(--cb); }
+	.anp-textarea:focus { background: var(--cb); }
+	.anp-submit__btn:disabled {
+		background: var(--nbg);
+		color: var(--t3);
+	}
+}
+
+/* ===== scss/pc/shop/shop.scss ===== */
+[data-dark] {
+	.shop-skeleton__card {
+		background: linear-gradient(90deg, var(--nbg) 25%, var(--bd) 50%, var(--nbg) 75%);
+	}
+	.card-config {
+		.top { background: var(--cb); }
+		.bottom .type-buttons .type p.disabled-type {
+			background: var(--nbg);
+			color: var(--t3);
+		}
+	}
+}
+@media (max-width: 768px) {
+	[data-dark] .card-config .top img { background: var(--cb); }
+}
+
+/* ===== scss/pc/seller/seller.scss ===== */
+[data-dark] #pc-wrap,
+[data-dark] #mobile-wrap {
+	#seller-store-page .ssp-leave-review__submit:disabled {
+		background: var(--nbg);
+		color: var(--t3);
+	}
+	#seller-settings-page {
+		.ssg-field__input:focus { background: var(--cb); }
+		.ssg-field__textarea:focus { background: var(--cb); }
+		.ssg-save-btn:disabled {
+			background: var(--nbg);
+			color: var(--t3);
+		}
+	}
+	#add-product-page .anp-store-header__badge { background: var(--cb); }
+
+	.seller-detail-page {
+		.agent-info {
+			background: var(--cb);
+			border-color: var(--bd);
+			img { border-color: var(--bd); }
+			.info {
+				strong { color: var(--t1); }
+				div span { color: var(--t3); }
+			}
+		}
+		.agent-home-list .pagination span { color: var(--t3); }
+		.review-box {
+			background: var(--cb);
+			border-color: var(--bd);
+			.main-intro {
+				span { color: var(--t1); }
+				p { color: var(--t3); }
+			}
+			.review-wrap .title-box span { color: var(--t1); }
+			.leave-review-config {
+				border-top-color: var(--bd);
+				.main-title { color: var(--t1); }
+				.review-title { color: var(--t2); }
+				textarea {
+					background: var(--cb);
+					color: var(--t1);
+					border-color: var(--bd);
+					&:focus { background: var(--cb); }
+				}
+				.submit-btn .submit-review { background: var(--np); }
+			}
+		}
+	}
+}
+
+/* ===== scss/pc/common/shopProductCard.scss (shared product card) ===== */
+[data-dark] .shop-product-card {
+	&__img-wrap { background: var(--cb); }
+	&__cart-btn:disabled {
+		background: var(--nbg);
+		color: var(--t3);
+	}
+}
+
+/* ===== scss/pc/shop/shop.scss — product card (.card-config) icons =====
+   Phosphor icons (Tag/Package/Ruler in .option, Lightning in .top-badge)
+   render as <svg> and inherit dark currentColor — the CSS only ever styled
+   `.option img`, never the rendered <svg> — so they vanish on the dark card.
+   (Title/brand/price/like/eye already flow through tokens.) */
+[data-dark] .card-config {
+	.options .option svg { color: var(--t3); }
+	.top-badge svg { color: #fff; }
+}
+
+/* ===== scss/pc/general.scss — shared SellerCard (.agent-general-card) =====
+   Title/subtitle are hardcoded #181a20 with no card surface, so they sit on
+   the dark page background and vanish; icons inherit dark ink. */
+[data-dark] .agent-general-card .agent-desc {
+	.agent-info {
+		strong { color: var(--t1); }
+		span { color: var(--t1); }
+	}
+	.buttons {
+		svg { color: var(--t3); }
+		.view-cnt { color: var(--t2); }
+	}
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   TARGETED PASS — ICONS & TITLES
+
+   phosphor-react/MUI icons rendered without a `color` prop inherit dark
+   `currentColor` and vanish on dark surfaces (CSS never styled them);
+   a few icons carry a hardcoded gray via the `color` prop, which phosphor
+   emits as the svg `fill` attribute (only reachable via `fill`); and a few
+   text elements sit on permanently-light chips. All dark-only.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Community detail — article stat icons (ThumbsUp/Eye/Chat) inherit dark
+   currentColor; comment edit/delete icons carry color="#757575" → fill. */
+[data-dark] #pc-wrap #community-detail-page,
+[data-dark] #mobile-wrap #community-detail-page {
+	.config .first-box-config .content-and-info .info .icon-info svg { color: var(--t3); }
+	.config .comments-box .main-comment .member-info .buttons svg { fill: var(--t3); }
+}
+
+/* CS — FAQ accordion. The styled AccordionSummary background is hardcoded
+   #fff (the MUI theme never switches to dark), so the token-light question
+   title and the CaretDown expand icon disappear on white. */
+[data-dark] .faq-content {
+	.MuiAccordion-root { border-color: var(--bd); }
+	.MuiAccordionSummary-root { background-color: var(--cb); }
+	.MuiAccordionSummary-expandIconWrapper { color: var(--t3); }
+}
+/* CS — contact-card description sits on a permanently-light inline pastel;
+   var(--t3) brightens in dark and washes out, so pin it to its light shade. */
+[data-dark] .cs-contact__body p { color: #6b8a4e; }
+
+/* Member Followers / Followings — unfilled heart icon inherits dark
+   currentColor (the liked heart keeps its inline fill="#4E8A28"); empty
+   state has no themed color. */
+[data-dark] #pc-wrap #member-follows-page,
+[data-dark] #mobile-wrap #member-follows-page {
+	.follows-card-box .details-box .info-box svg { color: var(--t3); }
+	.no-data {
+		color: var(--t3);
+		p { color: var(--t3); }
+	}
+}
+
+/* MyPage empty states (favorites / recently-viewed / articles) inherit dark. */
+[data-dark] #pc-wrap #my-favorites-page .no-data,
+[data-dark] #mobile-wrap #my-favorites-page .no-data,
+[data-dark] #pc-wrap #recently-viewed-page .no-data,
+[data-dark] #mobile-wrap #recently-viewed-page .no-data,
+[data-dark] #pc-wrap #my-articles-page .no-data,
+[data-dark] #mobile-wrap #my-articles-page .no-data {
+	color: var(--t3);
+	p { color: var(--t3); }
+}
+
+/* MyPage sidebar menu — inactive items render dark monochrome line-art icons
+   (active items already render the white variant + the existing `.focus img`
+   invert). On the dark sidebar the inactive dark icons vanish, so invert them
+   to white — same technique the codebase already uses for `.focus img`. */
+[data-dark] .sub-section li:not(.focus) img { filter: brightness(0) invert(1); }
+
+/* Notifications page — MUI-only, all text via `sx` with hardcoded ink
+   (#222 titles / #888 desc / #bbb timestamp / #aaa empty). No per-element
+   class hooks, so text is reached via .MuiTypography-root; teal accents are
+   on Buttons/indicators and are unaffected. */
+[data-dark] .page-notifications {
+	.MuiTypography-root { color: var(--t1); }
+	.MuiTabs-root { border-bottom-color: var(--bd); }
+	.MuiTab-root { color: var(--t2); }
+	.MuiTab-root.Mui-selected { color: var(--t1); }
+	.MuiDivider-root { border-color: var(--bd); }
+}
