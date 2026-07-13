@@ -97,3 +97,19 @@
 		}
 	}
 }
+
+/* ══════════════════════════════════════════════
+   REGISTER BUTTON — brand color (Task 4)
+   The MUI theme's primary.main is #E92C28 (red), so this page's Register button
+   (`variant="contained" color="primary"`) renders off-brand red. Repaint ONLY
+   this page's contained-primary button with the Petoria brand green — the same
+   greens the navbar/sign-up buttons use — so it matches the design system in
+   BOTH light and dark. The global MUI theme and every other primary button are
+   left untouched; disabled (submitting) state stays as MUI's default so it
+   remains visually distinct.
+══════════════════════════════════════════════ */
+#write-article-page .MuiButton-root.MuiButton-containedPrimary:not(.Mui-disabled) {
+	background-color: #4e8a28;
+
+	&:hover { background-color: #3a6b1e; }
+}
