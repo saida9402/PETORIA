@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { PawPrint, Dog, Cat, Bird, Fish } from 'phosphor-react';
 
 import PopularProductCard from './PopularProductCard';
 import { useToast } from '../../hooks/useToast';
@@ -15,11 +16,11 @@ const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> =
 };
 
 const TYPE_TABS = [
-	{ key: 'ALL', icon: '🐾', label: 'All' },
-	{ key: 'DOG', icon: '🐶', label: 'Dogs' },
-	{ key: 'CAT', icon: '🐱', label: 'Cats' },
-	{ key: 'BIRD', icon: '🐦', label: 'Birds' },
-	{ key: 'FISH', icon: '🐠', label: 'Fish' },
+	{ key: 'ALL', icon: <PawPrint size={15} />, label: 'All' },
+	{ key: 'DOG', icon: <Dog size={15} />, label: 'Dogs' },
+	{ key: 'CAT', icon: <Cat size={15} />, label: 'Cats' },
+	{ key: 'BIRD', icon: <Bird size={15} />, label: 'Birds' },
+	{ key: 'FISH', icon: <Fish size={15} />, label: 'Fish' },
 ];
 
 export default function PopularProducts() {
