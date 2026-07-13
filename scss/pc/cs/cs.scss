@@ -140,6 +140,14 @@
         &.event {
           background: #fffbeb;
           &:hover { background: #fef3c7; }
+
+          /* This row's cream highlight background is fixed (doesn't follow
+             the theme), but its text was still pulling var(--t1)/var(--t3),
+             which turn pale in dark mode and become unreadable against this
+             permanently-light surface — pin the text to its light-mode
+             shade so it stays readable in both themes. */
+          .notice-title { color: #1A2E0A; }
+          .notice-number, .notice-date { color: #6B8A4E; }
         }
 
         div {
