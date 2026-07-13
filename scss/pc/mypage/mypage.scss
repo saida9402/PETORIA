@@ -16,7 +16,7 @@
 					margin: 24px 0 60px 0;
 					border-radius: 12px;
 					border: 1px solid #c4c4c4;
-					background: #fff;
+					background: var(--cb, #fff);
 					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 					.left-config {
 						position: sticky;
@@ -221,7 +221,7 @@
 								height: 413px;
 								margin-bottom: 7px;
 								border-radius: 12px;
-								background: #fff;
+								background: var(--cb, #fff);
 								box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 								.top {
 									position: relative;
@@ -290,7 +290,7 @@
 											height: 23px;
 											overflow: hidden;
 											p {
-												color: #181a20;
+												color: var(--t1, #181a20);
 												font-family: $font;
 												font-size: 15px;
 												font-style: normal;
@@ -323,7 +323,7 @@
 											gap: 5px;
 											align-items: center;
 											p {
-												color: #181a20;
+												color: var(--t1, #181a20);
 												font-family: $font;
 												font-size: 13px;
 												font-style: normal;
@@ -348,7 +348,7 @@
 											align-items: center;
 											gap: 7px;
 											p {
-												color: #181a20;
+												color: var(--t1, #181a20);
 												font-family: $font;
 												font-style: normal;
 												line-height: normal;
@@ -383,7 +383,7 @@
 							}
 							.total-result {
 								p {
-									color: #181a20;
+									color: var(--t1, #181a20);
 									text-align: center;
 									font-family: $font;
 									font-size: 24px;
@@ -712,5 +712,24 @@
 	/* Active item color override */
 	.focus .sub-title.MuiTypography-root {
 		color: #ffffff !important;
+	}
+}
+
+/* ── Dark mode ─────────────────────────────────────────────
+   The page shell used fixed light values (page background #f6f6f6 and the
+   back-frame's gray border) that have no equivalent theme token, so only
+   these top-level surfaces need overriding. The sidebar, profile, menus,
+   tabs, buttons and typography already reference theme tokens (var(--cb),
+   var(--pb), var(--t1), var(--t3), var(--np)…) and adapt on their own;
+   the two card surfaces above were switched to var(--cb) inline. Selectors
+   below match the base rules' specificity so the overrides win. */
+[data-dark] {
+	#pc-wrap #my-page,
+	#my-page.my-page--mobile {
+		background: var(--pb);
+	}
+
+	#pc-wrap #my-page .container .my-page .back-frame {
+		border-color: var(--bd);
 	}
 }
