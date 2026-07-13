@@ -9,19 +9,29 @@
 			max-width: 1320px;
 			margin: 0 auto;
 			padding: 0 40px;
-			overflow: hidden;
 			flex-direction: column;
 			gap: 0;
 		}
 
-		/* ── Two-column layout ── */
+		/* ── Two-column layout ──
+		   No extra top padding here — the page-level padding above already
+		   provides the same vertical offset as the Community list page's
+		   .main-box, so the sidebar starts at the same height on both pages.
+
+		   `overflow: hidden` used to sit here and on .container above. Any
+		   overflow value other than `visible` turns an element into a scroll
+		   container, which changes the containing block .left-config's
+		   `position: sticky` resolves against — that made the sidebar render
+		   80px (its own sticky `top` offset) below its correct flex-start
+		   position even before any scrolling happened. Horizontal clipping
+		   for long article content is already handled deeper, on
+		   .community-detail-config/.config below (not ancestors of the
+		   sidebar), so removing it here is safe. */
 		.main-box {
 			display: flex;
 			flex-direction: row;
 			gap: 30px;
-			padding: 40px 0;
 			width: 100%;
-			overflow: hidden;
 		}
 
 		/* ── Left sidebar ──
@@ -421,7 +431,6 @@
     .main-box {
       flex-direction: column;
       gap: 12px;
-      padding: 12px 0;
     }
 
     .left-config {
