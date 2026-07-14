@@ -12,6 +12,11 @@ import { CREATE_PRODUCT, UPDATE_PRODUCT, IMAGES_UPLOADER } from '../../../apollo
 import { GET_PRODUCT } from '../../../apollo/user/query';
 import { sweetErrorHandling, sweetMixinSuccessAlert, sweetErrorAlert } from '../../sweetAlert';
 import { T } from '../../types/common';
+import { Dog, Cat, Bird, Fish, Camera, Tag, CurrencyDollar, NotePencil, Package, PencilSimple } from 'phosphor-react';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import DiamondIcon from '@mui/icons-material/Diamond';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 const MAX_IMAGES = 5;
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB
@@ -19,17 +24,17 @@ const ACCEPTED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 const ACCEPTED_EXT = /\.(jpe?g|png|webp)$/i;
 
 const PRODUCT_CATEGORIES = [
-	{ value: ProductCategory.FOOD, label: '🍖 Food & Treats' },
-	{ value: ProductCategory.MEDICINE, label: '💊 Medicine & Health' },
-	{ value: ProductCategory.ACCESSORY, label: '🎀 Accessories' },
-	{ value: ProductCategory.TOY, label: '🎾 Toys' },
+	{ value: ProductCategory.FOOD, label: 'Food & Treats', icon: <RestaurantIcon sx={{ fontSize: 18 }} /> },
+	{ value: ProductCategory.MEDICINE, label: 'Medicine & Health', icon: <LocalPharmacyIcon sx={{ fontSize: 18 }} /> },
+	{ value: ProductCategory.ACCESSORY, label: 'Accessories', icon: <DiamondIcon sx={{ fontSize: 18 }} /> },
+	{ value: ProductCategory.TOY, label: 'Toys', icon: <SportsEsportsIcon sx={{ fontSize: 18 }} /> },
 ];
 
 const PET_TYPES = [
-	{ value: ProductType.DOG, label: '🐶 Dog' },
-	{ value: ProductType.CAT, label: '🐱 Cat' },
-	{ value: ProductType.BIRD, label: '🐦 Bird' },
-	{ value: ProductType.FISH, label: '🐠 Fish' },
+	{ value: ProductType.DOG, label: 'Dog', icon: <Dog size={18} /> },
+	{ value: ProductType.CAT, label: 'Cat', icon: <Cat size={18} /> },
+	{ value: ProductType.BIRD, label: 'Bird', icon: <Bird size={18} /> },
+	{ value: ProductType.FISH, label: 'Fish', icon: <Fish size={18} /> },
 ];
 
 const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
@@ -249,7 +254,12 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 			{/* ── Page Header ── */}
 			<div className="anp-header">
 				<div>
-					<Typography className="anp-header__title">{productId ? '✏️ Edit Product' : '📦 List New Product'}</Typography>
+					<Typography className="anp-header__title">
+						<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+							{productId ? <PencilSimple size={26} /> : <Package size={26} />}
+							{productId ? 'Edit Product' : 'List New Product'}
+						</span>
+					</Typography>
 					<Typography className="anp-header__sub">
 						{productId
 							? 'Update your product details and republish'
@@ -263,7 +273,7 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 				<Card className="anp-card" elevation={0}>
 					<CardContent className="anp-card__content">
 						<div className="anp-card__head">
-							<span className="anp-card__icon">📷</span>
+							<span className="anp-card__icon"><Camera size={22} /></span>
 							<div>
 								<Typography className="anp-card__title">Product Images</Typography>
 								<Typography className="anp-card__desc">Upload up to 5 photos. First image is the cover.</Typography>
@@ -339,7 +349,7 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 				<Card className="anp-card" elevation={0}>
 					<CardContent className="anp-card__content">
 						<div className="anp-card__head">
-							<span className="anp-card__icon">🏷️</span>
+							<span className="anp-card__icon"><Tag size={22} /></span>
 							<div>
 								<Typography className="anp-card__title">Product Details</Typography>
 								<Typography className="anp-card__desc">Basic information about your product.</Typography>
@@ -388,7 +398,12 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 								{PET_TYPES.map((p) => (
 									<Chip
 										key={p.value}
-										label={p.label}
+										label={
+											<span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+												{p.icon}
+												{p.label}
+											</span>
+										}
 										onClick={() => setProductInput({ ...productInput, productType: p.value })}
 										className={`anp-chip ${productInput.productType === p.value ? 'anp-chip--active' : ''}`}
 										variant={productInput.productType === p.value ? 'filled' : 'outlined'}
@@ -404,7 +419,12 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 								{PRODUCT_CATEGORIES.map((c) => (
 									<Chip
 										key={c.value}
-										label={c.label}
+										label={
+											<span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+												{c.icon}
+												{c.label}
+											</span>
+										}
 										onClick={() => setProductInput({ ...productInput, productCategory: c.value })}
 										className={`anp-chip ${productInput.productCategory === c.value ? 'anp-chip--active' : ''}`}
 										variant={productInput.productCategory === c.value ? 'filled' : 'outlined'}
@@ -419,7 +439,7 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 				<Card className="anp-card" elevation={0}>
 					<CardContent className="anp-card__content">
 						<div className="anp-card__head">
-							<span className="anp-card__icon">💰</span>
+							<span className="anp-card__icon"><CurrencyDollar size={22} /></span>
 							<div>
 								<Typography className="anp-card__title">Inventory & Pricing</Typography>
 								<Typography className="anp-card__desc">Set your price and available stock.</Typography>
@@ -506,7 +526,7 @@ const AddNewProduct: NextPage = ({ initialInput, ...props }: any) => {
 				<Card className="anp-card" elevation={0}>
 					<CardContent className="anp-card__content">
 						<div className="anp-card__head">
-							<span className="anp-card__icon">📝</span>
+							<span className="anp-card__icon"><NotePencil size={22} /></span>
 							<div>
 								<Typography className="anp-card__title">Product Description</Typography>
 								<Typography className="anp-card__desc">Tell buyers what makes your product special.</Typography>
