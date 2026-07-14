@@ -96,6 +96,11 @@ const Top = () => {
 	const [searchOpen, setSearchOpen] = useState(false);
 	const mobileSearchRef = useRef<HTMLInputElement>(null);
 	const [cartCount, setCartCount] = useState(0);
+	// Defer theme-dependent icon to post-mount: themeVar is seeded from
+	// localStorage on the client but is always 'light' on the server, so
+	// reading it during the first render causes a hydration mismatch.
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => setMounted(true), []);
 
 	useEffect(() => {
 		setCartCount(readCartCount());
@@ -226,7 +231,7 @@ const Top = () => {
 						<div className={'drawer-header'}>
 							<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" />
 							<IconButton onClick={toggleTheme} sx={{ color: 'inherit' }} aria-label="Toggle dark mode">
-								{currentTheme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+								{mounted && currentTheme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
 							</IconButton>
 							<IconButton onClick={() => setMobileOpen(false)}>
 								<X size={22} />
@@ -397,7 +402,7 @@ const Top = () => {
 
 						{/* Dark mode toggle */}
 						<IconButton className={'icon-btn theme-btn'} onClick={toggleTheme}>
-							{currentTheme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+							{mounted && currentTheme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
 						</IconButton>
 
 						{/* Hamburger — only visible at ≤768px via CSS */}
