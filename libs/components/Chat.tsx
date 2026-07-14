@@ -25,6 +25,8 @@ interface InfoPayload {
 
 const Chat = () => {
 	const chatContentRef = useRef<HTMLDivElement>(null);
+	const chatFrameRef = useRef<HTMLDivElement>(null);
+	const chatButtonRef = useRef<HTMLButtonElement>(null);
 	// ─── PETORIA FIX START (BUG 3) ───
 	const messagesList = useReactiveVar(chatMessagesVar);
 	// ─── PETORIA FIX END (BUG 3) ───
@@ -95,6 +97,27 @@ const Chat = () => {
 		setOpenButton(false);
 	}, [router.pathname]);
 
+	// Auto-close on click outside the panel (ignoring the toggle button itself).
+	// Listener is only attached while open, and torn down on close/unmount — no
+	// duplicate listeners, no leaks.
+	useEffect(() => {
+		if (!open) return;
+		const handleOutsideClick = (e: MouseEvent) => {
+			const target = e.target as Node;
+			if (chatFrameRef.current?.contains(target) || chatButtonRef.current?.contains(target)) return;
+			chatOpenVar(false);
+		};
+		document.addEventListener('mousedown', handleOutsideClick);
+		return () => document.removeEventListener('mousedown', handleOutsideClick);
+	}, [open]);
+
+	// Auto-close when navigating to another page.
+	useEffect(() => {
+		const closeChat = () => chatOpenVar(false);
+		router.events.on('routeChangeStart', closeChat);
+		return () => router.events.off('routeChangeStart', closeChat);
+	}, [router.events]);
+
 	/** HANDLERS **/
 	const handleOpenChat = () => chatOpenVar(!chatOpenVar());
 
@@ -118,12 +141,12 @@ const Chat = () => {
 	return (
 		<Stack className="chatting">
 			{openButton && (
-				<button className="chat-button" onClick={handleOpenChat}>
+				<button ref={chatButtonRef} className="chat-button" onClick={handleOpenChat}>
 					{open ? <ArrowsIn size={22} /> : <ChatCircleDots size={22} />}
 				</button>
 			)}
 
-			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
+			<Stack ref={chatFrameRef} className={`chat-frame ${open ? 'open' : ''}`}>
 				{/* Header */}
 				<Box className={'chat-top'} component={'div'}>
 					<div style={{ fontFamily: 'Nunito' }}>🐾 Petoria Live Chat</div>
