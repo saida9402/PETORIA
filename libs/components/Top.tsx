@@ -38,6 +38,13 @@ const StyledMenu = styled((props: MenuProps) => (
 		'& .MuiMenu-list': { padding: '4px 0' },
 		'& .MuiMenuItem-root': {
 			fontSize: 14,
+			'& .flag-menu-img': {
+				width: 22,
+				height: 16,
+				borderRadius: 2,
+				objectFit: 'cover',
+				marginRight: theme.spacing(1),
+			},
 			'& .MuiSvgIcon-root': {
 				fontSize: 18,
 				color: theme.palette.text.secondary,
