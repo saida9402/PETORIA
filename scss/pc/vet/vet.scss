@@ -60,6 +60,9 @@
 }
 
 .vet-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 20px;
   border-radius: 24px;
   border: 1px solid var(--bd, #C8E6A0);
@@ -183,6 +186,9 @@
   }
 
   &__distance {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
     color: var(--t3, #6B8A4E);
   }

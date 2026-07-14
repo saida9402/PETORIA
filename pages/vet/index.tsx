@@ -4,6 +4,18 @@ import { Stack } from '@mui/material';
 import Link from 'next/link';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import StarIcon from '@mui/icons-material/Star';
+import PetsIcon from '@mui/icons-material/Pets';
+import ParkIcon from '@mui/icons-material/Park';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import SosIcon from '@mui/icons-material/Sos';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PlaceIcon from '@mui/icons-material/Place';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -25,7 +37,7 @@ const CLINICS = [
 		hours: 'Mon–Sat 09:00–20:00',
 		emergency: true,
 		tags: ['Dogs', 'Cats', 'Surgery'],
-		icon: '🏥',
+		icon: <LocalHospitalIcon sx={{ fontSize: 32, color: 'var(--np, #4E8A28)' }} />,
 		phone: '+821012345678',
 	},
 	{
@@ -39,7 +51,7 @@ const CLINICS = [
 		hours: 'Mon–Fri 10:00–18:00',
 		emergency: false,
 		tags: ['Dogs', 'Cats', 'Birds'],
-		icon: '🩺',
+		icon: <MedicalServicesIcon sx={{ fontSize: 32, color: 'var(--np, #4E8A28)' }} />,
 		phone: '+821098765432',
 	},
 	{
@@ -53,7 +65,7 @@ const CLINICS = [
 		hours: 'Tue–Sun 11:00–19:00',
 		emergency: false,
 		tags: ['Reptiles', 'Birds', 'Rabbits'],
-		icon: '🦎',
+		icon: <PetsIcon sx={{ fontSize: 32, color: 'var(--np, #4E8A28)' }} />,
 		phone: '+821055556666',
 	},
 	{
@@ -67,7 +79,7 @@ const CLINICS = [
 		hours: 'Open 24 hours',
 		emergency: true,
 		tags: ['Emergency', 'Surgery', 'ICU'],
-		icon: '🚑',
+		icon: <MonitorHeartIcon sx={{ fontSize: 32, color: 'var(--np, #4E8A28)' }} />,
 		phone: '+821012345678',
 	},
 ];
@@ -141,10 +153,10 @@ const ZOO_CAFES = [
 ];
 
 const TABS = [
-	{ id: 'clinics',   label: '🏥 Vet Clinics' },
-	{ id: 'zoos',      label: '🦁 Zoos & Parks' },
-	{ id: 'cafes',     label: '☕ Zoo Cafés' },
-	{ id: 'emergency', label: '🚨 Emergency' },
+	{ id: 'clinics',   icon: <LocalHospitalIcon sx={{ fontSize: 18 }} />, label: 'Vet Clinics' },
+	{ id: 'zoos',      icon: <ParkIcon sx={{ fontSize: 18 }} />,          label: 'Zoos & Parks' },
+	{ id: 'cafes',     icon: <LocalCafeIcon sx={{ fontSize: 18 }} />,     label: 'Zoo Cafés' },
+	{ id: 'emergency', icon: <SosIcon sx={{ fontSize: 18 }} />,           label: 'Emergency' },
 ];
 
 /* ─── Star rating helper ────────────────────────────────────────────────────── */
@@ -171,7 +183,7 @@ const VetPage: NextPage = () => {
 
 				{/* Emergency alert banner */}
 				<div className="vet-emergency-bar">
-					<span className="vet-emergency-bar__icon">🚨</span>
+					<WarningAmberIcon className="vet-emergency-bar__icon" sx={{ fontSize: 16 }} />
 					<strong>Pet Emergency?</strong>
 					<span>PetCare 24H is open now —</span>
 					<a href="tel:+821012345678">📞 010-1234-5678</a>
@@ -184,10 +196,10 @@ const VetPage: NextPage = () => {
 				{/* Stats strip */}
 				<div className="vet-stats">
 					{[
-						{ icon: '🏥', val: '120+', label: 'Partner Clinics' },
-						{ icon: '👨‍⚕️', val: '350+', label: 'Licensed Vets' },
-						{ icon: '⭐', val: '4.8',  label: 'Avg. Rating' },
-						{ icon: '🐾', val: '50K+', label: 'Pets Helped' },
+						{ icon: <LocalHospitalIcon sx={{ fontSize: 24, color: 'var(--np, #4E8A28)' }} />, val: '120+', label: 'Partner Clinics' },
+						{ icon: <MedicalServicesIcon sx={{ fontSize: 24, color: 'var(--np, #4E8A28)' }} />, val: '350+', label: 'Licensed Vets' },
+						{ icon: <StarIcon sx={{ fontSize: 24, color: 'var(--np, #4E8A28)' }} />, val: '4.8',  label: 'Avg. Rating' },
+						{ icon: <PetsIcon sx={{ fontSize: 24, color: 'var(--np, #4E8A28)' }} />, val: '50K+', label: 'Pets Helped' },
 					].map((s) => (
 						<div key={s.label} className="vet-stat">
 							<span className="vet-stat__icon">{s.icon}</span>
@@ -205,6 +217,7 @@ const VetPage: NextPage = () => {
 							className={`vet-tab${tab === t.id ? ' vet-tab--active' : ''}`}
 							onClick={() => setTab(t.id)}
 						>
+							{t.icon}
 							{t.label}
 						</button>
 					))}
@@ -226,8 +239,8 @@ const VetPage: NextPage = () => {
 										{c.emergency && <span className="vet-badge vet-badge--emergency">24H ER</span>}
 									</div>
 									<div className="vet-card__body">
-										<p className="vet-card__meta">📍 {c.address}</p>
-										<p className="vet-card__meta">🕐 {c.hours}</p>
+										<p className="vet-card__meta"><LocationOnIcon sx={{ fontSize: 15 }} />{c.address}</p>
+										<p className="vet-card__meta"><AccessTimeIcon sx={{ fontSize: 15 }} />{c.hours}</p>
 										<p className="vet-card__meta">
 											<Stars rating={c.rating} />
 											<span className="vet-card__reviews">({c.reviews} reviews)</span>
@@ -239,7 +252,7 @@ const VetPage: NextPage = () => {
 										</div>
 									</div>
 									<div className="vet-card__foot">
-										<span className="vet-card__distance">📌 {c.distance}</span>
+										<span className="vet-card__distance"><PlaceIcon sx={{ fontSize: 14 }} />{c.distance}</span>
 										<a href={`tel:${c.phone}`} className="btn btn--primary btn--sm">Book visit →</a>
 									</div>
 								</div>
@@ -264,15 +277,15 @@ const VetPage: NextPage = () => {
 										<span className="vet-badge vet-badge--price">{z.price}</span>
 									</div>
 									<div className="vet-card__body">
-										<p className="vet-card__meta">📍 {z.address}</p>
-										<p className="vet-card__meta">🕐 {z.hours}</p>
+										<p className="vet-card__meta"><LocationOnIcon sx={{ fontSize: 15 }} />{z.address}</p>
+										<p className="vet-card__meta"><AccessTimeIcon sx={{ fontSize: 15 }} />{z.hours}</p>
 										<p className="vet-card__meta">
 											<Stars rating={z.rating} />
 											<span className="vet-card__reviews">({z.reviews} reviews)</span>
 										</p>
 									</div>
 									<div className="vet-card__foot">
-										<span className="vet-card__distance">📌 {z.distance}</span>
+										<span className="vet-card__distance"><PlaceIcon sx={{ fontSize: 14 }} />{z.distance}</span>
 										<a href={`https://maps.google.com/?q=${encodeURIComponent(z.address)}`} target="_blank" rel="noopener noreferrer" className="btn btn--outline btn--sm">Get directions →</a>
 									</div>
 								</div>
@@ -291,7 +304,7 @@ const VetPage: NextPage = () => {
 									<div className="vet-card__cafe-icon">{z.icon}</div>
 									<h3 className="vet-card__name">{z.name}</h3>
 									<p className="vet-card__type">{z.type}</p>
-									<p className="vet-card__meta">📍 {z.address}</p>
+									<p className="vet-card__meta"><LocationOnIcon sx={{ fontSize: 15 }} />{z.address}</p>
 									<p className="vet-card__meta">
 										<Stars rating={z.rating} />
 										<span className="vet-card__reviews">({z.reviews})</span>
