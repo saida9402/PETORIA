@@ -137,8 +137,24 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 		}).open();
 	};
 
+	// The user reactive var holds the last-saved profile and is the baseline:
+	// it is re-synced into updateData on load and after every successful save,
+	// so the button reflects the REAL dirty state instead of always being active.
+	const isProfileDirty =
+		updateData.memberNick !== user.memberNick ||
+		updateData.memberPhone !== user.memberPhone ||
+		updateData.memberAddress !== user.memberAddress ||
+		updateData.memberImage !== user.memberImage ||
+		(updateData.memberDesc ?? '') !== (user.memberDesc ?? '');
+
 	const doDisabledCheck = () => {
-		return !updateData.memberNick || !updateData.memberPhone || !updateData.memberAddress || !updateData.memberImage;
+		return (
+			!updateData.memberNick ||
+			!updateData.memberPhone ||
+			!updateData.memberAddress ||
+			!updateData.memberImage ||
+			!isProfileDirty
+		);
 	};
 
 	return (
