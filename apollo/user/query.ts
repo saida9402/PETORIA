@@ -79,6 +79,7 @@ export const GET_MEMBER = gql`
 			memberImage
 			memberAddress
 			memberDesc
+			memberProducts
 			memberArticles
 			memberPoints
 			memberLikes

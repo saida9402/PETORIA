@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import UserAvatar from '../common/UserAvatar';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem, Chip } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
-import { useReactiveVar, useApolloClient } from '@apollo/client';
+import { useReactiveVar, useApolloClient, useQuery } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
+import { GET_MEMBER } from '../../../apollo/user/query';
 import { API_URL } from '../../config';
 import { logOut } from '../../auth';
 import { sweetConfirmAlert } from '../../sweetAlert';
@@ -20,6 +21,22 @@ const MyMenu = () => {
 	const category: any = router.query?.category ?? 'myProfile';
 	const user = useReactiveVar(userVar);
 	const client = useApolloClient();
+
+	// `user.memberProducts` comes from the JWT (set only at login), so a product
+	// added this session leaves it stale. Read the count from the live GET_MEMBER
+	// record instead — the same query/field the Seller Store shows — and refetch
+	// on category navigation so it updates after "Add Product" redirects here.
+	const { data: memberData, refetch: refetchMember } = useQuery(GET_MEMBER, {
+		fetchPolicy: 'network-only',
+		variables: { input: user?._id },
+		skip: !user?._id || user?.memberType !== 'SELLER',
+	});
+
+	useEffect(() => {
+		if (user?._id && user?.memberType === 'SELLER') refetchMember({ input: user._id });
+	}, [category]);
+
+	const memberProductsCount = memberData?.getMember?.memberProducts ?? user?.memberProducts ?? 0;
 
 	const logoutHandler = async () => {
 		try {
@@ -162,8 +179,8 @@ const MyMenu = () => {
 							<Chip label="Verified Store" size="small" className="mymenu-store__chip" />
 							<div className="mymenu-store__stats">
 								<div className="mymenu-store__stat">
-									<strong>{user?.memberLikes ?? 0}</strong>
-									<span>Likes</span>
+									<strong>{memberProductsCount}</strong>
+									<span>Products</span>
 								</div>
 								<div className="mymenu-store__stat">
 									<strong>{user?.memberLikes ?? 0}</strong>
