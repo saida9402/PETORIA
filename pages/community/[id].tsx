@@ -51,7 +51,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 	const [searchFilter, setSearchFilter] = useState<CommentsInquiry>({
 		...initialInput,
 	});
-	const [memberImage, setMemberImage] = useState<string>('/img/community/articleImg.png');
+	const [memberImage, setMemberImage] = useState<string>('/img/profile/defaultUser.svg');
 	const [anchorEl] = useState<any | null>(null);
 	const open = Boolean(anchorEl);
 	const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
@@ -182,7 +182,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 
 	const getCommentMemberImage = (imageUrl: string | undefined) => {
 		if (imageUrl) return `${API_URL}/${imageUrl}`;
-		return '/img/community/articleImg.png';
+		return '/img/profile/defaultUser.svg';
 	};
 
 	const goMemberPage = (id: any, memberType?: string) => {

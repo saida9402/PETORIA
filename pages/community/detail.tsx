@@ -48,7 +48,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 	const [searchFilter, setSearchFilter] = useState<CommentsInquiry>({
 		...initialInput,
 	});
-	const [memberImage, setMemberImage] = useState<string>('/img/community/articleImg.png');
+	const [memberImage, setMemberImage] = useState<string>('/img/profile/defaultUser.svg');
 	const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
 	const [updatedComment, setUpdatedComment] = useState<string>('');
 	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
@@ -204,7 +204,7 @@ const CommunityDetail: NextPage = ({ initialInput }: T) => {
 
 	const getCommentMemberImage = (imageUrl: string | undefined) => {
 		if (imageUrl) return `${process.env.NEXT_PUBLIC_API_URL}/${imageUrl}`;
-		else return '/img/community/articleImg.png';
+		else return '/img/profile/defaultUser.svg';
 	};
 
 	const goMemberPage = (id: any) => {
