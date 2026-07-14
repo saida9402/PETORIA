@@ -75,7 +75,9 @@
 
 /* ── Shared floating chat widget (pc/main.scss) ──────────────────────── */
 [data-dark] #pc-wrap .chatting {
-	.chat-button { background: var(--cb); }
+	/* Icon is a phosphor <svg> using currentColor; without this it inherits dark
+	   ink and is barely visible on the dark button surface. */
+	.chat-button { background: var(--cb); color: var(--t1); }
 
 	.chat-frame {
 		background: var(--pb);
@@ -121,6 +123,10 @@
 /* ===== scss/pc/community/detail.scss ===== */
 [data-dark] #pc-wrap #community-detail-page,
 [data-dark] #mobile-wrap #community-detail-page {
+	/* Sidebar brand logo (petoriaLogoDark.svg) is dark-green artwork meant for
+	   light surfaces, so it vanishes on the dark sidebar — invert it to a clean
+	   white silhouette (same technique used for other dark line-art here). */
+	.left-config .image-info img { filter: brightness(0) invert(1); }
 	.config {
 		.first-box-config {
 			border-color: var(--bd);
@@ -349,6 +355,14 @@
 	.pagination-conf .total p { color: var(--t2); }
 }
 
+/* ===== scss/pc/member/memberArticles.scss =====
+   Component renders `#member-articles-page` (not `#my-articles-page`), so
+   the article heading needs its own dark override to stay readable. */
+[data-dark] #pc-wrap #member-articles-page,
+[data-dark] #mobile-wrap #member-articles-page {
+	.main-title-box .right-box .main-title { color: var(--t1); }
+}
+
 /* ===== scss/pc/member/memberPage.scss ===== */
 [data-dark] #pc-wrap #member-page,
 [data-dark] #mobile-wrap #member-page {
@@ -361,6 +375,7 @@
 			border-color: var(--bd);
 			.profile .user-info {
 				.user-name { color: var(--t1); }
+				.user-phone { color: var(--t2); }
 				.view-list { color: var(--t3); }
 			}
 			.follow-button-box {
@@ -368,6 +383,7 @@
 				p { color: var(--t3); }
 			}
 			.sections .section {
+				.title { color: var(--t1); }
 				.sub-title { color: var(--t1); }
 				.count-title { color: var(--t1); }
 			}
@@ -426,6 +442,12 @@
 	.top-box,
 	.bottom-box {
 		background: var(--cb);
+		border-color: var(--bd);
+	}
+	/* MUI outlined "Search address" button — its text/border pull the theme's
+	   dark primary ink and go unreadable on the dark surface. */
+	.address-box .MuiButton-outlined {
+		color: var(--t1);
 		border-color: var(--bd);
 	}
 	.top-box {
@@ -650,4 +672,25 @@
 	.MuiTab-root { color: var(--t2); }
 	.MuiTab-root.Mui-selected { color: var(--t1); }
 	.MuiDivider-root { border-color: var(--bd); }
+}
+
+/* Notifications dropdown (header bell) — same MUI-only build as the page: all
+   text via `sx` with hardcoded ink (#222 title / #888 desc / #bbb timestamp /
+   #aaa empty). It renders in a portal with no page wrapper, so scope via the
+   class set on the Popover paper; teal accents live on Buttons and are safe. */
+[data-dark] .notif-dropdown {
+	.MuiTypography-root { color: var(--t1); }
+	.MuiDivider-root { border-color: var(--bd); }
+}
+
+/* Community filter sidebar (shared by list + detail) — category tabs use color
+   emoji as icons. 🐾 Free Board renders as a dark paw glyph, and a color-emoji
+   can't be recolored via CSS `color`, so it disappears on the dark tab surface
+   while the brighter emoji (star/newspaper/face) stay visible. Invert just the
+   paw to white in dark mode; the other icons and light mode are untouched. */
+[data-dark] #pc-wrap #community-list-page .tab-icon--free,
+[data-dark] #mobile-wrap #community-list-page .tab-icon--free,
+[data-dark] #pc-wrap #community-detail-page .tab-icon--free,
+[data-dark] #mobile-wrap #community-detail-page .tab-icon--free {
+	filter: brightness(0) invert(1);
 }

@@ -90,7 +90,7 @@ const NotificationDropdown = ({ anchorEl, onClose }: Props) => {
 			onClose={onClose}
 			anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-			PaperProps={{ sx: { width: 360, maxHeight: 480, borderRadius: 2, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' } }}
+			PaperProps={{ className: 'notif-dropdown', sx: { width: 360, maxHeight: 480, borderRadius: 2, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' } }}
 		>
 			<Box sx={{ p: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 				<Typography sx={{ fontFamily: 'Nunito', fontWeight: 700, fontSize: 15 }}>Notifications</Typography>

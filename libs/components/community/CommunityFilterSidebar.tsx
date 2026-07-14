@@ -7,10 +7,10 @@ export interface CommunityFilterSidebarProps {
 }
 
 const CATEGORY_TABS = [
-	{ value: 'FREE', label: '🐾 Free Board' },
-	{ value: 'RECOMMEND', label: '⭐ Recommendations' },
-	{ value: 'NEWS', label: '📰 Pet News' },
-	{ value: 'HUMOR', label: '😄 Humor' },
+	{ value: 'FREE', icon: '🐾', label: 'Free Board' },
+	{ value: 'RECOMMEND', icon: '⭐', label: 'Recommendations' },
+	{ value: 'NEWS', icon: '📰', label: 'Pet News' },
+	{ value: 'HUMOR', icon: '😄', label: 'Humor' },
 ];
 
 const CommunityFilterSidebar = ({ activeCategory, onCategoryChange }: CommunityFilterSidebarProps) => {
@@ -34,7 +34,11 @@ const CommunityFilterSidebar = ({ activeCategory, onCategoryChange }: CommunityF
 					<Tab
 						key={tab.value}
 						value={tab.value}
-						label={tab.label}
+						label={
+							<>
+								<span className={`tab-icon tab-icon--${tab.value.toLowerCase()}`}>{tab.icon}</span> {tab.label}
+							</>
+						}
 						className={`tab-button ${activeCategory === tab.value ? 'active' : ''}`}
 					/>
 				))}
