@@ -152,8 +152,16 @@
         .wrap {
           margin-top: 60px;
           display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
+          flex-flow: row wrap;
+          justify-content: flex-start;
+          gap: 34px 27px;
+          /* Spacing handled by the flex `gap` above — reset the shared card's own
+             margins (from general.scss) so rows align cleanly with no ragged edge.
+             Scoped to About's Top Sellers only; other pages using the card are untouched. */
+          .agent-general-card {
+            margin-right: 0;
+            margin-bottom: 0;
+          }
         }
       }
     }
