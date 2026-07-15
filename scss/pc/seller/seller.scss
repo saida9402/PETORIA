@@ -267,6 +267,40 @@
 			}
 		}
 
+		.ssp-actions {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.ssp-like-btn {
+			display: flex !important;
+			align-items: center !important;
+			gap: 6px !important;
+			padding: 8px 20px !important;
+			border-radius: 24px !important;
+			background: var(--cb, #fff) !important;
+			color: var(--t2, #3A5020) !important;
+			border: 1.5px solid var(--bd, #C8E6A0) !important;
+			font-family: $font !important;
+			font-size: 13px !important;
+			font-weight: 600 !important;
+			text-transform: none !important;
+			transition: background 0.2s, border-color 0.2s, color 0.2s !important;
+
+			&:hover {
+				background: var(--nbg, #EAF3DE) !important;
+				border-color: #e11d48 !important;
+			}
+
+			&.ssp-like-btn--active {
+				background: rgba(225, 29, 72, 0.08) !important;
+				color: #e11d48 !important;
+				border-color: #e11d48 !important;
+			}
+		}
+
 		// ── Sections ──
 		.ssp-section {
 			background: var(--cb, #fff);

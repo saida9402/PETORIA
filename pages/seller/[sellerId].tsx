@@ -10,6 +10,7 @@ import {
 	SUBSCRIBE,
 	UNSUBSCRIBE,
 	LIKE_TARGET_PRODUCT,
+	LIKE_TARGET_MEMBER,
 	CREATE_COMMENT,
 } from '../../apollo/user/mutation';
 import { userVar } from '../../apollo/store';
@@ -61,6 +62,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 	/** APOLLO REQUESTS **/
 	const [createComment] = useMutation(CREATE_COMMENT);
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
+	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 	const [subscribe] = useMutation(SUBSCRIBE);
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
 
@@ -152,6 +154,38 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 		}
 	};
 
+	const likeMemberHandler = async () => {
+		if (!user._id) { sweetErrorHandling(new Error(Messages.error2)).then(); return; }
+		if (!seller?._id) return;
+		const wasLiked = seller.meLiked?.[0]?.myFavorite ?? false;
+		// Optimistic update — instant heart fill + count change
+		setSeller((prev) =>
+			prev
+				? {
+						...prev,
+						memberLikes: (prev.memberLikes ?? 0) + (wasLiked ? -1 : 1),
+						meLiked: [{ memberId: user._id, likeRefId: prev._id, myFavorite: !wasLiked }],
+				  }
+				: prev,
+		);
+		try {
+			await likeTargetMember({ variables: { memberId: seller._id } });
+			getMemberRefetch({ input: sellerId });
+		} catch (err: any) {
+			// Revert optimistic update on failure
+			setSeller((prev) =>
+				prev
+					? {
+							...prev,
+							memberLikes: (prev.memberLikes ?? 0) + (wasLiked ? 1 : -1),
+							meLiked: [{ memberId: user._id, likeRefId: prev._id, myFavorite: wasLiked }],
+					  }
+					: prev,
+			);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	};
+
 	const likeProductHandler = async (id: string) => {
 		try {
 			if (!id) return;
@@ -184,6 +218,7 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 
 	const avatarSrc = seller?.memberImage ? `${API_URL}/${seller.memberImage}` : '/img/profile/defaultUser.svg';
 	const isFollowing = seller?.meFollowed?.[0]?.myFollowing ?? false;
+	const isLiked = seller?.meLiked?.[0]?.myFavorite ?? false;
 
 	return (
 		<div id="seller-store-page">
@@ -233,15 +268,27 @@ const SellerStorePage: NextPage = ({ initialInput, initialComment, ...props }: a
 									<span className="ssp-stat__label">Followers</span>
 								</div>
 							</div>
-							{/* Follow Button */}
-							{user._id && user._id !== seller?._id && (
-								<Button
-									className={`ssp-follow-btn ${isFollowing ? 'ssp-follow-btn--active' : ''}`}
-									onClick={followHandler}
-								>
-									{isFollowing ? '✓ Following' : '+ Follow Store'}
-								</Button>
-							)}
+							{/* Actions: Like + Follow */}
+							<div className="ssp-actions">
+								{/* Hide the Like button on your own store — you can only like other stores */}
+								{user._id !== seller?._id && (
+									<Button
+										className={`ssp-like-btn ${isLiked ? 'ssp-like-btn--active' : ''}`}
+										onClick={likeMemberHandler}
+									>
+										<Heart size={16} weight={isLiked ? 'fill' : 'regular'} color={isLiked ? '#e11d48' : undefined} />
+										{isLiked ? 'Liked' : 'Like'}
+									</Button>
+								)}
+								{user._id && user._id !== seller?._id && (
+									<Button
+										className={`ssp-follow-btn ${isFollowing ? 'ssp-follow-btn--active' : ''}`}
+										onClick={followHandler}
+									>
+										{isFollowing ? '✓ Following' : '+ Follow Store'}
+									</Button>
+								)}
+							</div>
 						</div>
 					</div>
 				</div>
