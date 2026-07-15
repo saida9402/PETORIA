@@ -1,24 +1,62 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
-import { Box, Button, InputAdornment, Stack } from '@mui/material';
+import { Box, Button, Divider, TablePagination, Typography } from '@mui/material';
 import { List, ListItem } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import { TabContext } from '@mui/lab';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import TablePagination from '@mui/material/TablePagination';
-import { Plus, XCircle, MagnifyingGlass } from 'phosphor-react';
-import { FaqArticlesPanelList } from '../../../libs/components/admin/cs/FaqList';
+import { Plus } from 'phosphor-react';
+import { useQuery, useMutation } from '@apollo/client';
+import Swal from 'sweetalert2';
+import { GET_NOTICES } from '../../../apollo/user/query';
+import { CREATE_NOTICE } from '../../../apollo/admin/mutation';
+import { NoticeList } from '../../../libs/components/admin/cs/NoticeList';
+import NoticeFormModal from '../../../libs/components/NoticeFormModal';
+import { NoticeCategory, NoticeStatus } from '../../../libs/types/notice/notice';
 
-const FaqArticles: NextPage = (props: any) => {
-	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
+const LIMIT = 20;
 
-	/** APOLLO REQUESTS **/
-	/** LIFECYCLES **/
-	/** HANDLERS **/
+// FAQs are Notice records with noticeCategory === FAQ, so this page reuses the
+// Notice GraphQL + list + form, scoped to the FAQ category. Mirrors notice.tsx.
+const statusForTab: Record<'active' | 'hold' | 'deleted', NoticeStatus> = {
+	active: NoticeStatus.ACTIVE,
+	hold: NoticeStatus.HOLD,
+	deleted: NoticeStatus.DELETE,
+};
+
+const AdminFaq: NextPage = () => {
+	const [tabValue, setTabValue] = useState<'all' | 'active' | 'hold' | 'deleted'>('all');
+	const [page, setPage] = useState(0);
+	const [createOpen, setCreateOpen] = useState(false);
+
+	const buildSearch = () => {
+		const search: { noticeCategory: NoticeCategory; noticeStatus?: NoticeStatus } = {
+			noticeCategory: NoticeCategory.FAQ,
+		};
+		if (tabValue !== 'all') search.noticeStatus = statusForTab[tabValue];
+		return search;
+	};
+
+	const { data, refetch } = useQuery(GET_NOTICES, {
+		variables: { input: { page: page + 1, limit: LIMIT, search: buildSearch() } },
+		fetchPolicy: 'network-only',
+	});
+
+	const [createNotice] = useMutation(CREATE_NOTICE);
+
+	const faqData = data?.getNotices?.list ?? [];
+	const total = data?.getNotices?.metaCounter?.[0]?.total ?? 0;
+
+	const handleCreate = async (input: any) => {
+		// Force FAQ category so the new entry belongs to this list regardless of the shared modal.
+		await createNotice({ variables: { input: { ...input, noticeCategory: NoticeCategory.FAQ } } });
+		Swal.fire({ icon: 'success', title: 'FAQ created!', timer: 1500, showConfirmButton: false });
+		refetch();
+	};
+
+	const handleTabChange = (value: 'all' | 'active' | 'hold' | 'deleted') => {
+		setTabValue(value);
+		setPage(0);
+	};
 
 	return (
 		// @ts-ignore
@@ -29,98 +67,65 @@ const FaqArticles: NextPage = (props: any) => {
 					className="btn_add"
 					variant={'contained'}
 					size={'medium'}
-					// onClick={() => router.push(`/_admin/cs/faq_create`)}
+					onClick={() => setCreateOpen(true)}
+					sx={{
+						bgcolor: '#4E8A28',
+						'&:hover': { bgcolor: '#3A6B1E' },
+						textTransform: 'none',
+						fontWeight: 600,
+						borderRadius: 2,
+						gap: 0.5,
+					}}
 				>
 					<Plus size={18} style={{ marginRight: 8 }} />
 					ADD
 				</Button>
 			</Box>
+
 			<Box component={'div'} className={'table-wrap'}>
 				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
-					<TabContext value={'value'}>
+					<TabContext value={tabValue}>
 						<Box component={'div'}>
 							<List className={'tab-menu'}>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'all')}
-									value="all"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									All (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'active')}
-									value="active"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Active (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'blocked')}
-									value="blocked"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Blocked (0)
-								</ListItem>
-								<ListItem
-									// onClick={(e) => handleTabChange(e, 'deleted')}
-									value="deleted"
-									className={'all' === 'all' ? 'li on' : 'li'}
-								>
-									Deleted (0)
-								</ListItem>
+								{(['all', 'active', 'hold', 'deleted'] as const).map((t) => (
+									<ListItem
+										key={t}
+										onClick={() => handleTabChange(t)}
+										value={t}
+										className={tabValue === t ? 'li on' : 'li'}
+										sx={{ cursor: 'pointer' }}
+									>
+										{t.charAt(0).toUpperCase() + t.slice(1)} (
+										{t === 'all' ? total : faqData.filter((n: any) => n.noticeStatus === statusForTab[t]).length})
+									</ListItem>
+								))}
 							</List>
 							<Divider />
-							<Stack className={'search-area'} sx={{ m: '24px' }}>
-								<Select sx={{ width: '160px', mr: '20px' }} value={'searchCategory'}>
-									<MenuItem value={'mb_nick'}>mb_nick</MenuItem>
-									<MenuItem value={'mb_id'}>mb_id</MenuItem>
-								</Select>
-
-								<OutlinedInput
-									value={'searchInput'}
-									// onChange={(e) => handleInput(e.target.value)}
-									sx={{ width: '100%' }}
-									className={'search'}
-									placeholder="Search user name"
-									onKeyDown={(event) => {
-										// if (event.key == 'Enter') searchTargetHandler().then();
-									}}
-									endAdornment={
-										<>
-											{true && <XCircle size={20} onClick={() => {}} style={{ cursor: 'pointer' }} />}
-											<InputAdornment position="end" onClick={() => {}}>
-												<MagnifyingGlass size={20} color="#bdbdbd" style={{ cursor: 'pointer' }} />
-											</InputAdornment>
-										</>
-									}
-								/>
-							</Stack>
-							<Divider />
 						</Box>
-						<FaqArticlesPanelList
-							// dense={dense}
-							// membersData={membersData}
-							// searchMembers={searchMembers}
-							anchorEl={anchorEl}
-							// handleMenuIconClick={handleMenuIconClick}
-							// handleMenuIconClose={handleMenuIconClose}
-							// generateMentorTypeHandle={generateMentorTypeHandle}
-						/>
+
+						<NoticeList noticesData={faqData} refetch={refetch} />
 
 						<TablePagination
 							rowsPerPageOptions={[20, 40, 60]}
 							component="div"
-							count={4}
-							rowsPerPage={10}
-							page={1}
-							onPageChange={() => {}}
+							count={total}
+							rowsPerPage={LIMIT}
+							page={page}
+							onPageChange={(_, p) => setPage(p)}
 							onRowsPerPageChange={() => {}}
 						/>
 					</TabContext>
 				</Box>
 			</Box>
+
+			<NoticeFormModal
+				open={createOpen}
+				onClose={() => setCreateOpen(false)}
+				onSubmit={handleCreate}
+				initialData={null}
+			/>
 		</Box>
 	);
 };
 
-export default withAdminLayout(FaqArticles);
+export default withAdminLayout(AdminFaq);
