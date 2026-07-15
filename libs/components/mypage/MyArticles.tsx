@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
-import { Pagination, Stack, Typography } from '@mui/material';
+import dynamic from 'next/dynamic';
+import { Button, Pagination, Stack, Typography } from '@mui/material';
 import CommunityCard from '../common/CommunityCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
 import { BoardArticle } from '../../types/board-article/board-article';
-import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { BoardArticleStatus } from '../../enums/board-article.enum';
+import { LIKE_TARGET_BOARD_ARTICLE, UPDATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
+import { sweetConfirmAlert, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { Messages } from '../../config';
+
+// Same editor used by the Write flow (SSR disabled — Toast UI needs the browser).
+const TuiEditor = dynamic(() => import('../community/Teditor'), { ssr: false });
 
 const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	const user = useReactiveVar(userVar);
@@ -19,9 +24,11 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	});
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
+	const [editingArticle, setEditingArticle] = useState<BoardArticle | null>(null);
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
+	const [updateBoardArticle] = useMutation(UPDATE_BOARD_ARTICLE);
 
 	const {
 		loading: boardArticlesLoading,
@@ -57,6 +64,52 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		}
 	};
 
+	const editArticleHandler = (e: React.MouseEvent, article: BoardArticle) => {
+		e.stopPropagation();
+		setEditingArticle(article);
+	};
+
+	// Called by the editor after a successful update: leave edit mode and refresh the list.
+	const articleUpdatedHandler = async () => {
+		setEditingArticle(null);
+		await boardArticlesRefetch({ input: searchCommunity });
+	};
+
+	// Soft-delete via the same update mutation (backend decrements the article count on DELETE).
+	const deleteArticleHandler = async (e: React.MouseEvent, article: BoardArticle) => {
+		try {
+			e.stopPropagation();
+			if (!article?._id) return;
+			if (!(await sweetConfirmAlert('Are you sure you want to delete this article?'))) return;
+
+			await updateBoardArticle({
+				variables: { input: { _id: article._id, articleStatus: BoardArticleStatus.DELETE } },
+			});
+			await boardArticlesRefetch({ input: searchCommunity });
+			await sweetTopSmallSuccessAlert('Article deleted', 750);
+		} catch (err: any) {
+			sweetMixinErrorAlert(err.message).then();
+		}
+	};
+
+	/** EDIT MODE — reuse the Write editor, pre-filled with the selected article. **/
+	if (editingArticle) {
+		return (
+			<div id="write-article-page">
+				<Stack className="main-title-box">
+					<Stack className="right-box">
+						<Typography className="main-title">Edit Article ✍️</Typography>
+						<Typography className="sub-title">Update your pet community post</Typography>
+					</Stack>
+					<Button variant="outlined" onClick={() => setEditingArticle(null)} sx={{ height: '40px' }}>
+						Cancel
+					</Button>
+				</Stack>
+				<TuiEditor key={editingArticle._id} article={editingArticle} onUpdated={articleUpdatedHandler} />
+			</div>
+		);
+	}
+
 	return (
 			<div id="my-articles-page">
 				<Stack className="main-title-box">
@@ -69,12 +122,34 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 				<Stack className="article-list-box">
 					{boardArticles?.length > 0 ? (
 						boardArticles?.map((boardArticle: BoardArticle) => (
-							<CommunityCard
-								boardArticle={boardArticle}
-								key={boardArticle?._id}
-								size={'small'}
-								likeArticleHandler={likeBoArticleHandler}
-							/>
+							<Stack key={boardArticle?._id} sx={{ position: 'relative' }}>
+								<CommunityCard
+									boardArticle={boardArticle}
+									size={'small'}
+									likeArticleHandler={likeBoArticleHandler}
+								/>
+								<Stack
+									direction="row"
+									spacing={1}
+									sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}
+								>
+									<Button
+										size="small"
+										variant="contained"
+										onClick={(e) => editArticleHandler(e, boardArticle)}
+									>
+										Edit
+									</Button>
+									<Button
+										size="small"
+										variant="contained"
+										color="error"
+										onClick={(e) => deleteArticleHandler(e, boardArticle)}
+									>
+										Delete
+									</Button>
+								</Stack>
+							</Stack>
 						))
 					) : (
 						<div className={'no-data'}>

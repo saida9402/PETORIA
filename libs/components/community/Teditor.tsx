@@ -6,22 +6,34 @@ import { useRouter } from 'next/router';
 import { T } from '../../types/common';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { useMutation } from '@apollo/client';
-import { CREATE_BOARD_ARTICLE, IMAGE_UPLOADER } from '../../../apollo/user/mutation';
+import { CREATE_BOARD_ARTICLE, IMAGE_UPLOADER, UPDATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
 import { API_URL } from '../../config';
+import { BoardArticle } from '../../types/board-article/board-article';
 
-const TuiEditor = () => {
+interface TuiEditorProps {
+	/** When provided, the editor runs in edit mode (updates this article instead of creating). */
+	article?: BoardArticle;
+	/** Called after a successful update so the caller can exit edit mode / refetch. */
+	onUpdated?: () => void;
+}
+
+const TuiEditor = ({ article, onUpdated }: TuiEditorProps) => {
 	const editorRef = useRef<Editor>(null);
 	const router = useRouter();
+	const isEditMode = Boolean(article);
 
-	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(BoardArticleCategory.FREE);
-	const [articleTitle, setArticleTitle] = useState<string>('');
-	const [articleImage, setArticleImage] = useState<string>('');
+	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(
+		article?.articleCategory ?? BoardArticleCategory.FREE,
+	);
+	const [articleTitle, setArticleTitle] = useState<string>(article?.articleTitle ?? '');
+	const [articleImage, setArticleImage] = useState<string>(article?.articleImage ?? '');
 	const [submitting, setSubmitting] = useState<boolean>(false);
 
 	/** APOLLO REQUESTS **/
 	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
+	const [updateBoardArticle] = useMutation(UPDATE_BOARD_ARTICLE);
 	const [imageUploader] = useMutation(IMAGE_UPLOADER);
 
 	/** HANDLERS **/
@@ -73,22 +85,39 @@ const TuiEditor = () => {
 				throw new Error('Content is too short');
 			}
 
-			await createBoardArticle({
-				variables: {
-					input: {
-						articleCategory,
-						articleTitle: trimmedTitle,
-						articleContent: trimmedContent,
-						articleImage: articleImage || undefined,
+			if (isEditMode && article) {
+				// Edit: category is intentionally NOT sent — BoardArticleUpdate does not define it.
+				await updateBoardArticle({
+					variables: {
+						input: {
+							_id: article._id,
+							articleTitle: trimmedTitle,
+							articleContent: trimmedContent,
+							articleImage: articleImage || undefined,
+						},
 					},
-				},
-			});
+				});
 
-			await sweetTopSuccessAlert('Article is created successfully', 700);
-			await router.push({
-				pathname: '/mypage',
-				query: { category: 'myArticles' },
-			});
+				await sweetTopSuccessAlert('Article is updated successfully', 700);
+				onUpdated?.();
+			} else {
+				await createBoardArticle({
+					variables: {
+						input: {
+							articleCategory,
+							articleTitle: trimmedTitle,
+							articleContent: trimmedContent,
+							articleImage: articleImage || undefined,
+						},
+					},
+				});
+
+				await sweetTopSuccessAlert('Article is created successfully', 700);
+				await router.push({
+					pathname: '/mypage',
+					query: { category: 'myArticles' },
+				});
+			}
 		} catch (err: any) {
 			console.error('[ARTICLE SUBMIT ERROR]', err);
 			const msg = err?.message || Message.INSERT_ALL_INPUTS;
@@ -112,11 +141,12 @@ const TuiEditor = () => {
 					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
 						Category
 					</Typography>
-					<FormControl sx={{ width: '100%', background: 'white' }}>
+					<FormControl sx={{ width: '100%', background: 'var(--cb)' }}>
 						<Select
 							value={articleCategory}
 							onChange={changeCategoryHandler}
 							displayEmpty
+							disabled={isEditMode}
 							inputProps={{ 'aria-label': 'Without label' }}
 						>
 							<MenuItem value={BoardArticleCategory.FREE}>
@@ -136,15 +166,15 @@ const TuiEditor = () => {
 						value={articleTitle}
 						onChange={articleTitleHandler}
 						id="filled-basic"
-						label="Type Title (3-50 chars)"
-						sx={{ width: '100%', background: 'white' }}
+						placeholder="Type Title (3-50 chars)"
+						sx={{ width: '100%', background: 'var(--cb)' }}
 						inputProps={{ maxLength: 50 }}
 					/>
 				</Box>
 			</Stack>
 
 			<Editor
-				initialValue={''}
+				initialValue={article?.articleContent ?? ''}
 				placeholder={'Write your article here...'}
 				previewStyle={'tab'}
 				height={'400px'}
@@ -175,7 +205,7 @@ const TuiEditor = () => {
 					onClick={handleRegisterButton}
 					disabled={submitting}
 				>
-					{submitting ? 'Submitting...' : 'Register'}
+					{submitting ? 'Submitting...' : isEditMode ? 'Update' : 'Register'}
 				</Button>
 			</Stack>
 		</Stack>
