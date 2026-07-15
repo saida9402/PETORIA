@@ -9,7 +9,7 @@ const SHOP_LINKS = [
 	{ label: 'Cat Products', href: '/shop?typeList=CAT' },
 	{ label: 'Bird Products', href: '/shop?typeList=BIRD' },
 	{ label: 'Fish Products', href: '/shop?typeList=FISH' },
-	{ label: 'Sale Items 🔥', href: '/shop?onSale=true' },
+	{ label: 'Sale Items', href: '/shop?onSale=true' },
 ];
 
 const QUICK_LINKS = [
