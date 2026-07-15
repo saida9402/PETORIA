@@ -11,7 +11,10 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { GET_PRODUCT, GET_COMMENTS } from '../../apollo/user/query';
 import { LIKE_TARGET_PRODUCT, CREATE_COMMENT } from '../../apollo/user/mutation';
-import { API_URL, TYPE_CFG, CAT_CFG, Messages } from '../../libs/config';
+import { API_URL, Messages } from '../../libs/config';
+import { TYPE_CFG, CAT_CFG } from '../../libs/iconConfig';
+import PetsIcon from '@mui/icons-material/Pets';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { T } from '../../libs/types/common';
 import { addToCart } from '../../libs/cart';
 import { sweetTopSmallSuccessAlert, sweetErrorHandling } from '../../libs/sweetAlert';
@@ -204,8 +207,16 @@ const ProductDetail: NextPage = () => {
 			: `${API_URL}/${images[activeImg]}`
 		: null;
 
-	const typeCfg = TYPE_CFG[product.productType] ?? { icon: '🐾', label: product.productType, color: 'var(--np)' };
-	const catCfg = CAT_CFG[product.productCategory] ?? { icon: '🦴', label: product.productCategory };
+	const FALLBACK_ICON_SX = { fontSize: 'inherit', verticalAlign: 'middle' } as const;
+	const typeCfg = TYPE_CFG[product.productType] ?? {
+		icon: <PetsIcon sx={FALLBACK_ICON_SX} />,
+		label: product.productType,
+		color: 'var(--np)',
+	};
+	const catCfg = CAT_CFG[product.productCategory] ?? {
+		icon: <ShoppingBagIcon sx={FALLBACK_ICON_SX} />,
+		label: product.productCategory,
+	};
 	const isSold = product.productStatus === 'SOLD';
 	const isOutOfStock = !isSold && (product.productStock ?? 0) === 0;
 	const isLowStock = !isSold && !isOutOfStock && (product.productStock ?? 0) <= 5;

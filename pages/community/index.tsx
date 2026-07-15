@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Stack, Typography, Button, Pagination } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import CommunityCard from '../../libs/components/common/CommunityCard';
 import CommunityFilterSidebar from '../../libs/components/community/CommunityFilterSidebar';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -109,7 +110,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 											onClick={() => router.push({ pathname: '/mypage', query: { category: 'writeArticle' } })}
 											className="right"
 										>
-											✍️ Write
+											<EditIcon sx={{ fontSize: 'inherit', verticalAlign: 'middle' }} /> Write
 										</Button>
 									</Stack>
 
