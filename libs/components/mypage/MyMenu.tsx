@@ -37,6 +37,10 @@ const MyMenu = () => {
 	}, [category]);
 
 	const memberProductsCount = memberData?.getMember?.memberProducts ?? user?.memberProducts ?? 0;
+	// Likes/Views in the JWT (userVar) are stale — they never update when someone
+	// likes/views the store. Read them from the fresh GET_MEMBER record, same as products.
+	const memberLikesCount = memberData?.getMember?.memberLikes ?? user?.memberLikes ?? 0;
+	const memberViewsCount = memberData?.getMember?.memberViews ?? user?.memberViews ?? 0;
 
 	const logoutHandler = async () => {
 		try {
@@ -183,11 +187,11 @@ const MyMenu = () => {
 									<span>Products</span>
 								</div>
 								<div className="mymenu-store__stat">
-									<strong>{user?.memberLikes ?? 0}</strong>
+									<strong>{memberLikesCount}</strong>
 									<span>Likes</span>
 								</div>
 								<div className="mymenu-store__stat">
-									<strong>{user?.memberViews ?? 0}</strong>
+									<strong>{memberViewsCount}</strong>
 									<span>Views</span>
 								</div>
 							</div>
