@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
+import { SquaresFour, Newspaper, Lightbulb, Heartbeat, BookOpen } from 'phosphor-react';
 
 import CommunityCard from './CommunityCard';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 
 const TABS = [
-	{ key: 'ALL', icon: '📋', label: 'All' },
-	{ key: 'NEWS', icon: '📰', label: 'News' },
-	{ key: 'RECOMMEND', icon: '💡', label: 'Tips' },
-	{ key: 'FREE', icon: '💬', label: 'Health' },
-	{ key: 'HUMOR', icon: '😄', label: 'Stories' },
+	{ key: 'ALL', Icon: SquaresFour, label: 'All' },
+	{ key: 'NEWS', Icon: Newspaper, label: 'News' },
+	{ key: 'RECOMMEND', Icon: Lightbulb, label: 'Tips' },
+	{ key: 'FREE', Icon: Heartbeat, label: 'Health' },
+	{ key: 'HUMOR', Icon: BookOpen, label: 'Stories' },
 ];
 
 export default function CommunityBoards() {
@@ -49,15 +50,18 @@ export default function CommunityBoards() {
 
 				{/* Category chips */}
 				<div className="community-boards__cats">
-					{TABS.map((c) => (
-						<button
-							key={c.key}
-							onClick={() => setActiveCategory(c.key)}
-							className={`chip${activeCategory === c.key ? ' chip--active' : ''}`}
-						>
-							{c.icon} {c.label}
-						</button>
-					))}
+					{TABS.map((c) => {
+						const Icon = c.Icon;
+						return (
+							<button
+								key={c.key}
+								onClick={() => setActiveCategory(c.key)}
+								className={`chip${activeCategory === c.key ? ' chip--active' : ''}`}
+							>
+								<Icon size={14} weight="duotone" /> {c.label}
+							</button>
+						);
+					})}
 				</div>
 
 				{loading ? (
@@ -86,7 +90,7 @@ export default function CommunityBoards() {
 					<div className="community-boards__cta-text">
 						<span className="community-boards__cta-icon">✍️</span>
 						<div>
-							<p style={{ fontWeight: 700, color: 'var(--g800)', marginBottom: 2 }}>Share your pet story</p>
+							<p style={{ fontWeight: 700, color: 'var(--t1)', marginBottom: 2 }}>Share your pet story</p>
 							<p style={{ fontSize: 13, color: 'var(--muted)' }}>Help fellow pet owners with your experience</p>
 						</div>
 					</div>
