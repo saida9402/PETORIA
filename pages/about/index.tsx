@@ -50,7 +50,7 @@ const About: NextPage = () => {
 											display: 'flex',
 											justifyContent: 'center',
 											alignItems: 'center',
-											background: '#F6F6F6',
+											background: 'var(--nbg)',
 										}}
 									>
 										🌿
@@ -68,7 +68,7 @@ const About: NextPage = () => {
 											display: 'flex',
 											justifyContent: 'center',
 											alignItems: 'center',
-											background: '#F6F6F6',
+											background: 'var(--nbg)',
 										}}
 									>
 										🔒
@@ -112,7 +112,7 @@ const About: NextPage = () => {
 									<SellerCard key={seller._id} seller={seller} likeMemberHandler={() => {}} />
 								))
 							) : (
-								<p style={{ color: '#888', textAlign: 'center', width: '100%' }}>
+								<p style={{ color: 'var(--t2)', textAlign: 'center', width: '100%' }}>
 									No sellers yet — check back soon! 🐾
 								</p>
 							)}
@@ -172,12 +172,12 @@ const About: NextPage = () => {
 									<div
 										style={{
 											padding: '10px 24px',
-											border: '2px solid #4E8A28',
+											border: '2px solid var(--np)',
 											borderRadius: '8px',
 											fontWeight: 700,
 											fontSize: '14px',
-											color: '#4E8A28',
-											background: 'white',
+											color: 'var(--np)',
+											background: 'var(--cb)',
 											cursor: 'pointer',
 											transition: 'background 0.15s',
 										}}
