@@ -63,6 +63,11 @@
 	.MuiInputBase-input,
 	.MuiOutlinedInput-input,
 	.MuiSelect-select { color: var(--t1); }
+	/* The MUI theme hardcodes background-color:#fff on the OutlinedInput root
+	   (MaterialTheme/index.ts), so the input SURFACE stayed white in dark mode
+	   while the text above was remapped to the light --t1 → value invisible.
+	   Remap the surface too, matching the token used for every other input. */
+	.MuiOutlinedInput-root { background-color: var(--cb); }
 	.MuiInputLabel-root,
 	.MuiFormHelperText-root { color: var(--t3); }
 	.MuiOutlinedInput-notchedOutline { border-color: var(--bd); }
@@ -238,7 +243,10 @@
 }
 
 /* ===== scss/pc/about/about.scss ===== */
-[data-dark] .about-page {
+/* about.scss nests every rule under `#pc-wrap .about-page` (1 ID). This override
+   must carry the same wrapper ID or it loses on specificity and silently no-ops. */
+[data-dark] #pc-wrap .about-page,
+[data-dark] #mobile-wrap .about-page {
 	.intro {
 		.left strong { color: var(--t1); }
 		.right {
@@ -683,14 +691,6 @@
 	.MuiDivider-root { border-color: var(--bd); }
 }
 
-/* Community filter sidebar (shared by list + detail) — category tabs use color
-   emoji as icons. 🐾 Free Board renders as a dark paw glyph, and a color-emoji
-   can't be recolored via CSS `color`, so it disappears on the dark tab surface
-   while the brighter emoji (star/newspaper/face) stay visible. Invert just the
-   paw to white in dark mode; the other icons and light mode are untouched. */
-[data-dark] #pc-wrap #community-list-page .tab-icon--free,
-[data-dark] #mobile-wrap #community-list-page .tab-icon--free,
-[data-dark] #pc-wrap #community-detail-page .tab-icon--free,
-[data-dark] #mobile-wrap #community-detail-page .tab-icon--free {
-	filter: brightness(0) invert(1);
-}
+/* Community filter sidebar category tabs now use MUI icons (currentColor), so
+   they recolor with the tab text in every state — the previous emoji-paw
+   `filter: invert` workaround is no longer needed. */
