@@ -7,7 +7,6 @@ import {
 	TableRow,
 	Table,
 	TableContainer,
-	Button,
 	Menu,
 	Fade,
 	MenuItem,
@@ -18,6 +17,7 @@ import { Stack } from '@mui/material';
 import { Member } from '../../../types/member/member';
 
 import { MemberStatus, MemberType } from '../../../enums/member.enum';
+import StatusChip from '../StatusChip';
 import { API_URL } from '../../../config';
 
 interface Data {
@@ -182,9 +182,10 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="left">{member.memberPhone}</TableCell>
 
 										<TableCell align="center">
-											<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-												{member.memberType}
-											</Button>
+											<StatusChip
+												label={member.memberType}
+												onClick={(e: any) => menuIconClickHandler(e, index)}
+											/>
 
 											<Menu
 												className={'menu-modal'}
@@ -215,9 +216,10 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="center">{member.memberWarnings}</TableCell>
 										<TableCell align="center">{member.memberBlocks}</TableCell>
 										<TableCell align="center">
-											<Button onClick={(e: any) => menuIconClickHandler(e, member._id)} className={'badge success'}>
-												{member.memberStatus}
-											</Button>
+											<StatusChip
+												label={member.memberStatus}
+												onClick={(e: any) => menuIconClickHandler(e, member._id)}
+											/>
 
 											<Menu
 												className={'menu-modal'}

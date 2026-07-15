@@ -19,6 +19,7 @@ import { API_URL } from '../../../config';
 import { Trash } from 'phosphor-react';
 import Typography from '@mui/material/Typography';
 import { ProductStatus } from '../../../enums/product.enum';
+import StatusChip from '../StatusChip';
 
 interface Data {
 	id: string;
@@ -136,14 +137,15 @@ export const ProductPanelList = (props: ProductPanelListType) => {
 											)}
 
 											{product.productStatus === ProductStatus.SOLD && (
-												<Button className={'badge warning'}>{product.productStatus}</Button>
+												<StatusChip label={product.productStatus} />
 											)}
 
 											{product.productStatus === ProductStatus.ACTIVE && (
 												<>
-													<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-														{product.productStatus}
-													</Button>
+													<StatusChip
+														label={product.productStatus}
+														onClick={(e: any) => menuIconClickHandler(e, index)}
+													/>
 
 													<Menu
 														className={'menu-modal'}

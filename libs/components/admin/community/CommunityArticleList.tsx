@@ -23,6 +23,7 @@ import { BoardArticle } from '../../../types/board-article/board-article';
 import Typography from '@mui/material/Typography';
 import { BoardArticleStatus } from '../../../enums/board-article.enum';
 import { API_URL } from '../../../config';
+import StatusChip from '../StatusChip';
 
 interface Data {
 	category: string;
@@ -198,9 +199,10 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 											</Button>
 										) : (
 											<>
-												<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-													{article.articleStatus}
-												</Button>
+												<StatusChip
+													label={article.articleStatus}
+													onClick={(e: any) => menuIconClickHandler(e, index)}
+												/>
 
 												<Menu
 													className={'menu-modal'}
