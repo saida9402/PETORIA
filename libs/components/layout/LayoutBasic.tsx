@@ -144,12 +144,14 @@ const withLayoutBasic = (Component: any) => {
 							<Top />
 						</Stack>
 
-						<Stack className={`header-basic ${authHeader && 'auth'}`}>
-							<Stack className={'container'}>
-								<strong>{t(memoizedValues.title)}</strong>
-								<span>{t(memoizedValues.desc)}</span>
+						{memoizedValues.title && (
+							<Stack className={`header-basic ${authHeader && 'auth'}`}>
+								<Stack className={'container'}>
+									<strong>{t(memoizedValues.title)}</strong>
+									<span>{t(memoizedValues.desc)}</span>
+								</Stack>
 							</Stack>
-						</Stack>
+						)}
 
 						<Stack id={'main'}>
 							<Component {...props} />
