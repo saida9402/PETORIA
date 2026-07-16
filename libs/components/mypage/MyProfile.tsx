@@ -19,6 +19,8 @@ function loadDaumPostcode(): Promise<void> {
 }
 import { NextPage } from 'next';
 import { Button, Stack, Typography } from '@mui/material';
+import PetsIcon from '@mui/icons-material/Pets';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { API_URL, Messages } from '../../config';
 import { updateStorage, updateUserInfo } from '../../auth';
 import { useMutation, useReactiveVar } from '@apollo/client';
@@ -242,9 +244,10 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 				</Stack>
 
 				{/* About / Bio */}
-				<Stack className="address-box">
-					<Typography className="title">About Me & My Pets 🐾</Typography>
+				<Stack className="about-me-box">
+					<Typography className="title">About Me & My Pets <PetsIcon sx={{ fontSize: 16, verticalAlign: 'text-bottom', marginLeft: '4px' }} /></Typography>
 					<textarea
+						className="about-textarea"
 						rows={3}
 						placeholder="Tell us about yourself and your pets..."
 						value={updateData.memberDesc ?? ''}
@@ -255,7 +258,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 				{/* ── Saved Cards ── */}
 				<Stack className="saved-cards-box">
-					<Typography className="title">Saved Cards 💳</Typography>
+					<Typography className="title">Saved Cards <CreditCardIcon sx={{ fontSize: 16, verticalAlign: 'text-bottom', marginLeft: '4px' }} /></Typography>
 					{cards.length === 0 && !showAddCard && (
 						<p className="saved-cards-empty">No saved cards yet.</p>
 					)}
