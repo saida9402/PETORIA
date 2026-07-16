@@ -126,15 +126,23 @@ function createIsomorphicLink() {
 
 		const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
 			if (graphQLErrors) {
-				graphQLErrors.forEach(({ message, locations, path }) => {
+				graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 					console.error(
 						`[GraphQL error] op=${operation.operationName} msg=${message} path=${path} loc=${JSON.stringify(
 							locations,
 						)}`,
 					);
-					// Surface every GraphQL error to the user — previously a substring filter
-					// silently hid upload/validation errors and made bugs invisible.
-					sweetErrorAlert(message);
+					// Prefer the backend's class-validator details (exposed at
+					// extensions.response.message by the API's formatError) so the user
+					// sees a plain-language reason. Fall back to the error message, and
+					// never surface the raw "Bad Request Exception" placeholder.
+					const detail = (extensions as any)?.response?.message;
+					const friendly = Array.isArray(detail) ? detail.join(', ') : detail || message;
+					const display =
+						!friendly || /bad request( exception)?/i.test(friendly)
+							? 'Something went wrong with your request. Please check your input and try again.'
+							: friendly;
+					sweetErrorAlert(display);
 				});
 			}
 			if (networkError) {
