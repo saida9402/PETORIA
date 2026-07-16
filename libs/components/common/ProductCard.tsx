@@ -182,11 +182,9 @@ const ProductCard = (props: ProductCardProps) => {
 
 	// ── Shop / public browsing variant ───────────────────────────────────────
 	return (
-		<Stack className="card-config">
+		<Stack className="card-config" onClick={() => pushProductDetail(product._id)}>
 			<Stack className="top">
-				<Link href={`/shop/${product._id}`}>
-					<img src={imagePath} alt={product.productName} />
-				</Link>
+				<img src={imagePath} alt={product.productName} />
 
 				{product.productRank > topProductRank && (
 					<Box component={'div'} className={'top-badge'}>
@@ -210,9 +208,7 @@ const ProductCard = (props: ProductCardProps) => {
 				<Stack className="name-address">
 					<Stack className="name">
 						<Typography className="brand-label">{product.productBrand}</Typography>
-						<Link href={`/shop/${product._id}`}>
-							<Typography>{product.productName}</Typography>
-						</Link>
+						<Typography>{product.productName}</Typography>
 					</Stack>
 					<Stack className="address">
 						<Typography>
@@ -288,7 +284,7 @@ const ProductCard = (props: ProductCardProps) => {
 							</IconButton>
 							<Typography className="view-cnt">{product.productViews ?? 0}</Typography>
 
-							<IconButton color={'default'} onClick={() => likeProductHandler?.(user, product._id)}>
+							<IconButton color={'default'} onClick={(e) => { e.stopPropagation(); likeProductHandler?.(user, product._id); }}>
 								{myFavorites || product?.meLiked?.[0]?.myFavorite ? (
 									<Heart size={20} weight="fill" color="#e11d48" />
 								) : (
