@@ -4,7 +4,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import ChildFriendlyIcon from '@mui/icons-material/ChildFriendly';
+import StrollerIcon from '@mui/icons-material/Stroller';
 import { Dog, Cat, Bird, Fish } from 'phosphor-react';
 import { ProductCategory, ProductType } from '../../enums/product.enum';
 import { ProductsInquiry } from '../../types/product/product.input';
@@ -15,13 +15,15 @@ interface ShopFilterProps {
 	setSearchFilter: (input: ProductsInquiry) => void;
 }
 
-const ICON_SX = { fontSize: 15, color: '#6B8A4E', flexShrink: 0 } as const;
+// No color here: the icons inherit `.filter-item__icon`'s token color (var(--t3)),
+// so they stay theme-aware in both light and dark. Same icon set as CategoryGrid.
+const ICON_SX = { fontSize: 15, flexShrink: 0 } as const;
 
 const PET_TYPES = [
-	{ value: ProductType.DOG,  label: 'Dogs',  icon: <Dog  size={15} color="#6B8A4E" /> },
-	{ value: ProductType.CAT,  label: 'Cats',  icon: <Cat  size={15} color="#6B8A4E" /> },
-	{ value: ProductType.BIRD, label: 'Birds', icon: <Bird size={15} color="#6B8A4E" /> },
-	{ value: ProductType.FISH, label: 'Fish',  icon: <Fish size={15} color="#6B8A4E" /> },
+	{ value: ProductType.DOG,  label: 'Dogs',  icon: <Dog  size={15} /> },
+	{ value: ProductType.CAT,  label: 'Cats',  icon: <Cat  size={15} /> },
+	{ value: ProductType.BIRD, label: 'Birds', icon: <Bird size={15} /> },
+	{ value: ProductType.FISH, label: 'Fish',  icon: <Fish size={15} /> },
 ];
 
 const CATEGORIES = [
@@ -29,7 +31,7 @@ const CATEGORIES = [
 	{ value: ProductCategory.MEDICINE,  label: 'Medicine',    icon: <LocalPharmacyIcon sx={ICON_SX} /> },
 	{ value: ProductCategory.ACCESSORY, label: 'Accessories', icon: <DiamondIcon sx={ICON_SX} /> },
 	{ value: ProductCategory.TOY,       label: 'Toys',        icon: <SportsEsportsIcon sx={ICON_SX} /> },
-	{ value: ProductCategory.STROLLER,  label: 'Stroller',    icon: <ChildFriendlyIcon sx={ICON_SX} /> },
+	{ value: ProductCategory.STROLLER,  label: 'Stroller',    icon: <StrollerIcon sx={ICON_SX} /> },
 ];
 
 const BRANDS = [
