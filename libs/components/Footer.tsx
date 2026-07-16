@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FacebookLogo, InstagramLogo, TelegramLogo, TwitterLogo, YoutubeLogo } from 'phosphor-react';
+import { FacebookLogo, InstagramLogo, PawPrint, TelegramLogo, TwitterLogo, YoutubeLogo } from 'phosphor-react';
 import { Stack } from '@mui/material';
 import Link from 'next/link';
 import useDeviceDetect from '../hooks/useDeviceDetect';
@@ -50,7 +50,7 @@ const Footer = () => {
 				<Stack className={'footer-container'}>
 					<Stack className={'footer-brand'}>
 						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'footer-logo'} />
-						<p className={'footer-tagline'}>Your pet&apos;s happy place 🐾</p>
+						<p className={'footer-tagline'}>Your pet&apos;s happy place <PawPrint size={14} weight="fill" style={{ verticalAlign: 'middle' }} /></p>
 						<div className={'social-icons'}>
 							{SOCIAL_ICONS.map((s) => (
 								<span key={s.label} className={'social-icon'}>
@@ -93,7 +93,7 @@ const Footer = () => {
 					{/* Brand column */}
 					<div className={'footer-brand-col'}>
 						<img src="/img/logo/petoriaLogoWhite.svg" alt="Petoria" className={'footer-logo'} />
-						<p className={'footer-tagline'}>Your pet&apos;s happy place 🐾</p>
+						<p className={'footer-tagline'}>Your pet&apos;s happy place <PawPrint size={14} weight="fill" style={{ verticalAlign: 'middle' }} /></p>
 						<div className={'footer-contact'}>
 							<span className={'contact-label'}>Customer Care (24/7)</span>
 							<a href="tel:+821021220202" className={'contact-value'}>
