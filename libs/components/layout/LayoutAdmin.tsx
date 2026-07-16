@@ -77,15 +77,16 @@ const withAdminLayout = (Component: ComponentType) => {
 							background: '#fff',
 						}}
 					>
-						<Toolbar sx={{ justifyContent: 'space-between', px: 3, minHeight: 64 }}>
-							{/* LEFT: page title */}
-							<Stack direction="column" justifyContent="center">
-								<Typography variant="caption" sx={{ color: '#9e9e9e', letterSpacing: 0.5 }}>
+						<Toolbar sx={{ justifyContent: 'space-between', gap: 2, px: 3, minHeight: 64 }}>
+							{/* LEFT: static page-title label (not a link) */}
+							<Stack direction="column" justifyContent="center" sx={{ minWidth: 0 }}>
+								<Typography variant="caption" noWrap sx={{ color: '#9e9e9e', letterSpacing: 0.5 }}>
 									Admin / {pageTitle}
 								</Typography>
 								<Typography
 									variant="h6"
 									component="h1"
+									noWrap
 									sx={{ color: '#2D5016', fontWeight: 700, lineHeight: 1.2 }}
 								>
 									{pageTitle}
@@ -93,7 +94,7 @@ const withAdminLayout = (Component: ComponentType) => {
 							</Stack>
 
 							{/* RIGHT: actions */}
-							<Stack direction="row" alignItems="center" spacing={2}>
+							<Stack direction="row" alignItems="center" spacing={2} sx={{ flexShrink: 0 }}>
 								{/* View Site button */}
 								<Button
 									variant="outlined"
