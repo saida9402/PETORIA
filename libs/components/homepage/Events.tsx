@@ -1,4 +1,13 @@
 import Link from 'next/link';
+import StadiumIcon from '@mui/icons-material/Stadium';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import PlaceIcon from '@mui/icons-material/Place';
+
+const EVENT_ICON_SX = { fontSize: 32, color: 'common.white' } as const;
+const META_ICON_SX = { fontSize: 'inherit', verticalAlign: 'middle', marginRight: '4px' } as const;
 
 const EVENTS = [
   {
@@ -9,7 +18,7 @@ const EVENTS = [
     desc:     'Korea\'s biggest annual pet expo. 300+ brands, live demos, vet Q&A sessions.',
     badge:    'Upcoming',
     badgeClass: 'badge--blue',
-    icon:     '🏟️',
+    icon:     <StadiumIcon sx={EVENT_ICON_SX} />,
     color:    'linear-gradient(135deg, var(--g800), var(--g600))',
   },
   {
@@ -20,7 +29,7 @@ const EVENTS = [
     desc:     'Bring your dog or cat for free core vaccinations. Sponsored by Petoria & Green Paws Vet.',
     badge:    'Free',
     badgeClass: 'badge--new',
-    icon:     '💉',
+    icon:     <VaccinesIcon sx={EVENT_ICON_SX} />,
     color:    'linear-gradient(135deg, var(--teal), #059669)',
   },
   {
@@ -31,7 +40,7 @@ const EVENTS = [
     desc:     'Learn to photograph your pet like a pro. Session includes 1-on-1 coaching + treats!',
     badge:    'Limited seats',
     badgeClass: 'badge--amber',
-    icon:     '📸',
+    icon:     <PhotoCameraIcon sx={EVENT_ICON_SX} />,
     color:    'linear-gradient(135deg, var(--amber), #d97706)',
   },
   {
@@ -42,7 +51,7 @@ const EVENTS = [
     desc:     'Up to 40% off on premium food, accessories and toys. Members get early access.',
     badge:    'Sale',
     badgeClass: 'badge--sale',
-    icon:     '🛍️',
+    icon:     <ShoppingBagIcon sx={EVENT_ICON_SX} />,
     color:    'linear-gradient(135deg, var(--rose), #e11d48)',
   },
 ];
@@ -71,9 +80,9 @@ export default function Events() {
 
               {/* Body */}
               <div className="event-card__body">
-                <p className="event-card__date">📅 {ev.date}</p>
+                <p className="event-card__date"><CalendarTodayIcon sx={META_ICON_SX} />{ev.date}</p>
                 <h3 className="event-card__title">{ev.title}</h3>
-                <p className="event-card__location">📍 {ev.location}</p>
+                <p className="event-card__location"><PlaceIcon sx={META_ICON_SX} />{ev.location}</p>
                 <p className="event-card__desc">{ev.desc}</p>
               </div>
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PublicIcon from '@mui/icons-material/Public';
 
 export default function VideoBanner() {
 	return (
@@ -11,7 +12,8 @@ export default function VideoBanner() {
 						<div className="video-banner__content">
 							<p className="video-banner__eyebrow">Our mission</p>
 							<h2 className="video-banner__title">
-								A Happy Life for<br />Every Pet 🌍
+								A Happy Life for<br />Every Pet{' '}
+									<PublicIcon sx={{ fontSize: 'inherit', verticalAlign: 'middle' }} />
 							</h2>
 							<p className="video-banner__sub">
 								We believe happy pets make happy humans. Our ecosystem connects premium

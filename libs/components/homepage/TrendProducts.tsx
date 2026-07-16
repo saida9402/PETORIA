@@ -2,7 +2,8 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Fire } from 'phosphor-react';
+import PetsIcon from '@mui/icons-material/Pets';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 import TrendProductCard from './TrendProductCard';
 import { useToast } from '../../hooks/useToast';
@@ -85,10 +86,7 @@ export default function TrendProducts() {
 				<div className="section-hd">
 					<div>
 						<p className="section-hd__eyebrow">Just in</p>
-						<h2 className="section-hd__title">
-							<Fire size={22} weight="duotone" color="#e11d48" />
-							Trending Now
-						</h2>
+						<h2 className="section-hd__title">Trending Now</h2>
 						<p className="section-hd__sub">Freshest additions to our catalogue</p>
 					</div>
 					<Link href="/shop?sort=newest" className="section-hd__link">
@@ -108,7 +106,7 @@ export default function TrendProducts() {
 				{/* Error state */}
 				{!loading && error && (
 					<div className="empty">
-						<div className="empty__icon">⚠️</div>
+						<div className="empty__icon"><WarningAmberIcon sx={{ fontSize: 'inherit' }} /></div>
 						<h3 className="empty__title">Failed to load products</h3>
 						<p className="empty__sub">Please try refreshing the page.</p>
 					</div>
@@ -117,7 +115,7 @@ export default function TrendProducts() {
 				{/* Product grid */}
 				{!loading && !error && list.length === 0 && (
 					<div className="empty">
-						<div className="empty__icon">🐾</div>
+						<div className="empty__icon"><PetsIcon sx={{ fontSize: 'inherit' }} /></div>
 						<h3 className="empty__title">No new products yet</h3>
 						<p className="empty__sub">Check back soon — new arrivals drop every week.</p>
 						<Link href="/shop" className="empty__cta">Browse all products →</Link>

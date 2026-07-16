@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import PetsIcon from '@mui/icons-material/Pets';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
 export default function PromoBanner() {
 	return (
@@ -7,7 +9,10 @@ export default function PromoBanner() {
 				<div className="promo-banner">
 					<div className="promo-banner__content">
 						<p className="promo-banner__label">Limited offer</p>
-						<h2 className="promo-banner__title">Free delivery on<br />your first order 🚚</h2>
+						<h2 className="promo-banner__title">
+							Free delivery on<br />your first order{' '}
+							<LocalShippingIcon sx={{ fontSize: 'inherit', verticalAlign: 'middle' }} />
+						</h2>
 						<p className="promo-banner__sub">
 							Sign up today — free shipping + 10% off. No minimum order required.
 						</p>
@@ -20,7 +25,7 @@ export default function PromoBanner() {
 							</Link>
 						</div>
 					</div>
-					<div className="promo-banner__emoji" aria-hidden="true">🐾</div>
+					<div className="promo-banner__emoji" aria-hidden="true"><PetsIcon sx={{ fontSize: 'inherit' }} /></div>
 				</div>
 			</div>
 		</section>

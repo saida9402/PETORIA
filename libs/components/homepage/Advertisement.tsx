@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import PetsIcon from '@mui/icons-material/Pets';
+import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf';
 
 export default function Advertisement() {
 	return (
@@ -11,7 +13,8 @@ export default function Advertisement() {
 						<div className="advertisement__video-content">
 							<p className="advertisement__eyebrow">New collection 2025</p>
 							<h2 className="advertisement__title">
-								Premium Organic<br />Pet Nutrition 🌿
+								Premium Organic<br />Pet Nutrition{' '}
+								<EnergySavingsLeafIcon sx={{ fontSize: 'inherit', verticalAlign: 'middle' }} />
 							</h2>
 							<p className="advertisement__sub">
 								Grain-free, preservative-free recipes — crafted by veterinary nutritionists
@@ -39,7 +42,7 @@ export default function Advertisement() {
 								Shop dogs →
 							</Link>
 						</div>
-						<span className="advertisement__card-emoji" aria-hidden="true">🐶</span>
+						<span className="advertisement__card-emoji" aria-hidden="true"><PetsIcon sx={{ fontSize: 'inherit' }} /></span>
 					</div>
 
 					<div className="advertisement__card advertisement__card--light">
@@ -51,7 +54,7 @@ export default function Advertisement() {
 								Shop cats →
 							</Link>
 						</div>
-						<span className="advertisement__card-emoji" aria-hidden="true">🐱</span>
+						<span className="advertisement__card-emoji" aria-hidden="true"><PetsIcon sx={{ fontSize: 'inherit' }} /></span>
 					</div>
 				</div>
 			</div>

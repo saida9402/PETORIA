@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { SquaresFour, Newspaper, Lightbulb, Heartbeat, BookOpen } from 'phosphor-react';
+import ArticleIcon from '@mui/icons-material/Article';
+import CreateIcon from '@mui/icons-material/Create';
 
 import CommunityCard from './CommunityCard';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
@@ -74,7 +76,7 @@ export default function CommunityBoards() {
 					</div>
 				) : articles.length === 0 ? (
 					<div className="empty">
-						<div className="empty__icon">📰</div>
+						<div className="empty__icon"><ArticleIcon sx={{ fontSize: 'inherit' }} /></div>
 						<div className="empty__title">No articles found</div>
 					</div>
 				) : (
@@ -88,7 +90,7 @@ export default function CommunityBoards() {
 				{/* Write CTA */}
 				<div className="community-boards__cta">
 					<div className="community-boards__cta-text">
-						<span className="community-boards__cta-icon">✍️</span>
+						<span className="community-boards__cta-icon"><CreateIcon sx={{ fontSize: 'inherit' }} /></span>
 						<div>
 							<p style={{ fontWeight: 700, color: 'var(--t1)', marginBottom: 2 }}>Share your pet story</p>
 							<p style={{ fontSize: 13, color: 'var(--muted)' }}>Help fellow pet owners with your experience</p>

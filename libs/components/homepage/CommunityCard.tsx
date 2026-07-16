@@ -3,14 +3,21 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { Heart, Eye } from 'phosphor-react';
 
+import ForumIcon from '@mui/icons-material/Forum';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import ArticleIcon from '@mui/icons-material/Article';
+import MoodIcon from '@mui/icons-material/Mood';
+import PetsIcon from '@mui/icons-material/Pets';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { API_URL } from '../../config';
 
-const CAT_CFG: Record<string, { icon: string; badge: string }> = {
-	FREE: { icon: '💬', badge: 'badge--green' },
-	RECOMMEND: { icon: '💡', badge: 'badge--blue' },
-	NEWS: { icon: '📰', badge: 'badge--purple' },
-	HUMOR: { icon: '😄', badge: 'badge--amber' },
+const CAT_ICON_SX = { fontSize: 'inherit' } as const;
+
+const CAT_CFG: Record<string, { icon: JSX.Element; badge: string }> = {
+	FREE: { icon: <ForumIcon sx={CAT_ICON_SX} />, badge: 'badge--green' },
+	RECOMMEND: { icon: <LightbulbIcon sx={CAT_ICON_SX} />, badge: 'badge--blue' },
+	NEWS: { icon: <ArticleIcon sx={CAT_ICON_SX} />, badge: 'badge--purple' },
+	HUMOR: { icon: <MoodIcon sx={CAT_ICON_SX} />, badge: 'badge--amber' },
 };
 
 interface Article {
@@ -41,7 +48,7 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 	const [likes, setLikes] = useState(a.articleLikes);
 	const [likeArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
-	const cfg = CAT_CFG[a.articleCategory] ?? { icon: '🐾', badge: 'badge--green' };
+	const cfg = CAT_CFG[a.articleCategory] ?? { icon: <PetsIcon sx={CAT_ICON_SX} />, badge: 'badge--green' };
 	const imgSrc = a.articleImage ? `${API_URL}/${a.articleImage}` : null;
 	const avSrc = a.memberData?.memberImage ? `${API_URL}/${a.memberData.memberImage}` : null;
 
