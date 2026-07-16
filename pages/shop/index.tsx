@@ -94,15 +94,32 @@ const ShopPage: NextPage = ({ initialInput }: any) => {
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
-			const result = await likeTargetProduct({ variables: { input: id } });
-			const updated = result?.data?.likeTargetProduct;
-			if (updated) {
-				setProducts((prev) =>
-					prev.map((p) =>
-						p._id === id ? { ...p, productLikes: updated.productLikes, meLiked: updated.meLiked } : p,
-					),
-				);
+
+			// The likeTargetProduct mutation returns the new productLikes count but not a
+			// member-scoped `meLiked`, so the card can't derive its filled state from the
+			// response. Mirror the working detail-page like button: toggle optimistically so
+			// the heart flips immediately, then revert if the request fails. On refresh the
+			// GET_PRODUCTS aggregation remains the source of truth.
+			const snapshot = products;
+			setProducts((prev) =>
+				prev.map((p) => {
+					if (p._id !== id) return p;
+					const liked = !!p?.meLiked?.[0]?.myFavorite;
+					return {
+						...p,
+						productLikes: Math.max(0, (p.productLikes ?? 0) + (liked ? -1 : 1)),
+						meLiked: liked ? [] : [{ memberId: user._id, likeRefId: id, myFavorite: true }],
+					};
+				}),
+			);
+
+			try {
+				await likeTargetProduct({ variables: { input: id } });
+			} catch (mutationErr) {
+				setProducts(snapshot); // revert the optimistic toggle on failure
+				throw mutationErr;
 			}
+
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
 			sweetMixinErrorAlert(err.message).then();
