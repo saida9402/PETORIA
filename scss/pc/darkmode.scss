@@ -59,6 +59,18 @@
 	/* Pagination text/arrows inherit dark ink → invisible on dark surface */
 	.MuiPaginationItem-root { color: var(--t1); }
 
+	/* TablePagination (admin CS/list footers) is rendered as component="div", so
+	   the .MuiTableCell-root remap above never reaches it; its label, caption,
+	   rows-per-page arrow and prev/next buttons inherit the light MUI ink and
+	   vanish on the dark bar. Recolor via the text tokens. Shared by the faq,
+	   notice, inquiry, users, product and community list footers. */
+	.MuiTablePagination-root { color: var(--t1); }
+	.MuiTablePagination-selectLabel,
+	.MuiTablePagination-displayedRows { color: var(--t2); }
+	.MuiTablePagination-selectIcon { color: var(--t3); }
+	.MuiTablePagination-actions .MuiIconButton-root { color: var(--t1); }
+	.MuiTablePagination-actions .MuiIconButton-root.Mui-disabled { color: var(--bd); }
+
 	/* MUI form controls (selects, outlined inputs used in forms) */
 	.MuiInputBase-input,
 	.MuiOutlinedInput-input,
@@ -76,6 +88,16 @@
 	/* MUI tables (dashboards) */
 	.MuiTableCell-root { color: var(--t1); border-color: var(--bd); }
 	.MuiTableHead-root .MuiTableCell-root { color: var(--t2); }
+
+	/* Filled default chips (MEMBER TYPE=USER, notice/faq=HOLD, unmapped order status)
+	   render an rgba(0,0,0,.08) surface + dark text from the light MUI palette, so
+	   they wash out on the dark row. Give the neutral chip a legible token surface —
+	   the vivid success/error chips (ACTIVE/BLOCK) already carry their own contrast. */
+	.MuiChip-filled.MuiChip-colorDefault { background-color: var(--nbg); color: var(--t1); }
+
+	/* Admin table action icon buttons (notice edit/delete) inherit MUI's dark ink and
+	   vanish on the dark row; recolor via the text token (icons use currentColor). */
+	.MuiTableCell-root .MuiIconButton-root { color: var(--t1); }
 }
 
 /* ── Shared floating chat widget (pc/main.scss) ──────────────────────── */
@@ -173,6 +195,15 @@
 		background: var(--cb);
 		border-bottom-color: var(--bd);
 		.settings-icon-admin { color: var(--t3); }
+		/* Page-title cluster + View Site button hardcode brand greens for the
+		   light bar; on the dark surface they drop below readable contrast. */
+		.MuiTypography-caption { color: var(--t3); }
+		.MuiTypography-h6 { color: var(--t1); }
+		.MuiButton-outlined {
+			color: var(--t1);
+			border-color: var(--bd);
+			&:hover { background: var(--nbg); border-color: var(--np); }
+		}
 	}
 	.aside .user { background: var(--nbg); }
 	.user { background: var(--nbg); }
@@ -475,6 +506,7 @@
 				background: var(--cb);
 				color: var(--t1);
 				border-color: var(--bd);
+				&::placeholder { color: var(--t3); }
 			}
 			.update-button { background-color: var(--np); }
 			button:disabled { background: var(--nbg); }
