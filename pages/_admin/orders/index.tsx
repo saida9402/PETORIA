@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
+import StatusChip from '../../../libs/components/admin/StatusChip';
 import {
 	Box,
-	Chip,
 	List,
 	ListItem,
 	Table,
@@ -27,14 +27,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 		...(await serverSideTranslations(locale, ['common'])),
 	},
 });
-
-const STATUS_COLOR: Record<string, 'default' | 'warning' | 'info' | 'success' | 'error'> = {
-	[OrderStatus.PENDING]:   'warning',
-	[OrderStatus.PROCESS]:   'info',
-	[OrderStatus.CONFIRM]:   'info',
-	[OrderStatus.DELIVERED]: 'success',
-	[OrderStatus.CANCEL]:    'error',
-};
 
 const AdminOrders: NextPage = () => {
 	const [statusFilter, setStatusFilter] = useState<string>('ALL');
@@ -84,9 +76,7 @@ const AdminOrders: NextPage = () => {
 									<TableRow>
 										{['Order ID', 'Member ID', 'Items', 'Total ($)', 'Payment', 'Address', 'Status', 'Date'].map(
 											(h) => (
-												<TableCell key={h} sx={{ fontWeight: 700, background: '#F5F9F0' }}>
-													{h}
-												</TableCell>
+												<TableCell key={h}>{h}</TableCell>
 											),
 										)}
 									</TableRow>
@@ -114,12 +104,7 @@ const AdminOrders: NextPage = () => {
 													{order.orderAddress}
 												</TableCell>
 												<TableCell>
-													<Chip
-														label={order.orderStatus}
-														color={STATUS_COLOR[order.orderStatus] ?? 'default'}
-														size="small"
-														sx={{ fontWeight: 600, fontSize: 11 }}
-													/>
+													<StatusChip label={order.orderStatus} />
 												</TableCell>
 												<TableCell sx={{ fontSize: 12 }}>
 													{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '—'}

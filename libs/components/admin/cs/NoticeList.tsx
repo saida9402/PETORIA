@@ -9,26 +9,20 @@ import {
 	IconButton,
 	Tooltip,
 	Stack,
-	Chip,
 } from '@mui/material';
 import { NotePencil, Trash } from 'phosphor-react';
 import { format } from 'date-fns';
 import Swal from 'sweetalert2';
 import { useMutation } from '@apollo/client';
 import { DELETE_NOTICE, UPDATE_NOTICE } from '../../../../apollo/admin/mutation';
-import { Notice, NoticeStatus } from '../../../types/notice/notice';
+import { Notice } from '../../../types/notice/notice';
 import NoticeFormModal from '../../NoticeFormModal';
+import StatusChip from '../StatusChip';
 
 interface NoticeListType {
 	noticesData?: Notice[];
 	refetch?: () => void;
 }
-
-const statusColor: Record<NoticeStatus, 'default' | 'success' | 'error'> = {
-	[NoticeStatus.HOLD]: 'default',
-	[NoticeStatus.ACTIVE]: 'success',
-	[NoticeStatus.DELETE]: 'error',
-};
 
 export const NoticeList = ({ noticesData = [], refetch }: NoticeListType) => {
 	const [editTarget, setEditTarget] = useState<Notice | null>(null);
@@ -88,12 +82,7 @@ export const NoticeList = ({ noticesData = [], refetch }: NoticeListType) => {
 									{notice.noticeTitle}
 								</TableCell>
 								<TableCell align="left">
-									<Chip
-										label={notice.noticeStatus}
-										color={statusColor[notice.noticeStatus]}
-										size="small"
-										sx={{ fontFamily: 'Nunito', fontSize: 11 }}
-									/>
+									<StatusChip label={notice.noticeStatus} />
 								</TableCell>
 								<TableCell align="left" sx={{ fontFamily: 'Nunito', fontSize: 13, color: '#888' }}>
 									{format(new Date(notice.createdAt), 'yyyy-MM-dd')}
