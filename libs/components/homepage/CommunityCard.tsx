@@ -10,6 +10,7 @@ import MoodIcon from '@mui/icons-material/Mood';
 import PetsIcon from '@mui/icons-material/Pets';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { API_URL } from '../../config';
+import UserAvatar from '../common/UserAvatar';
 
 const CAT_ICON_SX = { fontSize: 'inherit' } as const;
 
@@ -130,11 +131,7 @@ export default function CommunityCard({ article: a, variant = 'default' }: Props
 					{/* Author */}
 					<div className="community-card__author">
 						<div className="community-card__author-av">
-							{avSrc ? (
-								<img src={avSrc} alt={a.memberData?.memberNick} />
-							) : (
-								<span>{a.memberData?.memberNick?.[0]?.toUpperCase() ?? '?'}</span>
-							)}
+							<UserAvatar src={avSrc} alt={a.memberData?.memberNick ?? ''} size={24} />
 						</div>
 						<span>{a.memberData?.memberNick ?? 'User'}</span>
 					</div>

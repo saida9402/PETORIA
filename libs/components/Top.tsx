@@ -15,6 +15,7 @@ import { useReactiveVar } from '@apollo/client';
 import { userVar, chatOpenVar, onlineUsersVar, unreadNotifCountVar, unreadMsgCountVar } from '../../apollo/store';
 // ─── PETORIA WEBSOCKET ADDITION START ───
 import NotificationDropdown from './NotificationDropdown';
+import UserAvatar from './common/UserAvatar';
 // ─── PETORIA WEBSOCKET ADDITION END ───
 import { themeVar } from '../store/themeStore';
 import { API_URL } from '../config';
@@ -367,9 +368,10 @@ const Top = () => {
 									className={'user-avatar'}
 									onClick={(e: React.MouseEvent<HTMLDivElement>) => setLogoutAnchor(e.currentTarget)}
 								>
-									<img
-										src={user?.memberImage ? `${API_URL}/${user.memberImage}` : '/img/profile/defaultUser.svg'}
+									<UserAvatar
+										src={user?.memberImage ? `${API_URL}/${user.memberImage}` : null}
 										alt="avatar"
+										size={38}
 									/>
 								</div>
 								<Menu
