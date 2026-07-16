@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
-import { Button, Pagination, Stack, Typography } from '@mui/material';
+import { Button, IconButton, Pagination, Stack, Tooltip, Typography } from '@mui/material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CommunityCard from '../common/CommunityCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
@@ -133,21 +135,44 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 									spacing={1}
 									sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}
 								>
-									<Button
-										size="small"
-										variant="contained"
-										onClick={(e) => editArticleHandler(e, boardArticle)}
-									>
-										Edit
-									</Button>
-									<Button
-										size="small"
-										variant="contained"
-										color="error"
-										onClick={(e) => deleteArticleHandler(e, boardArticle)}
-									>
-										Delete
-									</Button>
+									<Tooltip title="Edit article">
+										<IconButton
+											aria-label="Edit article"
+											size="small"
+											onClick={(e) => editArticleHandler(e, boardArticle)}
+											sx={{
+												width: 32,
+												height: 32,
+												color: 'var(--t1, #2D5016)',
+												backgroundColor: 'var(--cb, #ffffff)',
+												border: '1px solid var(--bd, #C8E6A0)',
+												boxShadow: '0 1px 4px rgba(0, 0, 0, 0.12)',
+												transition: 'background-color 0.2s ease, color 0.2s ease',
+												'&:hover': { backgroundColor: 'var(--nbg, #eaf3de)' },
+											}}
+										>
+											<EditOutlinedIcon sx={{ fontSize: 18 }} />
+										</IconButton>
+									</Tooltip>
+									<Tooltip title="Delete article">
+										<IconButton
+											aria-label="Delete article"
+											size="small"
+											onClick={(e) => deleteArticleHandler(e, boardArticle)}
+											sx={{
+												width: 32,
+												height: 32,
+												color: 'var(--rose, #e11d48)',
+												backgroundColor: 'var(--cb, #ffffff)',
+												border: '1px solid var(--bd, #C8E6A0)',
+												boxShadow: '0 1px 4px rgba(0, 0, 0, 0.12)',
+												transition: 'background-color 0.2s ease, color 0.2s ease',
+												'&:hover': { backgroundColor: 'rgba(225, 29, 72, 0.12)' },
+											}}
+										>
+											<DeleteOutlineIcon sx={{ fontSize: 18 }} />
+										</IconButton>
+									</Tooltip>
 								</Stack>
 							</Stack>
 						))
