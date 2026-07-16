@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { Heart, Eye } from 'phosphor-react';
+import PetsIcon from '@mui/icons-material/Pets';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
-import { API_URL, TYPE_CFG, CAT_CFG } from '../../config';
+import { API_URL } from '../../config';
 import { addToCart } from '../../cart';
 
 interface Product {
@@ -59,8 +60,6 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 	const [likeProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const imgSrc = p.productImages?.[0] ? (p.productImages[0].startsWith('http') ? p.productImages[0] : `${API_URL}/${p.productImages[0]}`) : null;
-	const catCfg = CAT_CFG[p.productCategory] ?? { icon: '🦴', label: p.productCategory };
-	const typeCfg = TYPE_CFG[p.productType] ?? { icon: '🐾', label: p.productType, color: '#4e8a28' };
 
 	const isSold = p.productStatus === 'SOLD';
 	const isOutOfStock = !isSold && typeof p.productStock === 'number' && p.productStock === 0;
@@ -121,7 +120,7 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 					<img src={imgSrc} alt={p.productName} className="tpc__img" loading="lazy" draggable={false} />
 				) : (
 					<div className="tpc__placeholder" aria-hidden="true">
-						<span>{catCfg.icon}</span>
+						<PetsIcon sx={{ fontSize: 'inherit' }} />
 					</div>
 				)}
 
@@ -168,17 +167,10 @@ export default function TrendProductCard({ product: p, onAddCart }: Props) {
 			{/* ── Body ── */}
 			<div className="tpc__body">
 				<div className="tpc__meta-row">
-					<span className="tpc__type-tag" style={{ color: typeCfg.color }}>
-						{typeCfg.icon} {typeCfg.label}
-					</span>
 					<time className="tpc__time" dateTime={p.createdAt}>
 						{timeLabel}
 					</time>
 				</div>
-
-				<p className="tpc__category">
-					{catCfg.icon} {catCfg.label}
-				</p>
 
 				<h3 className="tpc__name">{p.productName}</h3>
 

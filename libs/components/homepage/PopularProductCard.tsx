@@ -5,20 +5,11 @@ import { Heart, Eye } from 'phosphor-react';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { API_URL } from '../../config';
 import { addToCart } from '../../cart';
+import { CAT_CFG } from '../../iconConfig';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
-const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
-	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },
-	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
-	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
-	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
-};
-
-const CAT_CFG: Record<string, { icon: string; label: string }> = {
-	FOOD: { icon: '🍖', label: 'Food' },
-	TOY: { icon: '🧸', label: 'Toy' },
-	MEDICINE: { icon: '💊', label: 'Medicine' },
-	ACCESSORY: { icon: '🦴', label: 'Accessory' },
-};
+// Fallback icon inherits the surrounding font-size/color, matching iconConfig's convention.
+const FALLBACK_ICON_SX = { fontSize: 'inherit', verticalAlign: 'middle' } as const;
 
 interface Product {
 	_id: string;
@@ -49,8 +40,7 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 
 	const imgSrc = p.productImages?.[0] ? (p.productImages[0].startsWith('http') ? p.productImages[0] : `${API_URL}/${p.productImages[0]}`) : null;
 
-	const typeCfg = TYPE_CFG[p.productType] ?? { icon: '🐾', label: p.productType, color: 'var(--g700)' };
-	const catCfg = CAT_CFG[p.productCategory] ?? { icon: '🦴', label: p.productCategory };
+	const catCfg = CAT_CFG[p.productCategory] ?? { icon: <ShoppingBagIcon sx={FALLBACK_ICON_SX} />, label: p.productCategory };
 
 	const isSold = p.productStatus === 'SOLD';
 
@@ -94,11 +84,6 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 					<span className="popular-product-card__emoji">{catCfg.icon}</span>
 				)}
 
-				{/* Type badge */}
-				<span className="popular-product-card__type-badge" style={{ background: typeCfg.color }}>
-					{typeCfg.icon} {typeCfg.label}
-				</span>
-
 				{/* Like btn */}
 				<button
 					type="button"
@@ -130,9 +115,6 @@ export default function PopularProductCard({ product: p, onAddCart }: Props) {
 
 			{/* Body */}
 			<div className="popular-product-card__body">
-				<p className="popular-product-card__cat">
-					{catCfg.icon} {catCfg.label}
-				</p>
 				<p className="popular-product-card__name">{p.productName}</p>
 				<div className="popular-product-card__footer">
 					<span className="popular-product-card__price">${p.productPrice.toLocaleString()}</span>

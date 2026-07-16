@@ -1,27 +1,31 @@
 import type { ReactNode } from 'react';
-import PetsIcon from '@mui/icons-material/Pets';
-import WaterIcon from '@mui/icons-material/Water';
-import NatureIcon from '@mui/icons-material/Nature';
+import { Dog, Cat, Bird, Fish } from 'phosphor-react';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import DiamondIcon from '@mui/icons-material/Diamond';
 
-// Icons inherit their size and color from the surrounding text (same convention
-// as CategoryGrid's ICON_SX), so a single config renders correctly whether it
-// sits in a large image placeholder, a small pill, or an inline detail row.
+// Single source of truth for pet-type / category iconography, mirroring the
+// homepage "Shop by Category" set (CategoryGrid): pet types come from phosphor
+// (Dog/Cat/Bird/Fish), categories from @mui/icons-material
+// (Restaurant/LocalPharmacy/SportsEsports/Diamond). Every icon inherits its
+// size from the surrounding font-size (phosphor `size="1em"` / MUI
+// `fontSize:'inherit'`) and its color from `currentColor`, so a single config
+// renders correctly in a large placeholder, a small pill or an inline detail
+// row and adapts to dark/light automatically.
+const PHOSPHOR_SX = { verticalAlign: 'middle' } as const;
 const ICON_SX = { fontSize: 'inherit', verticalAlign: 'middle' } as const;
 
 export const TYPE_CFG: Record<string, { icon: ReactNode; label: string; color: string }> = {
-	DOG: { icon: <PetsIcon sx={ICON_SX} />, label: 'Dog', color: 'var(--amber)' },
-	CAT: { icon: <PetsIcon sx={ICON_SX} />, label: 'Cat', color: 'var(--purple)' },
-	BIRD: { icon: <NatureIcon sx={ICON_SX} />, label: 'Bird', color: 'var(--blue)' },
-	FISH: { icon: <WaterIcon sx={ICON_SX} />, label: 'Fish', color: 'var(--teal)' },
+	DOG: { icon: <Dog size="1em" style={PHOSPHOR_SX} />, label: 'Dog', color: 'var(--amber)' },
+	CAT: { icon: <Cat size="1em" style={PHOSPHOR_SX} />, label: 'Cat', color: 'var(--purple)' },
+	BIRD: { icon: <Bird size="1em" style={PHOSPHOR_SX} />, label: 'Bird', color: 'var(--blue)' },
+	FISH: { icon: <Fish size="1em" style={PHOSPHOR_SX} />, label: 'Fish', color: 'var(--teal)' },
 };
 
 export const CAT_CFG: Record<string, { icon: ReactNode; label: string }> = {
 	FOOD: { icon: <RestaurantIcon sx={ICON_SX} />, label: 'Food' },
-	TOY: { icon: <SportsBasketballIcon sx={ICON_SX} />, label: 'Toy' },
-	MEDICINE: { icon: <MedicalServicesIcon sx={ICON_SX} />, label: 'Medicine' },
-	ACCESSORY: { icon: <ShoppingBagIcon sx={ICON_SX} />, label: 'Accessory' },
+	TOY: { icon: <SportsEsportsIcon sx={ICON_SX} />, label: 'Toy' },
+	MEDICINE: { icon: <LocalPharmacyIcon sx={ICON_SX} />, label: 'Medicine' },
+	ACCESSORY: { icon: <DiamondIcon sx={ICON_SX} />, label: 'Accessory' },
 };

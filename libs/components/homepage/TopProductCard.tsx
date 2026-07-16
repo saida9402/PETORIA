@@ -2,22 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { Heart } from 'phosphor-react';
+import PetsIcon from '@mui/icons-material/Pets';
 import { API_URL } from '../../config';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
-
-const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
-	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },
-	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
-	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
-	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
-};
-
-const CAT_CFG: Record<string, { icon: string; label: string }> = {
-	FOOD: { icon: '🍖', label: 'Food' },
-	TOY: { icon: '🧸', label: 'Toy' },
-	MEDICINE: { icon: '💊', label: 'Medicine' },
-	ACCESSORY: { icon: '🦴', label: 'Accessory' },
-};
 
 interface Product {
 	_id: string;
@@ -43,8 +30,6 @@ export default function TopProductCard({ product: p, rank }: Props) {
 	const [likeProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const imgSrc = p.productImages?.[0] ? (p.productImages[0].startsWith('http') ? p.productImages[0] : `${API_URL}/${p.productImages[0]}`) : null;
-	const catCfg = CAT_CFG[p.productCategory] ?? { icon: '🦴', label: p.productCategory };
-	const typeCfg = TYPE_CFG[p.productType] ?? { icon: '🐾', label: p.productType, color: 'var(--g700)' };
 
 	const rankColors = ['#c9952a', '#9ba3af', '#cd7f32'];
 	const rankColor = rankColors[rank - 1] ?? 'var(--muted)';
@@ -72,16 +57,13 @@ export default function TopProductCard({ product: p, rank }: Props) {
 				{imgSrc ? (
 					<img src={imgSrc} alt={p.productName} className="top-product-card__img" />
 				) : (
-					<span className="top-product-card__emoji">{catCfg.icon}</span>
+					<span className="top-product-card__emoji"><PetsIcon sx={{ fontSize: 'inherit' }} /></span>
 				)}
 				<div className="top-product-card__overlay" />
 			</div>
 
 			{/* Body */}
 			<div className="top-product-card__body">
-				<p className="top-product-card__type" style={{ color: typeCfg.color }}>
-					{typeCfg.icon} {typeCfg.label}
-				</p>
 				<p className="top-product-card__name">{p.productName}</p>
 				<div className="top-product-card__footer">
 					<span className="top-product-card__price">${p.productPrice.toLocaleString()}</span>

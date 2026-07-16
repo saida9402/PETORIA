@@ -2,25 +2,22 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { PawPrint, Dog, Cat, Bird, Fish } from 'phosphor-react';
+import PetsIcon from '@mui/icons-material/Pets';
+import { PawPrint } from 'phosphor-react';
 
 import PopularProductCard from './PopularProductCard';
 import { useToast } from '../../hooks/useToast';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
+import { TYPE_CFG } from '../../iconConfig';
 
-const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
-	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },
-	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
-	BIRD: { icon: '🐦', label: 'Bird', color: 'var(--blue)' },
-	FISH: { icon: '🐟', label: 'Fish', color: 'var(--teal)' },
-};
-
+// Chips reuse the shared iconConfig pet-type icons (source of truth: CategoryGrid);
+// "All" has no pet-type equivalent, so it uses the phosphor paw (same set).
 const TYPE_TABS = [
-	{ key: 'ALL', icon: <PawPrint size={15} />, label: 'All' },
-	{ key: 'DOG', icon: <Dog size={15} />, label: 'Dogs' },
-	{ key: 'CAT', icon: <Cat size={15} />, label: 'Cats' },
-	{ key: 'BIRD', icon: <Bird size={15} />, label: 'Birds' },
-	{ key: 'FISH', icon: <Fish size={15} />, label: 'Fish' },
+	{ key: 'ALL', icon: <PawPrint size="1em" style={{ verticalAlign: 'middle' }} />, label: 'All' },
+	{ key: 'DOG', icon: TYPE_CFG.DOG.icon, label: 'Dogs' },
+	{ key: 'CAT', icon: TYPE_CFG.CAT.icon, label: 'Cats' },
+	{ key: 'BIRD', icon: TYPE_CFG.BIRD.icon, label: 'Birds' },
+	{ key: 'FISH', icon: TYPE_CFG.FISH.icon, label: 'Fish' },
 ];
 
 export default function PopularProducts() {
@@ -178,7 +175,7 @@ export default function PopularProducts() {
 					</div>
 				) : displayList.length === 0 ? (
 					<div className="empty">
-						<div className="empty__icon">{TYPE_CFG[activeType]?.icon ?? '🐾'}</div>
+						<div className="empty__icon"><PetsIcon sx={{ fontSize: 'inherit' }} /></div>
 						<div className="empty__title">No {TYPE_CFG[activeType]?.label ?? ''} products found</div>
 					</div>
 				) : (
