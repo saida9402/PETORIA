@@ -67,6 +67,11 @@
 				font-size: 13px !important;
 				font-weight: 500 !important;
 				text-transform: none !important;
+				/* MUI Tab defaults to flex-direction:column, which stacks the icon above
+				   the label; lay the icon and text out side by side, vertically centered. */
+				flex-direction: row !important;
+				align-items: center !important;
+				gap: 6px;
 				justify-content: center !important;
 				min-height: 40px !important;
 				background: var(--pb, #f4faf0);
