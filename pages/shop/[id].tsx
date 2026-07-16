@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useQuery, useMutation, useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
-import { Eye } from 'phosphor-react';
+import { Eye, Truck } from 'phosphor-react';
 
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { GET_PRODUCT, GET_COMMENTS } from '../../apollo/user/query';
+import { GET_PRODUCT, GET_COMMENTS, GET_MY_ORDERS } from '../../apollo/user/query';
 import { LIKE_TARGET_PRODUCT, CREATE_COMMENT } from '../../apollo/user/mutation';
-import { API_URL, Messages } from '../../libs/config';
+import { API_URL, Messages, COMMENT_MAX_LENGTH } from '../../libs/config';
+import { OrderStatus } from '../../libs/enums/order.enum';
 import { TYPE_CFG, CAT_CFG } from '../../libs/iconConfig';
 import PetsIcon from '@mui/icons-material/Pets';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -109,10 +110,35 @@ const ProductDetail: NextPage = () => {
 		if (commentInquiry.search.commentRefId) getCommentsRefetch({ input: commentInquiry });
 	}, [commentInquiry]);
 
+	// Only members who have a DELIVERED order containing this product may review it.
+	// DELIVERED is the terminal "purchased and received" state in OrderStatus and
+	// matches the backend check in CommentService.createComment.
+	const { data: myOrdersData } = useQuery(GET_MY_ORDERS, {
+		fetchPolicy: 'cache-and-network',
+		skip: !user._id,
+	});
+
+	const hasPurchased = useMemo(() => {
+		if (!user._id || !product?._id) return false;
+		const orders: T[] = myOrdersData?.getMyOrders ?? [];
+		return orders.some(
+			(order) =>
+				order.orderStatus === OrderStatus.DELIVERED &&
+				(order.orderItems ?? []).some((item: T) => String(item.productId) === String(product._id)),
+		);
+	}, [myOrdersData, user._id, product?._id]);
+
 	const createCommentHandler = async () => {
 		try {
 			if (!user._id) throw new Error(Messages.error2);
 			if (user._id === product?.memberData?._id) throw new Error('Cannot review your own product');
+			// Validate on the client before the round trip so the user is told immediately.
+			if (!hasPurchased) throw new Error('Only customers who purchased this product can leave a review');
+			const content = insertCommentData.commentContent.trim();
+			if (!content) throw new Error(Messages.error4);
+			if (content.length > COMMENT_MAX_LENGTH) {
+				throw new Error(`Review must be ${COMMENT_MAX_LENGTH} characters or fewer`);
+			}
 			await createComment({ variables: { input: insertCommentData } });
 			setInsertCommentData((prev) => ({ ...prev, commentContent: '' }));
 			await getCommentsRefetch({ input: commentInquiry });
@@ -359,7 +385,7 @@ const ProductDetail: NextPage = () => {
 							</Link>
 						)}
 						<div className="product-detail__delivery">
-							🚚 Free delivery on orders over $50
+							<Truck size="1em" weight="duotone" style={{ verticalAlign: 'middle', marginRight: '6px' }} />Free delivery on orders over $50
 						</div>
 						{product.productDesc && (
 							<>
@@ -541,7 +567,7 @@ const ProductDetail: NextPage = () => {
 						)}
 
 						<div className="product-detail__delivery">
-							🚚 Free delivery on orders over $50
+							<Truck size="1em" weight="duotone" style={{ verticalAlign: 'middle', marginRight: '6px' }} />Free delivery on orders over $50
 						</div>
 
 						{canPurchase && (
@@ -659,19 +685,43 @@ const ProductDetail: NextPage = () => {
 
 						<div className="product-detail__review-form">
 							<p className="product-detail__review-form-title">Leave a Review</p>
+
+							{!user._id ? (
+								<p className="product-detail__review-notice">
+									<Link href="/account/join" className="product-detail__review-notice-link">
+										Log in to leave a review
+									</Link>
+								</p>
+							) : !hasPurchased ? (
+								<p className="product-detail__review-notice">
+									Only customers who purchased this product can leave a review
+								</p>
+							) : null}
+
 							<textarea
 								className="product-detail__review-textarea"
 								rows={4}
+								maxLength={COMMENT_MAX_LENGTH}
+								disabled={!user._id || !hasPurchased}
 								placeholder="Share your experience with this product..."
 								value={insertCommentData.commentContent}
 								onChange={({ target: { value } }) =>
 									setInsertCommentData((prev) => ({ ...prev, commentContent: value }))
 								}
 							/>
+							<div
+								className={`product-detail__review-counter${
+									insertCommentData.commentContent.length >= COMMENT_MAX_LENGTH - 50
+										? ' product-detail__review-counter--warn'
+										: ''
+								}`}
+							>
+								{insertCommentData.commentContent.length} / {COMMENT_MAX_LENGTH}
+							</div>
 							<button
 								type="button"
 								className="product-detail__review-submit"
-								disabled={!insertCommentData.commentContent || !user._id}
+								disabled={!insertCommentData.commentContent || !user._id || !hasPurchased}
 								onClick={createCommentHandler}
 							>
 								Submit Review

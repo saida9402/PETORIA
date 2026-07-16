@@ -4767,6 +4767,43 @@ section:has(.video-banner) {
 		&::placeholder {
 			color: var(--t3);
 		}
+
+		&:disabled {
+			background: var(--nbg);
+			color: var(--t3);
+			cursor: not-allowed;
+		}
+	}
+
+	&__review-notice {
+		font-family: $font;
+		font-size: 13px;
+		color: var(--t3);
+		line-height: 1.5;
+		margin-bottom: 10px;
+	}
+
+	&__review-notice-link {
+		color: var(--np);
+		font-weight: 600;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&__review-counter {
+		margin-top: 6px;
+		text-align: right;
+		font-family: $font;
+		font-size: 12px;
+		color: var(--t3);
+
+		&--warn {
+			color: var(--rose);
+			font-weight: 600;
+		}
 	}
 
 	&__review-submit {

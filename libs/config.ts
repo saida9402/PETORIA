@@ -10,6 +10,9 @@ export const Messages = {
 
 export const topProductRank = 3;
 
+// Must stay in sync with the backend @Length(1, 500) on CommentInput.commentContent.
+export const COMMENT_MAX_LENGTH = 500;
+
 export const TYPE_CFG: Record<string, { icon: string; label: string; color: string }> = {
 	DOG: { icon: '🐶', label: 'Dog', color: 'var(--amber)' },
 	CAT: { icon: '🐱', label: 'Cat', color: 'var(--purple)' },
